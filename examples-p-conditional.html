@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<script src="jquery-1.10.2.min.js"></script>
+<script src="generativeText.js"></script>
+
+<link href='http://fonts.googleapis.com/css?family=Alegreya+Sans+SC|Exo+2|Oleo+Script+Swash+Caps|IM+Fell+Great+Primer|Gilda+Display|Macondo+Swash+Caps|PT+Mono|Chicle|Sigmar+One|Lily+Script+One|Denk+One|Montaga|Mystery+Quest|Alike+Angular' rel='stylesheet' type='text/css'>
+
+<style type="text/css">
+
+.example-placeholder { border: 1px solid black; padding: 3em;}
+.example-placeholder-text { font-size: 3em;}
+.example-placeholder-text span { display: inline-block; height: 70px; overflow: hidden; padding-left: 10px;}
+.actions { clear: both;} 
+
+#rotate-steps span { float: left;}
+
+</style>
+
+<script type="text/javascript">
+
+jQuery( document ).ready(function( $ ) {
+
+			//rotate + background color list example
+	jQuery("#cond1 div.actions a").click( function() {
+
+		var cond1Function = function(f) {
+
+
+			
+			var rgb = f.memory[ f.currentStep ].css('background-color').replace("rgb(", "").replace(")", "").split(",");
+
+			var currentBG = parseInt(rgb[0]).toString(16) + parseInt(rgb[1]).toString(16) + parseInt(rgb[2]).toString(16);
+
+			alert(currentBG);
+
+			switch( currentBG ) {
+				case '#ff0000':
+				case '#Bf3030':
+				case '#a60000':
+				case '#ff4040':
+				case '#ff7373':
+					f.memory[ f.currentStep ].css("color", "green");
+				break;
+				default:
+					f.memory[ f.currentStep ].css("color", "green");
+				break;
+			} 
+
+		};
+
+		var params = {
+			backgroundColor: {
+				type: 'list',
+				values: [
+					'FF0000',
+					'BF3030',
+					'A60000',
+					'FF4040',
+					'FF7373',
+
+					'00CC00',
+					'269926',
+					'008500',
+					'39E639',
+					'67E667'
+				]
+			},
+		};
+
+		var opts = {
+			applyTo: 'words',
+			textSpaces: 'even',
+			memory: true,
+			posFunction: cond1Function
+		}
+		generativeText.applyToElem( jQuery("#cond1-example"), params, opts );
+	});
+
+
+});
+
+
+</script>
+
+</head>
+<body>
+
+<div id="cond1" class="example">
+		<h3>Rotate</h3>
+
+		<div class="example-placeholder">
+			<div id="cond1-example" class="example-placeholder-text">In computing, plain text is the contents of an ordinary sequential file readable as textual material without much processing.</div>
+			<div class="actions">
+				<a href="javascript:;">Apply</a>
+			</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+		</code></pre>
+</div>
+
+
+</body>
+</html>

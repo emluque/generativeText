@@ -135,6 +135,11 @@ var generativeText = {
 		//Add new elements
 		for(var i=0; i<length; i++) {
 
+			//Pre Function
+			if(opts && typeof opts.preFunction != undefined && opts.preFunction instanceof Function) {
+				this.applyPFunction(opts.preFunction, elem);
+			}
+
 			var t = text[i];
 			if( /\s/.test(t) ) {
 
@@ -162,6 +167,11 @@ var generativeText = {
 				this.appendTextElement(elem, newElement, opts);
 			}
 			
+			//Post Function
+			if(opts && typeof opts.posFunction != undefined && opts.posFunction instanceof Function) {
+				this.applyPFunction(opts.posFunction, elem);
+			}
+
 			this.currentStep++;
 		}
 	},
@@ -193,6 +203,12 @@ var generativeText = {
 		}
 
 		for(var i=0; i<length; i++) {
+
+			//Pre Function
+			if(opts && typeof opts.preFunction != undefined && opts.preFunction instanceof Function) {
+				this.applyPFunction(opts.preFunction, elem);
+			}
+
 			switch(opts.textSpaces) {
 				case 'style':
 					newElement = jQuery('<span>' + words[i] + '</span>');
@@ -253,6 +269,12 @@ var generativeText = {
 					this.appendTextElement(elem, newElement, opts);
 				break;
 			}		
+
+			//Post Function
+			if(opts && typeof opts.posFunction != undefined && opts.posFunction instanceof Function) {
+				this.applyPFunction(opts.posFunction, elem);
+			}
+
 			this.currentStep++;
 		}
 
@@ -416,6 +438,15 @@ var generativeText = {
 				return Math.round(val) + unit;
 			break;
 		}
+	},
+	applyPFunction: function(func, elem) {
+		f = {
+			totalSteps: this.totalSteps,
+			currentStep: this.currentStep,
+			memory: this.memory,
+			elem: elem
+		};
+		func( f );
 	}
 
 };
