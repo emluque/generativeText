@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script src="jquery-1.10.2.min.js"></script>
+<script src="generativeText.js"></script>
+
+<link href='http://fonts.googleapis.com/css?family=Gafata|Esteban|IM+Fell+French+Canon|Quattrocento|Noticia+Text' rel='stylesheet' type='text/css'>
+
+<script type="text/javascript">
+
+jQuery( document ).ready(function( $ ) {
+
+"'Gafata', sans-serif",
+"'Esteban', serif",
+"'IM Fell French Canon', serif",
+"'Quattrocento', serif",
+"'Noticia Text', serif"
+
+	jQuery("#fontFace div.actions a").click( function() {
+
+		var params = {
+			backgroundColor: {
+				type: 'generate',
+				r: {
+					min: '71',
+					max: 'A7',
+					steps: true
+				},
+				g: {
+					min: '89',
+					max: 'BC',
+					steps: true
+				},
+				b: {
+					min: 'A1',
+					max: 'CA',
+					steps: true
+				}
+			},
+			fontFamily: {
+				values: [
+				"'Gafata', sans-serif",
+				"'Esteban', serif",
+				"'IM Fell French Canon', serif",
+				"'Quattrocento', serif",
+				]
+			}	
+	};
+		generativeText.applyToElems( jQuery("#example > p"), params );
+	});
+
+
+});
+
+
+</script>
+<style type="text/css">
+
+#example p {
+	width: 24em;
+	text-align: center;
+	border-radius: 5px 5px 5px 5px;
+}
+
+</style>
+
+</head>
+<body>
+
+<div id="fontFace" class="example">
+	<h3>fontFace example</h3>
+
+	<div class="example-placeholder">
+		<div id="example">
+			<p>Je fais souvent ce rêve étrange et pénétrant</br>
+D'une femme inconnue, et que j'aime, et qui m'aime</br>
+Et qui n'est, chaque fois, ni tout à fait la même</br>
+Ni tout à fait une autre, et m'aime et me comprend.</p>
+			<p>Car elle me comprend, et mon coeur, transparent</br>
+Pour elle seule, hélas ! cesse d'être un problème</br>
+Pour elle seule, et les moiteurs de mon front blême,</br>
+Elle seule les sait rafraîchir, en pleurant.</p>
+			<p>Est-elle brune, blonde ou rousse ? - Je l'ignore.</br>
+Son nom ? Je me souviens qu'il est doux et sonore</br>
+Comme ceux des aimés que la Vie exila.</p>
+			<p>Son regard est pareil au regard des statues,</br>
+Et, pour sa voix, lointaine, et calme, et grave, elle a</br>
+L'inflexion des voix chères qui se sont tues.</p>
+		</div>
+		<div class="actions">
+			<a href="javascript:;">Apply</a>
+		</div>
+	</div>
+
+</div>
+
+
+</body>
+</html>
