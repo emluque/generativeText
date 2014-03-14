@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<script src="jquery-1.10.2.min.js"></script>
+<script src="generativeText.js"></script>
+
+<link href='http://fonts.googleapis.com/css?family=Alegreya+Sans+SC|Exo+2|Oleo+Script+Swash+Caps|IM+Fell+Great+Primer|Gilda+Display|Macondo+Swash+Caps|PT+Mono|Chicle|Sigmar+One|Lily+Script+One|Denk+One|Montaga|Mystery+Quest|Alike+Angular' rel='stylesheet' type='text/css'>
+
+<style type="text/css">
+
+.example-placeholder { border: 1px solid black; padding: 3em;}
+.example-placeholder-text { font-size: 3em;}
+.example-placeholder-text span { display: inline-block; height: 70px; overflow: hidden; padding-left: 10px;}
+.actions { clear: both;} 
+
+#rotate-steps span { float: left;}
+
+</style>
+
+<script type="text/javascript">
+
+
+hasBeenApplied = false;
+
+var lineBreaks = {
+	lastSpace: 0,
+	lastTop: 0,
+	first: true,
+	init: function() {
+		this.lastSpace = 0;
+		this.lastTop = 0;
+		this.first = true;
+	},
+	pos: function(f) {
+
+		//Test for Space
+		if( /\s/.test(f.memory[ f.currentStep ].text()) ) {
+			this.lastSpace = f.currentStep;
+		}
+				
+		//Test to see if last Top has changed
+		if( !this.first && (f.memory[ f.currentStep ].position().top - this.lastTop) > 15 ) {
+			//Add clear both 
+			if( this.lastSpace == f.currentStep) {
+				f.memory[ this.lastSpace].css("clear", "both");
+			} else {
+				f.memory[ this.lastSpace + 1].css("clear", "both");
+			}
+		}
+		this.lastTop = f.memory[ f.currentStep ].position().top;
+		first = false;
+	}
+}
+
+var params = {
+	rotate: {
+		min: 0,
+		max: 90,
+		steps: true
+		}
+};
+
+var opts = {
+	posFunction : lineBreaks.pos,
+	memory: true
+};
+
+
+
+jQuery( document ).ready(function( $ ) {
+
+	//rotate steps example
+	jQuery("#rotate-steps div.actions a").click( function() {
+
+		lineBreaks.init();
+		generativeText.applyToElem( jQuery("#rotate-steps-example"), params , opts);
+
+		hasBeenApplied = true;
+	});
+});
+
+jQuery( window ).resize(function() {
+	if(hasBeenApplied) {
+		lineBreaks.init();
+		generativeText.applyToElem( jQuery("#rotate-steps-example"), params , opts);
+	}
+});
+
+</script>
+
+</head>
+<body>
+
+<div id="rotate-steps" class="example">
+		<h3>Rotate</h3>
+
+		<div class="example-placeholder">
+			<div id="rotate-steps-example" class="example-placeholder-text">In computing, plain text is the contents of an ordinary sequential file readable as textual material without much processing.</div>
+			<div class="actions">
+				<a href="javascript:;">Apply</a>
+			</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+		</code></pre>
+</div>
+
+
+</body>
+</html>
