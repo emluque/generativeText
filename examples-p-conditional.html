@@ -11,7 +11,7 @@
 
 .example-placeholder { border: 1px solid black; padding: 3em;}
 .example-placeholder-text { font-size: 3em;}
-.example-placeholder-text span { display: inline-block; height: 70px; overflow: hidden; padding-left: 10px;}
+.example-placeholder-text span { display: inline-block; height: 70px; overflow: hidden;}
 .actions { clear: both;} 
 
 #rotate-steps span { float: left;}
@@ -71,7 +71,7 @@ jQuery( document ).ready(function( $ ) {
 			applyTo: 'words',
 			textSpaces: 'even',
 			memory: true,
-			posFunction: cond1Function
+			pObj: { posFunc: cond1Function }
 		}
 		generativeText.applyToElem( jQuery("#cond1-example"), params, opts );
 	});

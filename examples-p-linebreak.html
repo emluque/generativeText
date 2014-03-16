@@ -27,12 +27,7 @@ var lineBreaks = {
 	lastSpace: 0,
 	lastTop: 0,
 	first: true,
-	init: function() {
-		this.lastSpace = 0;
-		this.lastTop = 0;
-		this.first = true;
-	},
-	pos: function(f) {
+	posFunc: function(f) {
 
 		//Test for Space
 		if( /\s/.test(f.memory[ f.currentStep ].text()) ) {
@@ -49,7 +44,7 @@ var lineBreaks = {
 			}
 		}
 		this.lastTop = f.memory[ f.currentStep ].position().top;
-		first = false;
+		this.first = false;
 	}
 }
 
@@ -62,7 +57,7 @@ var params = {
 };
 
 var opts = {
-	posFunction : lineBreaks.pos,
+	pObj: lineBreaks,
 	memory: true
 };
 
@@ -73,7 +68,6 @@ jQuery( document ).ready(function( $ ) {
 	//rotate steps example
 	jQuery("#rotate-steps div.actions a").click( function() {
 
-		lineBreaks.init();
 		generativeText.applyToElem( jQuery("#rotate-steps-example"), params , opts);
 
 		hasBeenApplied = true;
@@ -82,7 +76,6 @@ jQuery( document ).ready(function( $ ) {
 
 jQuery( window ).resize(function() {
 	if(hasBeenApplied) {
-		lineBreaks.init();
 		generativeText.applyToElem( jQuery("#rotate-steps-example"), params , opts);
 	}
 });

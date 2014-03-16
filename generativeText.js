@@ -136,8 +136,8 @@ var generativeText = {
 		for(var i=0; i<length; i++) {
 
 			//Pre Function
-			if(opts && typeof opts.preFunction != undefined && opts.preFunction instanceof Function) {
-				this.applyPFunction(opts.preFunction, elem);
+			if(opts && opts.pObj && opts.pObj.preFunc && opts.pObj.preFunc instanceof Function) {
+				this.applyPreFunc(opts.pObj, elem);
 			}
 
 			var t = text[i];
@@ -168,8 +168,8 @@ var generativeText = {
 			}
 			
 			//Post Function
-			if(opts && typeof opts.posFunction != undefined && opts.posFunction instanceof Function) {
-				this.applyPFunction(opts.posFunction, elem);
+			if(opts && opts.pObj && opts.pObj.posFunc && opts.pObj.posFunc instanceof Function) {
+				this.applyPosFunc(opts.pObj, elem);
 			}
 
 			this.currentStep++;
@@ -205,8 +205,8 @@ var generativeText = {
 		for(var i=0; i<length; i++) {
 
 			//Pre Function
-			if(opts && typeof opts.preFunction != undefined && opts.preFunction instanceof Function) {
-				this.applyPFunction(opts.preFunction, elem);
+			if(opts && opts.pObj && opts.pObj.preFunc && opts.pObj.preFunc instanceof Function) {
+				this.applyPreFunc(opts.pObj, elem);
 			}
 
 			switch(opts.textSpaces) {
@@ -271,8 +271,8 @@ var generativeText = {
 			}		
 
 			//Post Function
-			if(opts && typeof opts.posFunction != undefined && opts.posFunction instanceof Function) {
-				this.applyPFunction(opts.posFunction, elem);
+			if(opts && opts.pObj && opts.pObj.posFunc && opts.pObj.posFunc instanceof Function) {
+				this.applyPosFunc(opts.pObj, elem);
 			}
 
 			this.currentStep++;
@@ -439,14 +439,23 @@ var generativeText = {
 			break;
 		}
 	},
-	applyPFunction: function(func, elem) {
+	applyPreFunc: function(pObj, elem) {
 		f = {
 			totalSteps: this.totalSteps,
 			currentStep: this.currentStep,
 			memory: this.memory,
 			elem: elem
 		};
-		func( f );
+		pObj.preFunc( f );
+	},
+	applyPosFunc: function(pObj, elem) {
+		f = {
+			totalSteps: this.totalSteps,
+			currentStep: this.currentStep,
+			memory: this.memory,
+			elem: elem
+		};
+		pObj.posFunc( f );
 	}
 
 };
