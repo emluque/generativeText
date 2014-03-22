@@ -27,23 +27,23 @@ var lineBreaks = {
 	lastSpace: 0,
 	lastTop: 0,
 	first: true,
-	posFunc: function(f) {
+	posFunc: function() {
 
 		//Test for Space
-		if( /\s/.test(f.memory[ f.currentStep ].text()) ) {
-			this.lastSpace = f.currentStep;
+		if( /\s/.test(this.memory[ this.currentStep ].text()) ) {
+			this.lastSpace = this.currentStep;
 		}
 				
 		//Test to see if last Top has changed
-		if( !this.first && (f.memory[ f.currentStep ].position().top - this.lastTop) > 15 ) {
+		if( !this.first && (this.memory[ this.currentStep ].position().top - this.lastTop) > 15 ) {
 			//Add clear both 
-			if( this.lastSpace == f.currentStep) {
-				f.memory[ this.lastSpace].css("clear", "both");
+			if( this.lastSpace == this.currentStep) {
+				this.memory[ this.lastSpace].css("clear", "both");
 			} else {
-				f.memory[ this.lastSpace + 1].css("clear", "both");
+				this.memory[ this.lastSpace + 1].css("clear", "both");
 			}
 		}
-		this.lastTop = f.memory[ f.currentStep ].position().top;
+		this.lastTop = this.memory[ this.currentStep ].position().top;
 		this.first = false;
 	}
 }

@@ -25,7 +25,7 @@ jQuery( document ).ready(function( $ ) {
 			//rotate + background color list example
 	jQuery("#cond1 div.actions a").click( function() {
 
-		var cond1Function = function(f) {
+		var cond1Function = function() {
 
 			function rgbToHex(str) {
 				var arr = str.replace("rgb(", "").replace(")", "").split(",");
@@ -37,18 +37,18 @@ jQuery( document ).ready(function( $ ) {
 				return "#" + arr[0] + arr[1] + arr[2];
 			}
 			
-			var currentBG = rgbToHex(f.memory[ f.currentStep ].css('background-color'));
+			var currentBG = rgbToHex(this.memory[ this.currentStep ].css('background-color'));
 
 			switch( currentBG ) {
 				case '#FF0000':
 				case '#BF3030':
 				case '#A60000':
-					f.memory[ f.currentStep ].css("color", "white");
+					this.memory[ this.currentStep ].css("color", "white");
 				break;
 				case '#FF4040':
 				case '#FF7373':
 				default:
-					f.memory[ f.currentStep ].css("color", "black");
+					this.memory[ this.currentStep ].css("color", "black");
 				break;
 			} 
 

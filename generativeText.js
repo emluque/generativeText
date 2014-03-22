@@ -138,7 +138,7 @@ var generativeText = {
 
 			//Pre Function
 			if(!!opts && !!opts.pObj && !!opts.pObj.preFunc && opts.pObj.preFunc instanceof Function) {
-				this.applyPreFunc(opts.pObj, elem);
+				this.applyPFunc(opts.pObj, elem, 'preFunc');
 			}
 
 			var t = text[i];
@@ -170,7 +170,7 @@ var generativeText = {
 			
 			//Post Function
 			if(!!opts && !!opts.pObj && !!opts.pObj.posFunc && opts.pObj.posFunc instanceof Function) {
-				this.applyPosFunc(opts.pObj, elem);
+				this.applyPFunc(opts.pObj, elem, 'posFunc');
 			}
 
 			this.currentStep++;
@@ -207,7 +207,7 @@ var generativeText = {
 
 			//Pre Function
 			if(opts && opts.pObj && opts.pObj.preFunc && opts.pObj.preFunc instanceof Function) {
-				this.applyPreFunc(opts.pObj, elem);
+				this.applyPFunc(opts.pObj, elem, 'preFunc');
 			}
 
 			switch(opts.textSpaces) {
@@ -273,7 +273,7 @@ var generativeText = {
 
 			//Post Function
 			if(!!opts && !!opts.pObj && !!opts.pObj.posFunc && opts.pObj.posFunc instanceof Function) {
-				this.applyPosFunc(opts.pObj, elem);
+				this.applyPFunc(opts.pObj, elem, 'posFunc');
 			}
 
 			this.currentStep++;
@@ -440,23 +440,12 @@ var generativeText = {
 			break;
 		}
 	},
-	applyPreFunc: function(pObj, elem) {
-		f = {
-			totalSteps: this.totalSteps,
-			currentStep: this.currentStep,
-			memory: this.memory,
-			elem: elem
-		};
-		pObj.preFunc( f );
-	},
-	applyPosFunc: function(pObj, elem) {
-		f = {
-			totalSteps: this.totalSteps,
-			currentStep: this.currentStep,
-			memory: this.memory,
-			elem: elem
-		};
-		pObj.posFunc( f );
-	}
+	applyPFunc: function(pObj, elem, funcName) {
+		pObj.totalSteps = this.totalSteps;
+		pObj.currentStep = this.currentStep;
+		pObj.memory = this.memory;
+		pObj.elem = elem;
 
+		pObj[ funcName ]();
+	}
 };
