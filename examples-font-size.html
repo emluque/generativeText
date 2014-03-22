@@ -69,9 +69,9 @@ jQuery( document ).ready(function( $ ) {
 
 		var cosFunction = function(f) {
 			two_pi = 6.2832;
-			step = two_pi / f.totalSteps;
-			val = (Math.cos( (step * f.currentStep ) ) +1) / 2;
-			return f.min + (f.range * val);
+			step = two_pi / this.totalSteps;
+			val = (Math.cos( (step * this.currentStep ) ) +1) / 2;
+			return this.min + (this.range * val);
 		};
 
 		var params = {
@@ -90,11 +90,11 @@ jQuery( document ).ready(function( $ ) {
 	jQuery("#6 div.actions a").click( function() {
 
 		var someFunction = function(f) {
-			if(f.currentStep % 11 == 0) return 5;
-			if(f.currentStep % 7 == 0) return 4;
-			if(f.currentStep % 5 == 0) return 3;
-			if(f.currentStep % 3 == 0) return 2;
-			if(f.currentStep % 2 == 0) return 1;
+			if(this.currentStep % 11 == 0) return 5;
+			if(this.currentStep % 7 == 0) return 4;
+			if(this.currentStep % 5 == 0) return 3;
+			if(this.currentStep % 3 == 0) return 2;
+			if(this.currentStep % 2 == 0) return 1;
 			return 0;
 		};
 
@@ -114,9 +114,9 @@ jQuery( document ).ready(function( $ ) {
 
 		var cosFunction = function(f) {
 			pi = 3.1416;
-			step = (pi*2) / f.totalSteps;
-			val = (Math.cos( (-pi + (step * f.currentStep )) ) +1) / 2;
-			return f.min + (f.range * val);
+			step = (pi*2) / this.totalSteps;
+			val = (Math.cos( (-pi + (step * this.currentStep )) ) +1) / 2;
+			return this.min + (this.range * val);
 		};
 
 		var params = {

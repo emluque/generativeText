@@ -59,6 +59,7 @@ var generativeText = {
 	totalSteps: 0,
 	currentStep: 0,
 	memory: [],
+	stepFuncObj: {},
 	applyToElems: function(elems, params, opts) {
 		this.currentStep = 0;
 		this.memory = [];
@@ -343,14 +344,14 @@ var generativeText = {
 			var range = parseInt(c.max, 16) - parseInt(c.min, 16);
 			if(typeof c.steps != 'undefined' && c.steps == true) {
 				if(!!c.stepFunction && c.stepFunction instanceof Function) {
-					f = {
-						totalSteps: this.totalSteps,
-						currentStep: this.currentStep,
-						range: range,
-						min: parseInt(c.min, 16),
-						max: parseInt(c.max, 16)
-					};
-					return this.rgbCheck(Math.floor( c.stepFunction(f)).toString(16));
+
+					this.stepFuncObj.totalSteps = this.totalSteps;
+					this.stepFuncObj.currentStep = this.currentStep;
+					this.stepFuncObj.range = range;
+					this.stepFuncObj.min = parseInt(c.min, 16);
+					this.stepFuncObj.max = parseInt(c.max, 16);
+
+					return this.rgbCheck(Math.floor( c.stepFunction.apply(this.stepFuncObj)).toString(16));
 				} else {
 					var colorStep = range / this.totalSteps;
 					return this.rgbCheck((parseInt(c.min, 16) + Math.floor(colorStep * this.currentStep) ).toString(16));
@@ -382,14 +383,14 @@ var generativeText = {
 				var range = params.max - params.min;
 				if( !!params.steps && params.steps == true) {
 					if(!!params.stepFunction && params.stepFunction instanceof Function) {
-						f = {
-							totalSteps: this.totalSteps,
-							currentStep: this.currentStep,
-							range: range,
-							min: params.min,
-							max: params.max
-						};
-						return this.roundUnit( params.stepFunction(f), params.unit );
+
+						this.stepFuncObj.totalSteps = this.totalSteps;
+						this.stepFuncObj.currentStep = this.currentStep;
+						this.stepFuncObj.range = range;
+						this.stepFuncObj.min = params.min;
+						this.stepFuncObj.max = params.max;
+
+						return this.roundUnit( params.stepFunction.apply(this.stepFuncObj), params.unit );
 					} else {
 						return this.roundUnit( (params.min + (( range/this.totalSteps)*this.currentStep)), params.unit );
 					}
@@ -409,12 +410,12 @@ var generativeText = {
 
 		if( !!params.steps && params.steps == true) {
 			if(!!params.stepFunction && params.stepFunction instanceof Function) {
-				f = {
-					totalSteps: this.totalSteps,
-					currentStep: this.currentStep,
-					valuesLenght: params.values.length
-				};
-				return params.values[ Math.floor( params.stepFunction(f) ) ] + params.unit;
+
+				this.stepFuncObj.totalSteps = this.totalSteps;
+				this.stepFuncObj.currentStep = this.currentStep;
+				this.stepFuncObj.valuesLength = params.values.length;
+
+				return params.values[ Math.floor( params.stepFunction.apply(this.stepFuncObj) ) ] + params.unit;
 			} else {
 				return params.values[ this.currentStep %  params.values.length] + params.unit;
 			}

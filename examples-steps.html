@@ -166,11 +166,11 @@ jQuery( document ).ready(function( $ ) {
 			//rotate + background color list example
 	jQuery("#color-steps-function div.actions a").click( function() {
 
-		var cosFunction = function(f) {
+		var cosFunction = function() {
 			pi = 3.1416;
-			step = (pi*2) / f.totalSteps;
-			val = (Math.cos( (-pi + (step * f.currentStep )) ) +1) / 2;
-			return f.min + (f.range * val);
+			step = (pi*2) / this.totalSteps;
+			val = (Math.cos( (-pi + (step * this.currentStep )) ) +1) / 2;
+			return this.min + (this.range * val);
 		};
 
 		var params = {
