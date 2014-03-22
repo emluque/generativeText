@@ -69,7 +69,7 @@ var generativeText = {
 		for(var i=0; i < elems.length; i++) {
 			jel = jQuery(elems[i]);
 			this.generateStyle(params, jel);
-			if(opts && opts.memory) this.memory.push(jel);
+			if(!!opts && !!opts.memory) this.memory.push(jel);
 			this.currentStep++;
 		}
 	},
@@ -89,7 +89,7 @@ var generativeText = {
 		this.currentStep = 0;
 		this.memory = [];
 
-		if(opts) {
+		if(!!opts) {
 			if(opts.applyTo == "words") {
 				this.applyToWords(elem, params, opts);
 				return;
@@ -102,7 +102,7 @@ var generativeText = {
 	},
 	initializeApplyToText: function(text, params, opts) {
 
-		if(opts.removeSpaceDups) {
+		if(!!opts.removeSpaceDups) {
 			text.replace(/\s+/g, ' ');
 		}
 
@@ -136,7 +136,7 @@ var generativeText = {
 		for(var i=0; i<length; i++) {
 
 			//Pre Function
-			if(opts && opts.pObj && opts.pObj.preFunc && opts.pObj.preFunc instanceof Function) {
+			if(!!opts && !!opts.pObj && !!opts.pObj.preFunc && opts.pObj.preFunc instanceof Function) {
 				this.applyPreFunc(opts.pObj, elem);
 			}
 
@@ -147,7 +147,7 @@ var generativeText = {
 
 				switch(opts.textSpaces) {
 					case 'style':
-						generativeText.generateStyle( params, newElement );
+						this.generateStyle( params, newElement );
 						this.appendTextElement(elem, newElement, opts);
 					break;
 					case 'nostyle':
@@ -163,12 +163,12 @@ var generativeText = {
 				}				
 			} else {
 				newElement = jQuery('<span>' + t + '</span>');
-				generativeText.generateStyle( params, newElement );
+				this.generateStyle( params, newElement );
 				this.appendTextElement(elem, newElement, opts);
 			}
 			
 			//Post Function
-			if(opts && opts.pObj && opts.pObj.posFunc && opts.pObj.posFunc instanceof Function) {
+			if(!!opts && !!opts.pObj && !!opts.pObj.posFunc && opts.pObj.posFunc instanceof Function) {
 				this.applyPosFunc(opts.pObj, elem);
 			}
 
@@ -176,7 +176,7 @@ var generativeText = {
 		}
 	},
 	appendTextElement: function(elem, ne, opts) {
-				if(opts && opts.memory) this.memory.push( ne );
+				if(!!opts && !!opts.memory) this.memory.push( ne );
 				elem.append( ne );
 	},
 	applyToWords: function( elem, params, opts ) {
@@ -212,19 +212,19 @@ var generativeText = {
 			switch(opts.textSpaces) {
 				case 'style':
 					newElement = jQuery('<span>' + words[i] + '</span>');
-					generativeText.generateStyle( params, newElement );
+					this.generateStyle( params, newElement );
 					this.appendTextElement(elem, newElement, opts);
 
 					if(i!=(length-1)) {
 						this.currentStep++;
 						newElement = jQuery('<span>&nbsp;</span>');
-						generativeText.generateStyle( params, newElement );
+						this.generateStyle( params, newElement );
 						this.appendTextElement(elem, newElement, opts);
 					}
 				break;
 				case 'nostyle':
 					newElement = jQuery('<span>' + words[i] + '</span>');
-					generativeText.generateStyle( params, newElement );
+					this.generateStyle( params, newElement );
 					this.appendTextElement(elem, newElement, opts);
 
 					if(i!=(length-1)) {
@@ -236,7 +236,7 @@ var generativeText = {
 				case 'nostyleorcount':
 					newElement = jQuery('<span>' + words[i] + '</span>');
 					this.appendTextElement(elem, newElement, opts);
-					generativeText.generateStyle( params, newElement );
+					this.generateStyle( params, newElement );
 
 					if(i!=(length-1)) {
 						newElement = jQuery('<span>&nbsp;</span>');
@@ -245,33 +245,33 @@ var generativeText = {
 				break;
 				case 'remove':
 					newElement = jQuery('<span>' + words[i] + '</span>');
-					generativeText.generateStyle( params, newElement );
+					this.generateStyle( params, newElement );
 					this.appendTextElement(elem, newElement, opts);
 				break;
 				case 'even':
 					if( (i % 2) != 0) {
 						newElement = jQuery('<span>' + ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'') + '</span>');
-						generativeText.generateStyle( params, newElement );
+						this.generateStyle( params, newElement );
 					} else {
 						newElement = jQuery('<span>' + words[i] + '</span>');						
-						generativeText.generateStyle( params, newElement );
+						this.generateStyle( params, newElement );
 					}
 					this.appendTextElement(elem, newElement, opts);
 				break;
 				case 'odd':
 					if( (i % 2) == 0) {
 						newElement = jQuery('<span>' + ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'') + '</span>');
-						generativeText.generateStyle( params, newElement );
+						this.generateStyle( params, newElement );
 					} else {
 						newElement = jQuery('<span>' + words[i] + '</span>');						
-						generativeText.generateStyle( params, newElement );
+						this.generateStyle( params, newElement );
 				}
 					this.appendTextElement(elem, newElement, opts);
 				break;
 			}		
 
 			//Post Function
-			if(opts && opts.pObj && opts.pObj.posFunc && opts.pObj.posFunc instanceof Function) {
+			if(!!opts && !!opts.pObj && !!opts.pObj.posFunc && opts.pObj.posFunc instanceof Function) {
 				this.applyPosFunc(opts.pObj, elem);
 			}
 
@@ -324,25 +324,25 @@ var generativeText = {
 			break;
 			case 'random':
 				var rgb = { min:'00', max:'FF'};
-				return generativeText.generateRGBHex(rgb) + generativeText.generateRGBHex(rgb) + generativeText.generateRGBHex(rgb);
+				return this.generateRGBHex(rgb) + this.generateRGBHex(rgb) + this.generateRGBHex(rgb);
 			break;
 			case 'generate':
 			default:
 				var rgbHex = "";
-				if(typeof params.r != 'undefined') rgbHex += generativeText.generateRGBHex(params.r);
-				if(typeof params.g != 'undefined') rgbHex += generativeText.generateRGBHex(params.g);
-				if(typeof params.b != 'undefined') rgbHex += generativeText.generateRGBHex(params.b);
+				if(typeof params.r != 'undefined') rgbHex += this.generateRGBHex(params.r);
+				if(typeof params.g != 'undefined') rgbHex += this.generateRGBHex(params.g);
+				if(typeof params.b != 'undefined') rgbHex += this.generateRGBHex(params.b);
 				return rgbHex;
 			break;
 		}
 	},
 	generateRGBHex: function(c) {
-		if(typeof  c.fixed != 'undefined') {
+		if(!!c.fixed) {
 			return c.fixed;
-		} else if(typeof c.min != 'undefined' && typeof c.max != 'undefined' ) {
+		} else if(!!c.min && !!c.max) {
 			var range = parseInt(c.max, 16) - parseInt(c.min, 16);
 			if(typeof c.steps != 'undefined' && c.steps == true) {
-				if(typeof c.stepFunction != undefined && c.stepFunction instanceof Function) {
+				if(!!c.stepFunction && c.stepFunction instanceof Function) {
 					f = {
 						totalSteps: this.totalSteps,
 						currentStep: this.currentStep,
@@ -365,7 +365,7 @@ var generativeText = {
 		return s;
 	},
 	generateNumericStyle: function(params, unit) {
-		if(typeof unit != 'undefined') params.unit = unit;
+		if(!!unit) params.unit = unit;
 		return this.generateNumericVariation(params);
 	},
 	generateNumericVariation: function( params ) {
@@ -380,8 +380,8 @@ var generativeText = {
 			case "generate":
 			default:
 				var range = params.max - params.min;
-				if( typeof params.steps != 'undefined' && params.steps == true) {
-					if(typeof params.stepFunction != undefined && params.stepFunction instanceof Function) {
+				if( !!params.steps && params.steps == true) {
+					if(!!params.stepFunction && params.stepFunction instanceof Function) {
 						f = {
 							totalSteps: this.totalSteps,
 							currentStep: this.currentStep,
@@ -401,14 +401,14 @@ var generativeText = {
 		}
 	},
 	generateListStyle: function(params, unit) {
-		if(typeof unit != 'undefined') params.unit = unit;
+		if(!!unit) params.unit = unit;
 		return this.generateListVariation(params);
 	},
 	generateListVariation: function(params) {
 		if(typeof params.unit === 'undefined') params.unit = ""; 
 
-		if( typeof params.steps != 'undefined' && params.steps == true) {
-			if(typeof params.stepFunction != undefined && params.stepFunction instanceof Function) {
+		if( !!params.steps && params.steps == true) {
+			if(!!params.stepFunction && params.stepFunction instanceof Function) {
 				f = {
 					totalSteps: this.totalSteps,
 					currentStep: this.currentStep,
