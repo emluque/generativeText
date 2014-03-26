@@ -101,7 +101,12 @@ var generativeText = {
 
 		this.applyToText(elem, params, opts);				
 	},
-	initializeApplyToText: function(text, params, opts) {
+	initializeApplyToText: function(text, opts) {
+
+		//style is default
+		if( typeof opts.textSpaces == 'undefined') opts.textSpaces = 'style';
+		//remove
+		if( typeof opts.removeSpaceDups == 'undefined') opts.removeSpaceDups = true;
 
 		if(!!opts.removeSpaceDups) {
 			text.replace(/\s+/g, ' ');
@@ -116,20 +121,23 @@ var generativeText = {
 			var countTextSpaces = text.split(" ").length - 1;
 			this.totalSteps = this.totalSteps - countTextSpaces;
 		}
+
+		if(!!opts.pObj) {
+			opts.pObj.totalSteps = this.totalSteps;
+			opts.pObj.memory = this.memory;
+		}
+
+		this.stepFuncObj.totalSteps = this.totalSteps;
+
 	},
 	applyToText: function( elem, params, opts ) {
-
-		//style is default
-		if( typeof opts.textSpaces == 'undefined') opts.textSpaces = 'style';
-		//remove
-		if( typeof opts.removeSpaceDups == 'undefined') opts.removeSpaceDups = true;
 
 		var text = elem.text();
 
 		//Empty element
 		elem.empty();
 
-		this.initializeApplyToText(text, params, opts);
+		this.initializeApplyToText(text, opts);
 
 		var length = text.length;
 
@@ -180,10 +188,26 @@ var generativeText = {
 				if(!!opts && !!opts.memory) this.memory.push( ne );
 				elem.append( ne );
 	},
-	applyToWords: function( elem, params, opts ) {
+	initializeApplyToWords: function(opts, length) {
 
 		//style is default
 		if( typeof opts.textSpaces == 'undefined') opts.textSpaces = 'remove';
+
+		if(opts.textSpaces == 'style' || opts.textSpaces == 'nostyle') {
+			this.totalSteps = (length*2) - 1;
+		} else {
+			this.totalSteps = length;
+		}
+
+		if(!!opts.pObj) {
+			opts.pObj.totalSteps = this.totalSteps;
+			opts.pObj.memory = this.memory;
+		}
+		
+		this.stepFuncObj.totalSteps = this.totalSteps;
+
+	},
+	applyToWords: function( elem, params, opts ) {
 
 		var text = elem.text();
 
@@ -197,11 +221,7 @@ var generativeText = {
 
 		var length = words.length;
 
-		if(opts.textSpaces == 'style' || opts.textSpaces == 'nostyle') {
-			this.totalSteps = (length*2) - 1;
-		} else {
-			this.totalSteps = length;
-		}
+		this.initializeApplyToWords(opts, length);
 
 		for(var i=0; i<length; i++) {
 
@@ -345,7 +365,6 @@ var generativeText = {
 			if(typeof c.steps != 'undefined' && c.steps == true) {
 				if(!!c.stepFunction && c.stepFunction instanceof Function) {
 
-					this.stepFuncObj.totalSteps = this.totalSteps;
 					this.stepFuncObj.currentStep = this.currentStep;
 					this.stepFuncObj.range = range;
 					this.stepFuncObj.min = parseInt(c.min, 16);
@@ -384,7 +403,6 @@ var generativeText = {
 				if( !!params.steps && params.steps == true) {
 					if(!!params.stepFunction && params.stepFunction instanceof Function) {
 
-						this.stepFuncObj.totalSteps = this.totalSteps;
 						this.stepFuncObj.currentStep = this.currentStep;
 						this.stepFuncObj.range = range;
 						this.stepFuncObj.min = params.min;
@@ -411,7 +429,6 @@ var generativeText = {
 		if( !!params.steps && params.steps == true) {
 			if(!!params.stepFunction && params.stepFunction instanceof Function) {
 
-				this.stepFuncObj.totalSteps = this.totalSteps;
 				this.stepFuncObj.currentStep = this.currentStep;
 				this.stepFuncObj.valuesLength = params.values.length;
 
@@ -441,9 +458,7 @@ var generativeText = {
 		}
 	},
 	applyPFunc: function(pObj, elem, funcName) {
-		pObj.totalSteps = this.totalSteps;
 		pObj.currentStep = this.currentStep;
-		pObj.memory = this.memory;
 		pObj.elem = elem;
 
 		pObj[ funcName ]();
