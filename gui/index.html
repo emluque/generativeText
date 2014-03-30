@@ -1,0 +1,483 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="../generativeText.js"></script>
+
+<!-- Bootstrap -->
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+<style type="text/css">
+#text-placeholder {
+	background-color: #FAFAFA;
+    border-color: #E5E5E5 #EEEEEE #EEEEEE;
+    border-style: solid;
+    border-width: 1px 0;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05) inset;
+    margin: 0 -15px 15px;
+    padding: 45px 15px 15px;
+    position: relative;
+}
+#text-placeholder:after {
+	content: "Results";
+	color: #BBBBBB;
+	font-size: 12px;
+	font-weight: 700;
+	left: 15px;
+	letter-spacing: 1px;
+	position: absolute;
+	text-transform: uppercase;
+	top: 15px;
+}
+
+#tabs {
+	padding-top: 1em;
+}
+
+#buttons {
+	padding-top: 3em;
+}
+</style>
+<script type="text/javascript">
+	var guiApply = function() {
+		var textContainer = jQuery("#text");
+		var text = jQuery("#input-text").val();
+		textContainer.text( text );
+
+		var containerCss = jQuery("#input-container-css").val();
+		jQuery("#text").css(  generateCssObj(containerCss)  );
+	}
+
+	var generateCssObj = function(css) {
+	    css = css.trim();
+	    var arr = css.split(";");
+	    var j = {};
+	    for(var i=0; i<arr.length-1; i++) {
+	        var d = arr[i].split(":");
+	        j[d[0].trim()] = d[1].trim();
+	    }
+	    return j;
+	    
+	}
+
+	var populateAddParams =  function() {
+		var select = jQuery("#select-param-name");
+		for(var k in generativeText.defs) {
+			select.append('<option value="' +  k + '">' + k + '</option>');
+		}
+	}
+
+	var addParamFields = function() {
+		var selectedParam = jQuery("#select-param-name").val();
+		var containerDiv = jQuery("#params-tab");
+		if( jQuery('#div-' + selectedParam).length == 0 ) {
+			switch(generativeText.defs[ selectedParam ][0]) {
+				case 'Numeric':	
+				case 'Rotate':
+					containerDiv.append( addNumericParam( selectedParam ) );
+				break;
+				case 'List':
+					containerDiv.append( addListParam( selectedParam ) );
+				break;
+				case 'Color':
+					containerDiv.append( addColorParam( selectedParam ) );
+				break;
+			}
+		}
+	}
+
+	var addNumericParam = function(paramName) {
+		var html = '<div class="form-group div-param" id="div-' + paramName + '">';
+		html += '<h2>' + paramName + '</h2><input type="hidden" id="' + paramName + '" class="the-params">';
+		html += '<div class="form-group">'; 
+		html += '	<label for="' + paramName + 'Type" class="col-sm-2 control-label">Type</label>'; 
+		html += '		<div class="col-sm-10">'; 
+		html += '			<select class="form-control" id="' + paramName + 'Type">'; 
+		html += '				<option value="list">List</option>'; 
+		html += '				<option value="generate">Generate</option>'; 
+		html += '			</select>'; 
+		html += '		</div>'; 
+		html += '</div>';;
+		html += '</div>';
+		var mainh = jQuery(html);
+		mainh.append( addListFields( paramName ) );
+
+		//Add select control
+		jQuery('#' + paramName + 'Type', mainh).click( function() {
+			switch(jQuery(this).val()) {
+				case 'list':
+					jQuery('#div-' + paramName + '-numeric-fields').remove();
+					if(jQuery('#div-' + paramName + '-list-fields').length == 0) mainh.append(addListFields( paramName ));
+				break;
+				case 'generate':
+					jQuery('#div-' + paramName + '-list-fields').remove();
+					if(jQuery('#div-' + paramName + '-numeric-fields').length == 0) mainh.append(addNumericGenerateFields( paramName ));
+				break;
+			}
+		})
+		return mainh;
+	}
+
+	var addListParam = function(paramName) {
+		var html = '<div class="form-group div-param" id="div-' + paramName + '">';
+		html += '<h3>' + paramName + '</h3><input type="hidden" id="' + paramName + '" class="the-params">';
+		html += '</div>';
+		var mainh = jQuery(html);
+		mainh.append( addListFields( paramName ) );
+		return mainh;
+	}
+
+	var addListFields = function(paramName) {
+		var html='<div id="div-' + paramName + '-list-fields">'; 
+		html+='	<div class="form-group">'; 
+		html+='		<label for="' + paramName + 'Values" class="col-sm-2 control-label">Values</label>'; 
+		html+='		<div class="col-sm-10">'; 
+		html+='			<textarea class="form-control" id="' + paramName + 'Values"></textarea>'; 
+		html+='		</div>'; 
+		html+='	</div>'; 
+		html+='</div>';
+		var lfh = jQuery(html);
+		lfh.append( addStepFields(paramName) );
+		lfh.append( addRemoveButton(paramName) );
+		return lfh;
+	}
+
+	var addStepFields = function( paramName ) {
+		html ='<div>';
+		html+='	<div class="form-group">'; 
+		html+='		<label for="' + paramName + 'Step" class="col-sm-2 control-label">Steps?</label>'; 
+		html+='		<div class="col-sm-10">'; 
+		html += '			<select class="form-control" id="' + paramName + 'Step">'; 
+		html += '				<option value="no">No</option>'; 
+		html += '				<option value="yes">Yes</option>'; 
+		html += '				<option value="function">Step Function</option>'; 
+		html += '			</select>'; 
+		html+='		</div>'; 
+		html+='	</div>';
+		html+='</div>'; 
+		var sh = jQuery(html);
+		jQuery('#' + paramName + 'Step', sh).change( function() {
+			switch(jQuery(this).val()) {
+				case 'no':
+				case 'yes':
+					jQuery('#div-' + paramName +  '-stepFunction').remove();
+				break;
+				case 'function':
+					if( jQuery('#div-' + paramName +  '-stepFunction').length == 0 ) sh.append( addStepFunctionField( paramName ) );
+				break;
+			}
+		});
+		return sh;
+	}
+
+	var addStepFunctionField = function( paramName ) {
+		html ='	<div class="form-group" id="div-' + paramName +  '-stepFunction">'; 
+		html+='		<label for="' + paramName + 'StepFunction" class="col-sm-2 control-label">Step Function</label>'; 
+		html+='		<div class="col-sm-10">'; 
+		html+='			<textarea class="form-control" id="' + paramName + 'StepFunction"></textarea>'; 
+		html+='		</div>'; 
+		html+='	</div>'; 
+		return jQuery(html);
+	}
+
+	var addRemoveButton = function( paramName ) {
+		var html = '<div class="form-group">';
+		html += '	<div class="col-sm-10">&nbsp;</div>';
+		html += '	<button type="button" class="btn btn-primary  col-sm-2" id="btn-remove-param-' + paramName + '">';
+		html += '			<span class="glyphicon glyphicon-minus"></span> Remove';
+		html += '	</button>';
+		html += '</div>';
+		var bh = jQuery(html);
+		jQuery('#btn-remove-param-' + paramName, bh).click( function() {
+			jQuery('#div-' + paramName).remove();
+		});
+		return bh;
+	}
+
+	var addNumericGenerateFields = function( paramName ) {
+		html  = '<div id="div-' + paramName + '-numeric-fields"><div class="form-group">';
+		html += '	<label for="" class="col-sm-2 control-label">Unit</label>';
+		html += '	<div class="col-sm-10">';
+		html += '		%';
+		html += '	</div>';
+		html += '</div>';
+		html += '<div class="form-group">';
+		html += '	<label class="col-sm-2 control-label">Max</label>';
+		html += '	<div class="col-sm-1">';
+		html += '		<input type="text" class="form-control"/>';
+		html += '	</div>';
+		html += '	<div class="col-sm-9">&nbsp;</div>';
+		html += '</div>';
+		html += '<div class="form-group">';
+		html += '	<label class="col-sm-2 control-label">Min</label>';
+		html += '	<div class="col-sm-1">';
+		html += '		<input type="text" class="form-control"/>';
+		html += '	</div>';
+		html += '	<div class="col-sm-9">&nbsp;</div>';
+		html += '</div></div>';
+
+		var ngh = jQuery(html);
+		ngh.append( addStepFields( paramName ) );
+		ngh.append( addRemoveButton( paramName ) );
+		return ngh;
+	}
+
+	var addColorParam = function(paramName) {
+		var html = '<div class="form-group div-param" id="div-' + paramName + '">';
+		html += '<h3>' + paramName + '</h3><input type="hidden" id="' + paramName + '" class="the-params">';
+		html += '<div class="form-group">'; 
+		html += '	<label for="' + paramName + 'Type" class="col-sm-2 control-label">Type</label>'; 
+		html += '		<div class="col-sm-10">'; 
+		html += '			<select class="form-control" id="' + paramName + 'Type">'; 
+		html += '				<option value="list">List</option>'; 
+		html += '				<option value="generate">Generate</option>'; 
+		html += '				<option value="random">Random</option>'; 
+		html += '			</select>'; 
+		html += '		</div>'; 
+		html += '</div>';;
+		html += '</div>';
+		var mainh = jQuery(html);
+		mainh.append( addListFields( paramName ) );
+
+		//Add select control
+		jQuery('#' + paramName + 'Type', mainh).click( function() {
+			switch(jQuery(this).val()) {
+				case 'list':
+					jQuery('#div-' + paramName + '-color-fields').remove();
+					if(jQuery('#div-' + paramName + '-list-fields').length == 0) mainh.append(addListFields( paramName ));
+				break;
+				case 'generate':
+					jQuery('#div-' + paramName + '-list-fields').remove();
+					if(jQuery('#div-' + paramName + '-color-fields').length == 0) mainh.append(addColorGenerateFields( paramName ));
+				break;
+				case 'random':
+					jQuery('#div-' + paramName + '-list-fields').remove();
+					jQuery('#div-' + paramName + '-color-fields').remove();
+				break;
+			}
+		});
+		return mainh;
+	}
+
+	var addColorGenerateFields = function( paramName ) {
+		html  = '<div id="div-' + paramName + '-color-fields">';
+		html += '</div>';
+
+		var ngh = jQuery(html);
+		ngh.append( addColorField(paramName, "r"));
+		ngh.append( addColorField(paramName, "g"));
+		ngh.append( addColorField(paramName, "b"));
+		ngh.append( addRemoveButton( paramName ) );
+		return ngh;
+	}
+
+	var addColorField = function( paramName, c) {
+		html = '<div>';
+		html += "<h3>" + c + "</h3>";
+		html += '<div class="form-group">';
+		html += '	<label class="col-sm-2 control-label" for="' + paramName + '-' + c + '-Type">Type</label>';
+		html += '	<div class="col-sm-10">';
+		html += '			<select class="form-control" id="' + paramName + '-' + c + '-Type">'; 
+		html += '				<option value="range">Range</option>'; 
+		html += '				<option value="fixed">Fixed</option>'; 
+		html += '			</select>'; 
+		html += '	</div>';
+		html += '</div>';
+		html += '</div>';
+		var ch = jQuery( html);
+		ch.append( addColorRangeFields(paramName, c));
+		jQuery('#' + paramName + '-' + c + '-Type', ch).change( function() {
+			switch(jQuery(this).val()) {
+				case 'range':
+					jQuery('#div-' + paramName + '-' + c + '-fixed-fields').remove();
+					if(jQuery('#div-' + paramName + '-' + c + '-range-fields').length == 0) ch.append(addColorRangeFields( paramName, c ));
+				break;
+				case 'fixed':
+					jQuery('#div-' + paramName + '-' + c + '-range-fields').remove();
+					if(jQuery('#div-' + paramName + '-' + c + '-fixed-fields').length == 0) ch.append(addColorFixedFields( paramName, c ));
+				break;
+			}
+		});
+		return ch;
+	}
+
+	var addColorRangeFields = function( paramName, c) {
+		html = '<div id="div-' + paramName + '-' + c + '-range-fields">';
+		html += '<div class="form-group">';
+		html += '	<label class="col-sm-2 control-label"> Max</label>';
+		html += '	<div class="col-sm-1">';
+		html += '		<input type="text" class="form-control"/>';
+		html += '	</div>';
+		html += '	<div class="col-sm-9">&nbsp;</div>';
+		html += '</div>';
+		html += '<div class="form-group">';
+		html += '	<label class="col-sm-2 control-label"> Min</label>';
+		html += '	<div class="col-sm-1">';
+		html += '		<input type="text" class="form-control"/>';
+		html += '	</div>';
+		html += '	<div class="col-sm-9">&nbsp;</div>';
+		html += '</div>';
+		html += '</div>';
+		var crh = jQuery( html );
+		crh.append( addStepFields( paramName + '-' + c ) );
+		return crh;
+	}
+
+	var addColorFixedFields = function( paramName, c) {
+		html = '<div id="div-' + paramName + '-' + c + '-fixed-fields">';
+		html += '<div class="form-group">';
+		html += '	<label class="col-sm-2 control-label"> Value</label>';
+		html += '	<div class="col-sm-1">';
+		html += '		<input type="text" class="form-control"/>';
+		html += '	</div>';
+		html += '	<div class="col-sm-9">&nbsp;</div>';
+		html += '</div>';
+		html += '</div>';
+		var cfh = jQuery( html );
+		return cfh;
+	}
+
+	jQuery(document).ready(
+		function() {
+			jQuery("#btn-apply").click( guiApply );
+			populateAddParams();
+			jQuery("#btn-add-param").click( addParamFields );
+		}
+	);
+</script>
+
+</head>
+<body>
+<div class="container">
+	<h1>generativeText GUI</h1>
+	<div class="bs-example">
+		<div id="text-placeholder">
+			<div id="text">
+				Lorem Ipsum donor.
+			</div>
+		</div>
+	</div>
+	<div class="form-container">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#text-tab" data-toggle="tab">Text</a></li>
+			<li><a href="#params-tab" data-toggle="tab">Params</a></li>
+			<li><a href="#options-tab" data-toggle="tab">Options</a></li>
+			<li><a href="#code-tab" data-toggle="tab">Code</a></li>
+		</ul>
+
+<form class="form-horizontal" role="form">
+	<div class="form-group">
+
+		<div class="tab-content" id="tabs">
+			<div class="tab-pane active" id="text-tab">
+				<div class="form-group">
+					<label for="input-text" class="col-sm-1 control-label">Text</label>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="input-text"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="input-container-css" class="col-sm-1 control-label">Predefined Div Css</br>(Container element)</label>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="input-container-css"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="input-span-css" class="col-sm-1 control-label">Predefined Span Css</label>
+					<div class="col-sm-11">
+						<textarea class="form-control" id="input-span-css"></textarea>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane" id="params-tab">
+
+				<div class="form-group">
+					<label for="select-param-name" class="control-label col-sm-2">Select parameter type</label>
+					<div class="col-sm-8">
+						<select class="form-control" id="select-param-name"></select>
+					</div>
+					<button type="button" class="btn btn-primary  col-sm-2" id="btn-add-param">
+						<span class="glyphicon glyphicon-plus"></span> Add
+					</button>
+				</div>
+
+
+<!--				<div class="form-group div-param">
+					<h3>font-size</h3>
+					<input type="hidden" id="">
+
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Type</label>
+						<div class="col-sm-10">
+							<select class="form-control">
+								<option value="list">List</option>
+								<option value="generate">Generate</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Unit</label>
+						<div class="col-sm-10">
+							%
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Max</label>
+						<div class="col-sm-1">
+							<input type="text" class="form-control"/>
+						</div>
+						<div class="col-sm-9">&nbsp;</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Min</label>
+						<div class="col-sm-1">
+							<input type="text" class="form-control"/>
+						</div>
+						<div class="col-sm-9">&nbsp;</div>
+					</div>
+
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Step</label>
+						<div class="col-sm-10">
+						    <input type="checkbox" value="">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="" class="col-sm-2 control-label">Step Function</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" disabled></textarea>
+						</div>
+					</div>
+
+				</div>
+-->
+	 		</div>
+
+			<div class="tab-pane" id="options-tab">Options tab</div>
+			<div class="tab-pane" id="code-tab">Code tab</div>
+		</div>
+
+	</div>
+</form>
+
+		<div class="buttons" id="buttons">
+			<button type="button" class="btn btn-default" id="btn-apply">
+				Apply <span class="glyphicon glyphicon-ok"></span>
+			</button>
+		</div>
+	</div>
+	<hr/>
+	<footer>
+		<p>&copy; Company 2014</p>
+	</footer>
+</div>
+</body>
+</html>
+
