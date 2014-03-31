@@ -199,9 +199,30 @@
 
 	var addNumericGenerateFields = function( paramName ) {
 		var html  = '<div id="div-' + paramName + '-numeric-fields"><div class="form-group">';
-		html += '	<label for="" class="col-sm-2 control-label">Unit</label>';
+		html += '	<label for="' + paramName +'-unit" class="col-sm-2 control-label">Unit</label>';
 		html += '	<div class="col-sm-10">';
-		html += '		%';
+
+		//Decide Type of unit based on paramName
+		switch(paramName) {
+			case 'rotate':
+				html += '		degrees';
+			break;
+			case 'borderRadius':
+			case 'borderTopLeftRadius':
+			case 'borderTopRightRadius':
+			case 'borderBottomLeftRadius':
+			case 'borderBottomRightRadius':
+				html += '		%';
+			break;
+			case 'opacity':
+				html += '		(0.00 to 1.00)';
+			break;
+			default:
+			html += '<select class="form-control" id="' + paramName +'-unit">';
+			html += '	<option value="em">em</option>';
+			html += '	<option value="px">px</option>';
+			html += '</select>';
+		}
 		html += '	</div>';
 		html += '</div>';
 		html += '<div class="form-group">';
@@ -481,7 +502,10 @@
 				</div>
 			</div>
 
-			<div class="tab-pane" id="code-tab">Code tab</div>
+			<div class="tab-pane" id="code-tab">
+				<div id="code">
+				</div>
+			</div>
 		</div>
 
 	</div>
