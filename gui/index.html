@@ -146,7 +146,7 @@
 	}
 
 	var addStepFields = function( paramName ) {
-		html ='<div>';
+		var html ='<div>';
 		html+='	<div class="form-group">'; 
 		html+='		<label for="' + paramName + 'Step" class="col-sm-2 control-label">Steps?</label>'; 
 		html+='		<div class="col-sm-10">'; 
@@ -174,7 +174,7 @@
 	}
 
 	var addStepFunctionField = function( paramName ) {
-		html ='	<div class="form-group" id="div-' + paramName +  '-stepFunction">'; 
+		var html ='	<div class="form-group" id="div-' + paramName +  '-stepFunction">'; 
 		html+='		<label for="' + paramName + 'StepFunction" class="col-sm-2 control-label">Step Function</label>'; 
 		html+='		<div class="col-sm-10">'; 
 		html+='			<textarea class="form-control" id="' + paramName + 'StepFunction"></textarea>'; 
@@ -198,7 +198,7 @@
 	}
 
 	var addNumericGenerateFields = function( paramName ) {
-		html  = '<div id="div-' + paramName + '-numeric-fields"><div class="form-group">';
+		var html  = '<div id="div-' + paramName + '-numeric-fields"><div class="form-group">';
 		html += '	<label for="" class="col-sm-2 control-label">Unit</label>';
 		html += '	<div class="col-sm-10">';
 		html += '		%';
@@ -263,7 +263,7 @@
 	}
 
 	var addColorGenerateFields = function( paramName ) {
-		html  = '<div id="div-' + paramName + '-color-fields">';
+		var html  = '<div id="div-' + paramName + '-color-fields">';
 		html += '</div>';
 
 		var ngh = jQuery(html);
@@ -275,7 +275,7 @@
 	}
 
 	var addColorField = function( paramName, c) {
-		html = '<div>';
+		var html = '<div>';
 		html += "<h3>" + c + "</h3>";
 		html += '<div class="form-group">';
 		html += '	<label class="col-sm-2 control-label" for="' + paramName + '-' + c + '-Type">Type</label>';
@@ -305,18 +305,18 @@
 	}
 
 	var addColorRangeFields = function( paramName, c) {
-		html = '<div id="div-' + paramName + '-' + c + '-range-fields">';
+		var html = '<div id="div-' + paramName + '-' + c + '-range-fields">';
 		html += '<div class="form-group">';
-		html += '	<label class="col-sm-2 control-label"> Max</label>';
+		html += '	<label class="col-sm-2 control-label" for="' + paramName + '-' + c + '-max"> Max</label>';
 		html += '	<div class="col-sm-1">';
-		html += '		<input type="text" class="form-control"/>';
+		html += '		<input type="text" class="form-control" id="' + paramName + '-' + c + '-max"/>';
 		html += '	</div>';
 		html += '	<div class="col-sm-9">&nbsp;</div>';
 		html += '</div>';
 		html += '<div class="form-group">';
-		html += '	<label class="col-sm-2 control-label"> Min</label>';
+		html += '	<label class="col-sm-2 control-label" for="' + paramName + '-' + c + '-min"> Min</label>';
 		html += '	<div class="col-sm-1">';
-		html += '		<input type="text" class="form-control"/>';
+		html += '		<input type="text" class="form-control" id="' + paramName + '-' + c + '-min"/>';
 		html += '	</div>';
 		html += '	<div class="col-sm-9">&nbsp;</div>';
 		html += '</div>';
@@ -327,11 +327,11 @@
 	}
 
 	var addColorFixedFields = function( paramName, c) {
-		html = '<div id="div-' + paramName + '-' + c + '-fixed-fields">';
+		var html = '<div id="div-' + paramName + '-' + c + '-fixed-fields">';
 		html += '<div class="form-group">';
-		html += '	<label class="col-sm-2 control-label"> Value</label>';
+		html += '	<label class="col-sm-2 control-label" for="' + paramName + '-' + c + '-fixedValue"> Value</label>';
 		html += '	<div class="col-sm-1">';
-		html += '		<input type="text" class="form-control"/>';
+		html += '		<input type="text" class="form-control" id="' + paramName + '-' + c + '-fixedValue"/>';
 		html += '	</div>';
 		html += '	<div class="col-sm-9">&nbsp;</div>';
 		html += '</div>';
@@ -340,11 +340,72 @@
 		return cfh;
 	}
 
+	var addOptsTextFields = function() {
+		var html = '<div id="div-opts-text">';
+		html += '<div class="form-group">';
+		html += '	<label class="col-sm-2 control-label" for="opts-textspaces">Text Spaces</label>';
+		html += '	<div class="col-sm-10">';
+		html += '			<select class="form-control" id="opts-textspaces">'; 
+		html += '				<option value="style">style</option>'; 
+		html += '				<option value="nostyle">nostyle</option>'; 
+		html += '				<option value="nostyleorcount">nostyleorcount</option>'; 
+		html += '				<option value="remove">remove</option>'; 
+		html += '			</select>'; 
+		html += '	</div>';
+		html += '<div class="form-group">';
+		html += '	<div class="col-sm-10 col-sm-offset-2">';
+		html += '		<div class="checkbox" style="margin-left: 1em;">';
+		html += '			<label>'
+		html += '				<input type="checkbox"> Remove Space Duplicates';
+		html += '			</label>';
+		html += '		</div>'; 
+		html += '	</div>';
+		html += '</div>';
+
+		var oth = jQuery(html);
+		jQuery('#options-tab').append( oth );
+	}
+
+	var addOptsWordsFields = function() {
+		var html = '<div id="div-opts-words">';
+		html += '<div class="form-group">';
+		html += '	<label class="col-sm-2 control-label" for="opts-textspaces">Text Spaces</label>';
+		html += '	<div class="col-sm-10">';
+		html += '			<select class="form-control" id="opts-textspaces">'; 
+		html += '				<option value="style">style</option>'; 
+		html += '				<option value="nostyle">nostyle</option>'; 
+		html += '				<option value="nostyleorcount">nostyleorcount</option>';
+		html += '				<option value="remove">remove</option>'; 
+		html += '				<option value="even">even</option>'; 
+		html += '				<option value="odd">odd</option>'; 
+		html += '			</select>'; 
+		html += '	</div>';
+		html += '</div>';
+
+		var owh = jQuery(html);
+		jQuery('#options-tab').append( owh );
+	}
+
+	var applyToChange = function() {
+		switch( jQuery(this).val() ) {
+			case 'text':
+				jQuery('#div-opts-words').remove();
+				if(jQuery('#div-opts-text').length == 0) addOptsTextFields();
+			break;
+			case 'words':
+				jQuery('#div-opts-text').remove();
+				if(jQuery('#div-opts-words').length == 0) addOptsWordsFields();
+			break;
+		}
+	}
+
 	jQuery(document).ready(
 		function() {
 			jQuery("#btn-apply").click( guiApply );
 			populateAddParams();
 			jQuery("#btn-add-param").click( addParamFields );
+			addOptsTextFields();
+			jQuery('#opts-applyTo').change( applyToChange );
 		}
 	);
 </script>
@@ -404,63 +465,22 @@
 					</button>
 				</div>
 
-
-<!--				<div class="form-group div-param">
-					<h3>font-size</h3>
-					<input type="hidden" id="">
-
-					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Type</label>
-						<div class="col-sm-10">
-							<select class="form-control">
-								<option value="list">List</option>
-								<option value="generate">Generate</option>
-							</select>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Unit</label>
-						<div class="col-sm-10">
-							%
-						</div>
-					</div>
-
-					<div class="form-group">
-						<label class="col-sm-2 control-label">Max</label>
-						<div class="col-sm-1">
-							<input type="text" class="form-control"/>
-						</div>
-						<div class="col-sm-9">&nbsp;</div>
-					</div>
-
-					<div class="form-group">
-						<label class="col-sm-2 control-label">Min</label>
-						<div class="col-sm-1">
-							<input type="text" class="form-control"/>
-						</div>
-						<div class="col-sm-9">&nbsp;</div>
-					</div>
-
-					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Step</label>
-						<div class="col-sm-10">
-						    <input type="checkbox" value="">
-						</div>
-					</div>
-
-					<div class="form-group">
-						<label for="" class="col-sm-2 control-label">Step Function</label>
-						<div class="col-sm-10">
-							<textarea class="form-control" disabled></textarea>
-						</div>
-					</div>
-
-				</div>
--->
 	 		</div>
 
-			<div class="tab-pane" id="options-tab">Options tab</div>
+			<div class="tab-pane" id="options-tab">
+
+				<div class="form-group">
+					<label for="opts-applyTo" class="control-label col-sm-2">Apply to</label>
+					<div class="col-sm-10">
+						<select class="form-control" id="opts-applyTo">
+							<option value="text">Text</text>
+							<option value="words">Words</text>
+						</select>
+
+					</div>
+				</div>
+			</div>
+
 			<div class="tab-pane" id="code-tab">Code tab</div>
 		</div>
 
