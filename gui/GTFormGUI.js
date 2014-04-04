@@ -314,7 +314,7 @@ var GTFormGUI = {
 		html += '	<div class="col-sm-10 col-sm-offset-2">';
 		html += '		<div class="checkbox" style="margin-left: 1em;">';
 		html += '			<label>'
-		html += '				<input type="checkbox"> Remove Space Duplicates';
+		html += '				<input type="checkbox" id="opts-removeSpaceDups"> Remove Space Duplicates';
 		html += '			</label>';
 		html += '		</div>'; 
 		html += '	</div>';
