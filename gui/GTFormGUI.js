@@ -85,9 +85,9 @@ var GTFormGUI = {
 	addStepFields: function( paramName ) {
 		var html ='<div>';
 		html+='	<div class="form-group">'; 
-		html+='		<label for="' + paramName + 'Step" class="col-sm-2 control-label">Steps?</label>'; 
+		html+='		<label for="' + paramName + 'Steps" class="col-sm-2 control-label">Steps?</label>'; 
 		html+='		<div class="col-sm-10">'; 
-		html += '			<select class="form-control" id="' + paramName + 'Step">'; 
+		html += '			<select class="form-control" id="' + paramName + 'Steps">'; 
 		html += '				<option value="no">No</option>'; 
 		html += '				<option value="yes">Yes</option>'; 
 		html += '				<option value="function">Step Function</option>'; 
@@ -96,7 +96,7 @@ var GTFormGUI = {
 		html+='	</div>';
 		html+='</div>'; 
 		var sh = jQuery(html);
-		jQuery('#' + paramName + 'Step', sh).change( function() {
+		jQuery('#' + paramName + 'Steps', sh).change( function() {
 			switch(jQuery(this).val()) {
 				case 'no':
 				case 'yes':
@@ -155,7 +155,7 @@ var GTFormGUI = {
 				html += '		(0.00 to 1.00)';
 			break;
 			default:
-			html += '<select class="form-control" id="' + paramName +'-unit">';
+			html += '<select class="form-control" id="' + paramName +'Unit">';
 			html += '	<option value="em">em</option>';
 			html += '	<option value="px">px</option>';
 			html += '</select>';
@@ -163,16 +163,16 @@ var GTFormGUI = {
 		html += '	</div>';
 		html += '</div>';
 		html += '<div class="form-group">';
-		html += '	<label class="col-sm-2 control-label">Max</label>';
+		html += '	<label class="col-sm-2 control-label" for="' + paramName +'Min">Min</label>';
 		html += '	<div class="col-sm-1">';
-		html += '		<input type="text" class="form-control"/>';
+		html += '		<input type="text" class="form-control" id="' + paramName +'Min"/>';
 		html += '	</div>';
 		html += '	<div class="col-sm-9">&nbsp;</div>';
 		html += '</div>';
 		html += '<div class="form-group">';
-		html += '	<label class="col-sm-2 control-label">Min</label>';
+		html += '	<label class="col-sm-2 control-label" for="' + paramName +'Max">Max</label>';
 		html += '	<div class="col-sm-1">';
-		html += '		<input type="text" class="form-control"/>';
+		html += '		<input type="text" class="form-control" id="' + paramName +'Max"/>';
 		html += '	</div>';
 		html += '	<div class="col-sm-9">&nbsp;</div>';
 		html += '</div></div>';
@@ -265,16 +265,16 @@ var GTFormGUI = {
 	addColorRangeFields: function( paramName, c) {
 		var html = '<div id="div-' + paramName + '-' + c + '-range-fields">';
 		html += '<div class="form-group">';
-		html += '	<label class="col-sm-2 control-label" for="' + paramName + '-' + c + '-max"> Max</label>';
+		html += '	<label class="col-sm-2 control-label" for="' + paramName + '-' + c + '-min"> Min</label>';
 		html += '	<div class="col-sm-1">';
-		html += '		<input type="text" class="form-control" id="' + paramName + '-' + c + '-max"/>';
+		html += '		<input type="text" class="form-control" id="' + paramName + '-' + c + '-min"/>';
 		html += '	</div>';
 		html += '	<div class="col-sm-9">&nbsp;</div>';
 		html += '</div>';
 		html += '<div class="form-group">';
-		html += '	<label class="col-sm-2 control-label" for="' + paramName + '-' + c + '-min"> Min</label>';
+		html += '	<label class="col-sm-2 control-label" for="' + paramName + '-' + c + '-max"> Max</label>';
 		html += '	<div class="col-sm-1">';
-		html += '		<input type="text" class="form-control" id="' + paramName + '-' + c + '-min"/>';
+		html += '		<input type="text" class="form-control" id="' + paramName + '-' + c + '-max"/>';
 		html += '	</div>';
 		html += '	<div class="col-sm-9">&nbsp;</div>';
 		html += '</div>';

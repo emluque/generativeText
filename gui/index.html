@@ -54,11 +54,20 @@
 		jQuery("#text").css(  generateCssObj(containerCss)  );
 
 		//Do Logic
-
+		//process params
+		var params = processParams();
+		//Transform params into text
+		var paramsStr = stringify(params, 0);
+		//process opts
+		var opts = processOpts();
+		//Transform opts into text
+		var optsStr = stringify(opts, 0);
 		//Change code panel
-
+		var codeStr = "var params = " + paramsStr + ";\n";
+		codeStr += "var opts = " + optsStr + ";\n";
+		jQuery("#code").text( codeStr );
 		//Apply function to text
-
+		generativeText.applyToElem(jQuery("#text"), params, opts);
 		//Apply CSS to spans
 	}
 
@@ -72,6 +81,177 @@
 	    }
 	    return j;
 	    
+	}
+
+	var stringify = function( o, tabs ) {
+		var str = "{ \n";
+	    var stra = [];
+
+	    var addTabs = function(t) {
+	    	var tbs = "";
+	    	t = t+1;
+	    	for(var j=0; j<t; j++) {
+	    		tbs += "\t";
+	    	}
+	    	return tbs;
+	    };
+
+		for(var i in o) {
+	        var type = typeof o[i];
+	        console.log(i);
+			switch(type) {
+				case 'string': 
+					stra.push(addTabs(tabs) + i + ":'" + o[i] + "'"); 
+				break;
+				case 'boolean': 
+				case 'number': 
+				case 'function': 
+					stra.push(addTabs(tabs) + i + ":" + o[i]); 
+				break;
+				case 'object': 
+					if(Array.isArray(o[i])) {
+	                    stra.push(addTabs(tabs) + i + ": ['" + o[i].join("','") + "']"); 
+	                } else {
+	                    stra.push(addTabs(tabs) + i + ": " + stringify(o[i], tabs+1));
+	                }      
+	            break;
+			}
+	    }
+	    str += stra.join(",\n") + "\n"  + addTabs(tabs-1) + " }";
+	    return str;
+	}
+
+	var processParams = function() {
+		var params = {};
+
+		var p = jQuery('.the-params');
+
+		for(var i=0; i<p.length; i++) {
+			var paramName = p[i].id;
+			params[ paramName ] = {};
+			console.log(paramName);
+
+			switch( generativeText.defs[ paramName ][0]) {
+				case 'List':
+					processParamList(paramName, params);
+				break;
+				case 'Numeric':
+				case 'Rotate':
+					processParamNumeric(paramName, params);
+				break;
+				case 'Color':
+					processParamColor(paramName, params);
+				break;
+			}
+		}
+		return params;
+	}
+
+	var processParamList = function( paramName, params ) {
+		params[ paramName ]['values'] = jQuery('#' + paramName + 'Values').val().split(',');
+		processSteps(paramName, params);
+	}
+
+	var processSteps = function( paramName, params ) {
+		var steps = jQuery('#' + paramName + 'Steps').val();
+		switch(steps) {
+			case 'no':
+			break;
+			case 'yes':
+				params[ paramName ]['steps'] = true;
+			break;
+			case 'function':
+				params[ paramName ]['steps'] = true;
+				try {
+					eval('var stepFunction = ' + jQuery('#' + paramName + 'StepFunction').val() + ';');
+					params[ paramName ]['stepFunction'] = stepFunction;
+				} catch(err) {
+
+				}		
+			break;			
+		}
+	}
+
+	var processParamNumeric = function( paramName, params) {
+		params[ paramName ]['type'] =  jQuery('#' + paramName + 'Type').val();
+		switch( params[ paramName ]['type'] ) {
+			case 'list':
+				processParamList( paramName, params );
+			break;
+			case 'generate':
+				processParamNumericGenerate( paramName, params);
+			break;
+		}
+	}
+
+	var processParamNumericGenerate = function( paramName, params) {
+		if(jQuery('#' + paramName + 'Unit').length != 0) params[ paramName ]['unit'] = jQuery('#' + paramName + 'Unit').val();
+		params[ paramName ]['min'] = parseInt( jQuery('#' + paramName + 'Min').val() );
+		params[ paramName ]['max'] = parseInt( jQuery('#' + paramName + 'Max').val() );
+		processSteps(paramName, params);
+	}
+
+	var processParamColor = function( paramName, params) {
+		params[ paramName ]['type'] =  jQuery('#' + paramName + 'Type').val();
+		switch( params[ paramName ]['type'] ) {
+			case 'list':
+				processParamList( paramName, params );
+			break;
+			case 'generate':
+				processParamColorGenerate( paramName, params);
+			break;
+			case 'random':
+				return;
+			break;
+		}		
+	}
+
+	var processParamColorGenerate = function( paramName, params) {
+		processParamColorGenerateColor( paramName, params, 'r');
+		processParamColorGenerateColor( paramName, params, 'g');
+		processParamColorGenerateColor( paramName, params, 'b');
+	}
+
+	var processParamColorGenerateColor = function(paramName, params, c) {
+		params[ paramName ][c] = {};
+		switch( jQuery('#' + paramName + '-' + c + '-Type').val() ) {
+			case 'fixed':
+				params[ paramName ][c]['fixed'] = jQuery('#' + paramName + '-' + c + '-fixedValue').val();
+			break;
+			case 'range':
+				params[ paramName ][c]['min'] = jQuery('#' + paramName + '-' + c + '-min').val();
+				params[ paramName ][c]['max'] = jQuery('#' + paramName + '-' + c + '-max').val();
+				var steps = jQuery('#' + paramName + '-' + c + 'Steps').val();
+				switch(steps) {
+					case 'no':
+					break;
+					case 'yes':
+					params[ paramName ][c]['steps'] = true;
+					break;
+					case 'function':
+					params[ paramName ][c]['steps'] = true;
+					try {
+						eval('var stepFunction = ' + jQuery('#' + paramName + '-' + c + 'StepFunction').val() + ';');
+						params[ paramName ][c]['stepFunction'] = stepFunction;
+					} catch(err) {
+
+					}					
+					break;
+				}
+			break;
+		}
+
+	}
+
+	var processOpts = function() {
+		var opts = {};
+
+		opts['applyTo'] = jQuery("#opts-applyTo").val();
+		opts['textSpaces'] = jQuery("#opts-textspaces").val();
+
+		if(opts['applyTo'] == 'text') opts['removeSpaceDups'] = !!jQuery("#opts-removeSpaceDups").val();
+
+		return opts;
 	}
 
 	jQuery(document).ready(
@@ -157,8 +337,8 @@
 			</div>
 
 			<div class="tab-pane" id="code-tab">
-				<div id="code">
-				</div>
+				<pre><code id="code">
+				</code></pre>
 			</div>
 		</div>
 
