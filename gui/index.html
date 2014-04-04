@@ -69,6 +69,8 @@
 		//Apply function to text
 		generativeText.applyToElem(jQuery("#text"), params, opts);
 		//Apply CSS to spans
+		var spanCss = jQuery("#input-span-css").val();
+		if(!!spanCss && spanCss != "") jQuery("#text span").css( generateCssObj(spanCss )  );
 	}
 
 	var generateCssObj = function(css) {
