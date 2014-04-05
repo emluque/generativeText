@@ -89,6 +89,20 @@ jQuery( document ).ready(function( $ ) {
 		generativeText.applyToText( jQuery("#a5-example"), params, opts);
 	});
 
+	jQuery("#a6 div.actions a").click( function() {
+		var params = {
+			backgroundColor: {
+				steps: true,
+				type: 'list',
+				values: ['999999', 'FF6600']
+			}
+		};
+		var opts = {
+			textSpaces: 'style'
+		}
+		generativeText.applyToText( jQuery("#a6-example"), params, opts);
+	});
+
 });
 
 
@@ -162,6 +176,21 @@ jQuery( document ).ready(function( $ ) {
 
 		<div class="example-placeholder">
 			<div id="a5-example" class="example-placeholder-text">In   computing, plain text is the contents   of an ordinary sequential file readable as textual material without        much 	processing.</div>
+			<div class="actions">
+				<a href="javascript:;">Apply</a>
+			</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+		</code></pre>
+</div>
+
+<div id="a6" class="example">
+		<h3>Remove space dups</h3>
+
+		<div class="example-placeholder">
+			<div id="a6-example" class="example-placeholder-text">In   computing, plain text is the contents   of an ordinary sequential file readable as textual material without        much 	processing.</div>
 			<div class="actions">
 				<a href="javascript:;">Apply</a>
 			</div>

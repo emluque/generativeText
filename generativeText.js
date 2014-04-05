@@ -105,12 +105,6 @@ var generativeText = {
 
 		//style is default
 		if( typeof opts.textSpaces == 'undefined') opts.textSpaces = 'style';
-		//remove
-		if( typeof opts.removeSpaceDups == 'undefined') opts.removeSpaceDups = true;
-
-		if(!!opts.removeSpaceDups) {
-			text.replace(/\s+/g, ' ');
-		}
 
 		var length = text.length;
 
@@ -136,6 +130,13 @@ var generativeText = {
 
 		//Empty element
 		elem.empty();
+
+		//remove
+		if( typeof opts.removeSpaceDups == 'undefined') opts.removeSpaceDups = true;
+
+		if(opts.removeSpaceDups) {
+			text = text.replace(/\s+/g, ' ');
+		}
 
 		this.initializeApplyToText(text, opts);
 
