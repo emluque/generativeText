@@ -63,6 +63,14 @@
 		var opts = GTProcessGUI.processOpts();
 		//Transform opts into text
 		var optsStr = stringify(opts, 0);
+		//Validate
+		if(GTProcessGUI.errors.length != 0) {
+			jQuery("#errors-placeholder").text("");
+			for(var i=0; i<GTProcessGUI.errors.length; i++) {
+				jQuery("#errors-placeholder").append("<p>" + GTProcessGUI.errors[i] + "</p>");
+			}
+			jQuery("#error-message").modal();
+		}
 		//Change code panel
 		var codeStr = "var params = " + paramsStr + ";\n";
 		codeStr += "var opts = " + optsStr + ";\n";
@@ -101,7 +109,6 @@
 
 		for(var i in o) {
 	        var type = typeof o[i];
-	        console.log(i);
 			switch(type) {
 				case 'string': 
 					stra.push(addTabs(tabs) + i + ":'" + o[i] + "'"); 
@@ -137,6 +144,23 @@
 
 </head>
 <body>
+
+<div class="modal fade" id="error-message">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">The Following Errors Ocurred:</h4>
+      </div>
+      <div class="modal-body" id="errors-placeholder">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container">
 	<h1>generativeText GUI</h1>
 	<div class="bs-example">
@@ -225,6 +249,23 @@
 	<footer>
 		<p>&copy; Company 2014</p>
 	</footer>
+
+<div class="modal fade" id="error-message">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">The Following Errors Ocurred:</h4>
+      </div>
+      <div class="modal-body" id="errors-placeholder">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div>
 </body>
 </html>

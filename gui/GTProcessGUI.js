@@ -1,6 +1,9 @@
 var GTProcessGUI = {
+	errors: [],
 
 	processParams: function() {
+		GTProcessGUI.errors = [];
+
 		var params = {};
 
 		var p = jQuery('.the-params');
@@ -28,6 +31,7 @@ var GTProcessGUI = {
 
 	processParamList: function( paramName, params ) {
 		params[ paramName ]['values'] = jQuery('#' + paramName + 'Values').val().split(',');
+		if( params[ paramName ]['values'].length < 2 ) GTProcessGUI.errors.push("<strong>" + paramName + " :: values </strong> Must contain more than one element (separated by comma).");
 		GTProcessGUI.processSteps(paramName, params);
 	},
 
@@ -45,7 +49,7 @@ var GTProcessGUI = {
 					eval('var stepFunction = ' + jQuery('#' + paramName + 'StepFunction').val() + ';');
 					params[ paramName ]['stepFunction'] = stepFunction;
 				} catch(err) {
-
+					GTProcessGUI.errors.push("<strong>" + paramName + ' :: stepFunction </strong> Must contain a valid function ("function() {}"), also check for syntax erros on your console.');
 				}		
 			break;			
 		}
@@ -65,8 +69,10 @@ var GTProcessGUI = {
 
 	processParamNumericGenerate: function( paramName, params) {
 		if(jQuery('#' + paramName + 'Unit').length != 0) params[ paramName ]['unit'] = jQuery('#' + paramName + 'Unit').val();
-		params[ paramName ]['min'] = parseInt( jQuery('#' + paramName + 'Min').val() );
-		params[ paramName ]['max'] = parseInt( jQuery('#' + paramName + 'Max').val() );
+		params[ paramName ]['min'] = parseFloat( jQuery('#' + paramName + 'Min').val() );
+		params[ paramName ]['max'] = parseFloat( jQuery('#' + paramName + 'Max').val() );
+		if( isNaN(params[ paramName ]['min']) ) GTProcessGUI.errors.push("<strong>" + paramName + ' :: min </strong> Must contain a valid number.');
+		if( isNaN(params[ paramName ]['max']) ) GTProcessGUI.errors.push("<strong>" + paramName + ' :: max </strong> Must contain a valid number.');
 		GTProcessGUI.processSteps(paramName, params);
 	},
 
@@ -92,14 +98,18 @@ var GTProcessGUI = {
 	},
 
 	processParamColorGenerateColor: function(paramName, params, c) {
+		var regExp = /^[0-9A-F]{2}$/;
 		params[ paramName ][c] = {};
 		switch( jQuery('#' + paramName + '-' + c + '-Type').val() ) {
 			case 'fixed':
 				params[ paramName ][c]['fixed'] = jQuery('#' + paramName + '-' + c + '-fixedValue').val();
+				if( !regExp.test(params[ paramName ][c]['fixed'].length) ) GTProcessGUI.errors.push("<strong>" + paramName + ' :: ' + c + ' :: value </strong> Must contain a single color value in hexadecimal (00 to AA).');
 			break;
 			case 'range':
 				params[ paramName ][c]['min'] = jQuery('#' + paramName + '-' + c + '-min').val();
 				params[ paramName ][c]['max'] = jQuery('#' + paramName + '-' + c + '-max').val();
+				if( !regExp.test(params[ paramName ][c]['min'].length) ) GTProcessGUI.errors.push("<strong>" + paramName + ' :: ' + c + ' :: min </strong> Must contain a single color value in hexadecimal (00 to AA).');
+				if( !regExp.test(params[ paramName ][c]['max'].length) ) GTProcessGUI.errors.push("<strong>" + paramName + ' :: ' + c + ' :: max </strong> Must contain a single color value in hexadecimal (00 to AA).');
 				var steps = jQuery('#' + paramName + '-' + c + 'Steps').val();
 				switch(steps) {
 					case 'no':
@@ -113,7 +123,7 @@ var GTProcessGUI = {
 						eval('var stepFunction = ' + jQuery('#' + paramName + '-' + c + 'StepFunction').val() + ';');
 						params[ paramName ][c]['stepFunction'] = stepFunction;
 					} catch(err) {
-
+						GTProcessGUI.errors.push("<strong>" + paramName + ' :: ' + c + ' :: stepFunction </strong> Must contain a valid function ("function() {}"), also check for syntax erros on your console.');
 					}					
 					break;
 				}
