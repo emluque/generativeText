@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="generativeText.js"></script>
+
+<style type="text/css">
+	body { font-family: 'Maven Pro', sans-serif;}
+	header { font-family: 'Lobster', sans-serif; background-color: #FF7B00; padding: 0.2em 0.6em 0.2em 1em; border-bottom: 2px solid #9FC2D9; text-shadow: 2px 2px 3px rgba(159, 194, 217, 0.7);}
+	h3 { font-family: 'Arimo', sans-serif; color: #767676;}
+	footer { text-align: center; border-top: 2px solid #9FC2D9; margin-top: 2em;}
+
+
+	#ex-rotate { font-size: 1.4em; }
+	#ex-rotate span, #ex-randomize span { display: inline-block; letter-spacing: 0.4em; font-size: 1.4em;}
+	#ex-alternate, #ex-alternate-word  { font-size: 1.7em; }
+	#ex-more span { display: inline-block; letter-spacing: 0.4em; font-size: 1.4em; border: 1px solid black; margin-right: 0.2em;}
+
+</style>
+<script type="text/javascript">
+
+jQuery( document ).ready(function( $ ) {
+
+	var params = { 
+		rotate: { 
+			type:'generate',
+			min:0,
+			max:90,
+			steps:true
+		 }
+ 	};
+	generativeText.applyToElem( jQuery("#ex-rotate"), params );
+
+	var params = { 
+		fontSize: { 
+			type:'generate',
+			unit:'em',
+			min:0.8,
+			max:3,
+			steps:true,
+			stepFunction:function (f) {
+			two_pi = 6.2832;
+			step = two_pi / this.totalSteps;
+			val = (Math.cos( (step * this.currentStep ) ) +1) / 2;
+			return this.min + (this.range * val);
+		}
+		 }
+	 };
+	generativeText.applyToElem( jQuery("#ex-bend"), params );
+
+	var params = { 
+		backgroundColor: { 
+			type:'list',
+			values: ['9fc2d9','ff7b00'],
+			steps:true
+		 },
+		color: { 
+			type:'list',
+			values: ['ff7b00','9fc2d9'],
+			steps:true
+		 }
+	}
+	generativeText.applyToElem( jQuery("#ex-alternate"), params );
+
+	var opts = {
+		applyTo: 'words',
+		textSpaces: 'even'
+	}
+	generativeText.applyToElem( jQuery("#ex-alternate-word"), params, opts );
+
+	var params = { 
+		backgroundColor: { 
+			type:'list',
+			values: ['9fc2d9','ff7b00', 'bababa'],
+		 },
+		rotate: { 
+			min:-45,
+			max:45,
+		 }
+	}	
+	generativeText.applyToElem( jQuery("#ex-randomize"), params);
+
+	jQuery("#reapply-randomize").click( function() {
+		var params = { 
+			backgroundColor: { 
+				type:'list',
+				values: ['9fc2d9','ff7b00', 'bababa'],
+			 },
+			rotate: { 
+				min:-45,
+				max:45,
+			 }
+		}	
+		generativeText.applyToElem( jQuery("#ex-randomize"), params);
+	});
+
+	var params = { 
+		borderRadius: { 
+			type:'generate',
+			min:0,
+			max:60,
+			steps:true
+		 }
+	}
+
+	generativeText.applyToElem( jQuery("#ex-more"), params);
+
+});
+
+
+</script>
+<link href='http://fonts.googleapis.com/css?family=Arimo|Lobster|Maven-Pro' rel='stylesheet' type='text/css'>
+</head>
+<body>
+	<header>
+		<h1>generativeText</h1>
+	</header>
+
+	<h3>What is it?</h3>
+	<p>Generative text is a Javascript Library to apply generative design ideas on text on an HTML page.</p>
+	<p>The generativeText library allows you with some basic parameters to apply CSS properties programatically to html elements on a character by character or word by word basis.</p>
+	<p>Things you can do:</p>
+		<ul>
+			<li><p id="ex-rotate">Rotate text character by character.</p></li>
+			<li><p id="ex-bend">Bend text according to some predefined function.</p></li>
+			<li><p id="ex-alternate">Alternate some CSS properties on the characters of a paragraph.</p></li>
+			<li><p id="ex-alternate-word">Or you could do the same on words.</p></li>
+			<li><p id="ex-randomize">Randomize some properties and produce a different result on each application of the function.</p><p><a href="javascript: void(0);" id="reapply-randomize">Reapply</a></li>
+			<li><p id="ex-more">And much more...</p></li>
+		</ul>
+	<h3>generativeText is very flexible.</h3>
+	<ul>You can use generativeText on Most CSS 3 properties.</ul>
+	<ul>You can combine different parameters for all kind of effects.</ul>
+	<ul>You can pass predefined values, apply them randomly, on a step by step linear function or use your own math function to apply the properties on each element.</ul>
+	<ul>You can add a pre-processing or post-processing function to the application of the properties.</ul>
+
+	<h3>Take a look at the examples:</h3>
+	<p></p>
+
+	<h3>Or Use the Gui</h3>
+
+	<footer>
+		<p>A <a href="http://significant.com">Significant</a> development.</p>
+	</footer>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="../generativeText.js"></script>
+
+<link href='http://fonts.googleapis.com/css?family=Alegreya+Sans+SC|Exo+2|Oleo+Script+Swash+Caps|IM+Fell+Great+Primer|Gilda+Display|Macondo+Swash+Caps|PT+Mono|Chicle|Sigmar+One|Lily+Script+One|Denk+One|Montaga|Mystery+Quest|Alike+Angular' rel='stylesheet' type='text/css'>
+
+<style type="text/css">
+
+.example-placeholder { border: 1px solid black; padding: 3em;}
+.example-placeholder-text { font-size: 3em;}
+.example-placeholder-text span { display: inline-block; height: 70px; overflow: hidden;}
+.actions { clear: both;} 
+
+</style>
+
+<script type="text/javascript">
+
+jQuery( document ).ready(function( $ ) {
+	jQuery("#a1 div.actions a").click( function() {
+		var params = {
+			backgroundColor: {
+				steps: true,
+				type: 'list',
+				values: ['999999', 'FF6600']
+			},
+			color: {
+				steps: true,
+				type: 'list',
+				values: ['FF6600', '999999']
+			}			
+		};
+		var opts = {
+			applyTo: 'words'
+		}
+		generativeText.applyToElem( jQuery("#a1-example"), params, opts);
+	});
+
+	jQuery("#a2 div.actions a").click( function() {
+		var params = {
+			backgroundColor: {
+				type: 'generate',
+				r: {
+					min: '01',
+					max: 'FF',
+					steps: true
+				},
+				g: {
+					min: '01',
+					max: 'FF',
+					steps: true
+				},
+				b: {
+					min: 'A1',
+					max: 'CA',
+					steps: true
+				}
+			}
+		};
+		var opts = {
+			applyTo: 'words',
+			textSpaces: 'style'
+		}
+
+		generativeText.applyToElem( jQuery("#a2-example"), params, opts);
+	});
+
+	jQuery("#a3 div.actions a").click( function() {
+		var params = {
+			backgroundColor: {
+				steps: true,
+				type: 'list',
+				values: ['999999', 'FF6600', '444444', 'AA1100']
+			},
+			color: {
+				steps: true,
+				type: 'list',
+				values: ['FF6600', '999999', 'AA1100', '444444']
+			}			
+		};
+		var opts = {
+			applyTo: 'words',
+			textSpaces: 'remove'
+		}
+		generativeText.applyToElem( jQuery("#a3-example"), params, opts);
+	});
+
+	jQuery("#a4 div.actions a").click( function() {
+		var params = {
+			backgroundColor: {
+				steps: true,
+				type: 'list',
+				values: ['999999', 'FF6600', '444444', 'AA1100']
+			},
+			color: {
+				steps: true,
+				type: 'list',
+				values: ['FF6600', '999999', 'AA1100', '444444']
+			}			
+		};
+		var opts = {
+			applyTo: 'words',
+			textSpaces: 'style'
+		}
+		generativeText.applyToElem( jQuery("#a4-example"), params, opts);
+	});
+
+	jQuery("#a5 div.actions a").click( function() {
+		var params = {
+			backgroundColor: {
+				steps: true,
+				type: 'list',
+				values: ['999999', 'FF6600', '444444', 'AA1100']
+			},
+			color: {
+				steps: true,
+				type: 'list',
+				values: ['FF6600', '999999', 'AA1100', '444444']
+			}			
+		};
+		var opts = {
+			applyTo: 'words',
+			textSpaces: 'nostyle'
+		}
+		generativeText.applyToElem( jQuery("#a5-example"), params, opts);
+	});
+
+	jQuery("#a6 div.actions a").click( function() {
+		var params = {
+			backgroundColor: {
+				steps: true,
+				type: 'list',
+				values: ['999999', 'FF6600', '444444', 'AA1100']
+			},
+			color: {
+				steps: true,
+				type: 'list',
+				values: ['FF6600', '999999', 'AA1100', '444444']
+			}			
+		};
+		var opts = {
+			applyTo: 'words',
+			textSpaces: 'nostyleorcount'
+		}
+		generativeText.applyToElem( jQuery("#a6-example"), params, opts);
+	});
+
+	jQuery("#a7 div.actions a").click( function() {
+		var params = {
+			backgroundColor: {
+				steps: true,
+				type: 'list',
+				values: ['999999', 'FF6600', '444444', 'AA1100']
+			},
+			color: {
+				steps: true,
+				type: 'list',
+				values: ['FF6600', '999999', 'AA1100', '444444']
+			}			
+		};
+		var opts = {
+			applyTo: 'words',
+			textSpaces: 'odd'
+		}
+		generativeText.applyToElem( jQuery("#a7-example"), params, opts);
+	});
+
+	jQuery("#a8 div.actions a").click( function() {
+		var params = {
+			backgroundColor: {
+				steps: true,
+				type: 'list',
+				values: ['999999', 'FF6600', '444444', 'AA1100']
+			},
+			color: {
+				steps: true,
+				type: 'list',
+				values: ['FF6600', '999999', 'AA1100', '444444']
+			}			
+		};
+		var opts = {
+			applyTo: 'words',
+			textSpaces: 'even'
+		}
+		generativeText.applyToElem( jQuery("#a8-example"), params, opts);
+	});
+
+});
+
+
+</script>
+
+</head>
+<body>
+
+<div id="a1" class="example">
+		<h3>remove</h3>
+
+		<div class="example-placeholder">
+			<div id="a1-example" class="example-placeholder-text">In computing, plain text is the contents of an ordinary sequential file readable as textual material without much processing.</div>
+			<div class="actions">
+				<a href="javascript:;">Apply</a>
+			</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+		</code></pre>
+</div>
+
+<div id="a2" class="example">
+		<h3>style</h3>
+
+		<div class="example-placeholder">
+			<div id="a2-example" class="example-placeholder-text">In computing, plain text is the contents of an ordinary sequential file...</div>
+			<div class="actions">
+				<a href="javascript:;">Apply</a>
+			</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+		</code></pre>
+</div>
+
+<div id="a3" class="example">
+		<h3>remove</h3>
+
+		<div class="example-placeholder">
+			<div id="a3-example" class="example-placeholder-text">In computing, plain text is the contents of an ordinary sequential file...</div>
+			<div class="actions">
+				<a href="javascript:;">Apply</a>
+			</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+		</code></pre>
+</div>
+
+<div id="a4" class="example">
+		<h3>style</h3>
+
+		<div class="example-placeholder">
+			<div id="a4-example" class="example-placeholder-text">In computing, plain text is the contents of an ordinary sequential file...</div>
+			<div class="actions">
+				<a href="javascript:;">Apply</a>
+			</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+		</code></pre>
+</div>
+
+<div id="a5" class="example">
+		<h3>nostyle</h3>
+
+		<div class="example-placeholder">
+			<div id="a5-example" class="example-placeholder-text">In computing, plain text is the contents of an ordinary sequential file...</div>
+			<div class="actions">
+				<a href="javascript:;">Apply</a>
+			</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+		</code></pre>
+</div>
+
+<div id="a6" class="example">
+		<h3>nostyleorcount</h3>
+
+		<div class="example-placeholder">
+			<div id="a6-example" class="example-placeholder-text">In computing, plain text is the contents of an ordinary sequential file...</div>
+			<div class="actions">
+				<a href="javascript:;">Apply</a>
+			</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+		</code></pre>
+</div>
+
+<div id="a7" class="example">
+		<h3>odd</h3>
+
+		<div class="example-placeholder">
+			<div id="a7-example" class="example-placeholder-text">In computing, plain text is the contents of an ordinary sequential file...</div>
+			<div class="actions">
+				<a href="javascript:;">Apply</a>
+			</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+		</code></pre>
+</div>
+
+<div id="a8" class="example">
+		<h3>even</h3>
+
+		<div class="example-placeholder">
+			<div id="a8-example" class="example-placeholder-text">In computing, plain text is the contents of an ordinary sequential file...</div>
+			<div class="actions">
+				<a href="javascript:;">Apply</a>
+			</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+		</code></pre>
+</div>
+
+
+</body>
+</html>

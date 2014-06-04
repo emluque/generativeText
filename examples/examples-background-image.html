@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="../generativeText.js"></script>
+
+<link href='http://fonts.googleapis.com/css?family=Alegreya+Sans+SC|Exo+2|Oleo+Script+Swash+Caps|IM+Fell+Great+Primer|Gilda+Display|Macondo+Swash+Caps|PT+Mono|Chicle|Sigmar+One|Lily+Script+One|Denk+One|Montaga|Mystery+Quest|Alike+Angular' rel='stylesheet' type='text/css'>
+
+<style type="text/css">
+
+.example-placeholder { border: 1px solid black; padding: 3em;}
+.example-placeholder-text { font-size: 5em; font-weight; bold;}
+.example-placeholder-text span { display: inline-block; overflow: hidden; border: 3px solid black; border-radius: 50%; height: 120px; width: 120px; padding-left: 30px;}
+.actions { clear: both;} 
+
+</style>
+
+<script type="text/javascript">
+
+jQuery( document ).ready(function( $ ) {
+
+	//rotate steps example
+	jQuery("#background-image div.actions a").click( function() {
+		var params = {
+			fontFamily: { 
+				values: [
+				"'Alegreya Sans SC', sans-serif",
+				"'Exo 2', sans-serif",
+				"'Oleo Script Swash Caps', cursive",
+				"'IM Fell Great Primer', serif",
+				"'Gilda Display', serif",
+				"'Macondo Swash Caps', cursive",
+				"'PT Mono', sans-serif",
+				"'Chicle', cursive",
+				"'Sigmar One', cursive",
+				"'Lily Script One', cursive",
+				"'Denk One', sans-serif",
+				"'Montaga', serif",
+				"'Mystery Quest', cursive",
+				"'Alike Angular', serif"
+			]}, 
+			backgroundImage: {
+				values: [
+				"textures/10_5431.JPG", 
+				"textures/10_5434.JPG", 
+				"textures/10_5443.JPG", 
+				"textures/10_5530.JPG", 
+				"textures/10_5591.JPG", 
+				"textures/DSC_0870.JPG", 
+				"textures/DSC_10985.JPG", 
+				"textures/DSC_11039.JPG", 
+				"textures/DSC_2698.JPG", 
+				"textures/DSC_2700.JPG", 
+				"textures/DSC_3512.JPG", 
+				"textures/DSC_3519.JPG", 
+				"textures/DSC_4235.JPG", 
+				"textures/DSC_4243.JPG", 
+				"textures/DSC_4270.JPG", 
+				"textures/DSC_4273.JPG", 
+				"textures/DSC_4274.JPG", 
+				"textures/DSC_4287.JPG", 
+				"textures/DSC_4410.JPG", 
+				"textures/DSC_4423.JPG", 
+				"textures/DSC_4429.JPG", 
+				"textures/DSC_5689.JPG", 
+				"textures/DSC_6229.JPG", 
+				"textures/DSC_7231.JPG", 
+				"textures/DSC_7650.JPG", 
+				"textures/DSC_7664.JPG", 
+				"textures/DSC_7680.JPG", 
+				"textures/DSC_7995.JPG"
+			]}
+		};
+		generativeText.applyToElem( jQuery("#background-image-example"), params );
+	});
+
+});
+
+
+</script>
+
+</head>
+<body>
+
+<div id="background-image" class="example">
+		<h3>Rotate</h3>
+
+		<div class="example-placeholder">
+			<div id="background-image-example" class="example-placeholder-text">HELLO!</div>
+			<div class="actions">
+				<a href="javascript:;">Apply</a>
+			</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+		</code></pre>
+</div>
+
+
+
+</body>
+</html>
