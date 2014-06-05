@@ -1,0 +1,336 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="../generativeText.js"></script>
+
+<link href='http://fonts.googleapis.com/css?family=Arimo|Lobster|Maven-Pro' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="examples.css" media="screen" />
+
+
+<style type="text/css">
+
+.example-placeholder { border: 1px solid black; padding: 3em;}
+.example-placeholder-text { font-size: 3em;}
+.example-placeholder-text span { display: inline-block; height: 70px; overflow: hidden;}
+.actions { clear: both;} 
+
+</style>
+
+<script type="text/javascript">
+
+jQuery( document ).ready(function( $ ) {
+
+	var params = {
+		backgroundColor: {
+			steps: true,
+			type: 'list',
+			values: ['999999', 'FF6600', '444444', 'AA1100']
+		},
+		color: {
+			steps: true,
+			type: 'list',
+			values: ['FF6600', '999999', 'AA1100', '444444']
+		}			
+	};
+	var opts = {
+		applyTo: 'words',
+		textSpaces: 'remove'
+	}
+	generativeText.applyToElem( jQuery("#a3-example"), params, opts);
+
+	var params = {
+		backgroundColor: {
+			steps: true,
+			type: 'list',
+			values: ['999999', 'FF6600', '444444', 'AA1100']
+		},
+		color: {
+			steps: true,
+			type: 'list',
+			values: ['FF6600', '999999', 'AA1100', '444444']
+		}			
+	};
+	var opts = {
+		applyTo: 'words',
+		textSpaces: 'style'
+	}
+	generativeText.applyToElem( jQuery("#a4-example"), params, opts);
+
+	var params = {
+		backgroundColor: {
+			steps: true,
+			type: 'list',
+			values: ['999999', 'FF6600', '444444', 'AA1100']
+		},
+		color: {
+			steps: true,
+			type: 'list',
+			values: ['FF6600', '999999', 'AA1100', '444444']
+		}			
+	};
+	var opts = {
+		applyTo: 'words',
+		textSpaces: 'nostyle'
+	}
+	generativeText.applyToElem( jQuery("#a5-example"), params, opts);
+
+	var params = {
+		backgroundColor: {
+			steps: true,
+			type: 'list',
+			values: ['999999', 'FF6600', '444444', 'AA1100']
+		},
+		color: {
+			steps: true,
+			type: 'list',
+			values: ['FF6600', '999999', 'AA1100', '444444']
+		}			
+	};
+	var opts = {
+		applyTo: 'words',
+		textSpaces: 'nostyleorcount'
+	}
+	generativeText.applyToElem( jQuery("#a6-example"), params, opts);
+
+	var params = {
+		backgroundColor: {
+			steps: true,
+			type: 'list',
+			values: ['999999', 'FF6600', '444444', 'AA1100']
+		},
+		color: {
+			steps: true,
+			type: 'list',
+			values: ['FF6600', '999999', 'AA1100', '444444']
+		}			
+	};
+	var opts = {
+		applyTo: 'words',
+		textSpaces: 'odd'
+	}
+	generativeText.applyToElem( jQuery("#a7-example"), params, opts);
+
+	var params = {
+		backgroundColor: {
+			steps: true,
+			type: 'list',
+			values: ['999999', 'FF6600', '444444', 'AA1100']
+		},
+		color: {
+			steps: true,
+			type: 'list',
+			values: ['FF6600', '999999', 'AA1100', '444444']
+		}			
+	};
+	var opts = {
+		applyTo: 'words',
+		textSpaces: 'even'
+	}
+	generativeText.applyToElem( jQuery("#a8-example"), params, opts);
+
+});
+
+
+</script>
+
+</head>
+<body>
+
+	<header>
+		<h1>generativeText</h1>
+	</header>
+
+<h2>Apply to Words Options Examples</h2>
+
+<div id="a3" class="example">
+		<h3>textSpaces="remove"</h3>
+
+		<div class="example-placeholder">
+			<div id="a3-example" class="example-placeholder-text">In computing, plain text is the contents of an ordinary sequential file...</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+	var params = {
+		backgroundColor: {
+			steps: true,
+			type: 'list',
+			values: ['999999', 'FF6600', '444444', 'AA1100']
+		},
+		color: {
+			steps: true,
+			type: 'list',
+			values: ['FF6600', '999999', 'AA1100', '444444']
+		}			
+	};
+	var opts = {
+		applyTo: 'words',
+		textSpaces: 'remove'
+	}
+
+
+		</code></pre>
+</div>
+
+<div id="a4" class="example">
+		<h3>textSpaces="style"</h3>
+
+		<div class="example-placeholder">
+			<div id="a4-example" class="example-placeholder-text">In computing, plain text is the contents of an ordinary sequential file...</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+
+	var params = {
+		backgroundColor: {
+			steps: true,
+			type: 'list',
+			values: ['999999', 'FF6600', '444444', 'AA1100']
+		},
+		color: {
+			steps: true,
+			type: 'list',
+			values: ['FF6600', '999999', 'AA1100', '444444']
+		}			
+	};
+	var opts = {
+		applyTo: 'words',
+		textSpaces: 'style'
+	}
+
+
+		</code></pre>
+</div>
+
+<div id="a5" class="example">
+		<h3>textSpaces="nostyle"</h3>
+
+		<div class="example-placeholder">
+			<div id="a5-example" class="example-placeholder-text">In computing, plain text is the contents of an ordinary sequential file...</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+
+	var params = {
+		backgroundColor: {
+			steps: true,
+			type: 'list',
+			values: ['999999', 'FF6600', '444444', 'AA1100']
+		},
+		color: {
+			steps: true,
+			type: 'list',
+			values: ['FF6600', '999999', 'AA1100', '444444']
+		}			
+	};
+	var opts = {
+		applyTo: 'words',
+		textSpaces: 'nostyle'
+	}
+
+
+		</code></pre>
+</div>
+
+<div id="a6" class="example">
+		<h3>textSpaces="nostyleorcount"</h3>
+
+		<div class="example-placeholder">
+			<div id="a6-example" class="example-placeholder-text">In computing, plain text is the contents of an ordinary sequential file...</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+
+	var params = {
+		backgroundColor: {
+			steps: true,
+			type: 'list',
+			values: ['999999', 'FF6600', '444444', 'AA1100']
+		},
+		color: {
+			steps: true,
+			type: 'list',
+			values: ['FF6600', '999999', 'AA1100', '444444']
+		}			
+	};
+	var opts = {
+		applyTo: 'words',
+		textSpaces: 'nostyleorcount'
+	}
+
+
+		</code></pre>
+</div>
+
+<div id="a7" class="example">
+		<h3>textSpaces="odd"</h3>
+
+		<div class="example-placeholder">
+			<div id="a7-example" class="example-placeholder-text">In computing, plain text is the contents of an ordinary sequential file...</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+
+	var params = {
+		backgroundColor: {
+			steps: true,
+			type: 'list',
+			values: ['999999', 'FF6600', '444444', 'AA1100']
+		},
+		color: {
+			steps: true,
+			type: 'list',
+			values: ['FF6600', '999999', 'AA1100', '444444']
+		}			
+	};
+	var opts = {
+		applyTo: 'words',
+		textSpaces: 'odd'
+	}
+
+
+		</code></pre>
+</div>
+
+<div id="a8" class="example">
+		<h3>textSpaces="even"</h3>
+
+		<div class="example-placeholder">
+			<div id="a8-example" class="example-placeholder-text">In computing, plain text is the contents of an ordinary sequential file...</div>
+		</div>
+
+		<h4>Params</h4>
+		<pre><code>
+
+	var params = {
+		backgroundColor: {
+			steps: true,
+			type: 'list',
+			values: ['999999', 'FF6600', '444444', 'AA1100']
+		},
+		color: {
+			steps: true,
+			type: 'list',
+			values: ['FF6600', '999999', 'AA1100', '444444']
+		}			
+	};
+	var opts = {
+		applyTo: 'words',
+		textSpaces: 'even'
+	}
+
+
+		</code></pre>
+</div>
+
+	<footer>
+		<p>A <a href="http://significant.com">Significant</a> development.</p>
+	</footer>
+</body>
+</html>
