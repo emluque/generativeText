@@ -11,7 +11,6 @@ var GTProcessGUI = {
 		for(var i=0; i<p.length; i++) {
 			var paramName = p[i].id;
 			params[ paramName ] = {};
-			console.log(paramName);
 
 			switch( generativeText.defs[ paramName ][0]) {
 				case 'List':
@@ -98,18 +97,18 @@ var GTProcessGUI = {
 	},
 
 	processParamColorGenerateColor: function(paramName, params, c) {
-		var regExp = /^[0-9A-F]{2}$/;
+		var regExp = /^[0-9A-Fa-f]{2}$/;
 		params[ paramName ][c] = {};
 		switch( jQuery('#' + paramName + '-' + c + '-Type').val() ) {
 			case 'fixed':
 				params[ paramName ][c]['fixed'] = jQuery('#' + paramName + '-' + c + '-fixedValue').val();
-				if( !regExp.test(params[ paramName ][c]['fixed'].length) ) GTProcessGUI.errors.push("<strong>" + paramName + ' :: ' + c + ' :: value </strong> Must contain a single color value in hexadecimal (00 to AA).');
+				if( !regExp.test(params[ paramName ][c]['fixed']) ) GTProcessGUI.errors.push("<strong>" + paramName + ' :: ' + c + ' :: value </strong> Must contain a single color value in hexadecimal (00 to AA).');
 			break;
 			case 'range':
 				params[ paramName ][c]['min'] = jQuery('#' + paramName + '-' + c + '-min').val();
 				params[ paramName ][c]['max'] = jQuery('#' + paramName + '-' + c + '-max').val();
-				if( !regExp.test(params[ paramName ][c]['min'].length) ) GTProcessGUI.errors.push("<strong>" + paramName + ' :: ' + c + ' :: min </strong> Must contain a single color value in hexadecimal (00 to AA).');
-				if( !regExp.test(params[ paramName ][c]['max'].length) ) GTProcessGUI.errors.push("<strong>" + paramName + ' :: ' + c + ' :: max </strong> Must contain a single color value in hexadecimal (00 to AA).');
+				if( !regExp.test(params[ paramName ][c]['min']) ) GTProcessGUI.errors.push("<strong>" + paramName + ' :: ' + c + ' :: min </strong> Must contain a single color value in hexadecimal (00 to AA).');
+				if( !regExp.test(params[ paramName ][c]['max']) ) GTProcessGUI.errors.push("<strong>" + paramName + ' :: ' + c + ' :: max </strong> Must contain a single color value in hexadecimal (00 to AA).');
 				var steps = jQuery('#' + paramName + '-' + c + 'Steps').val();
 				switch(steps) {
 					case 'no':

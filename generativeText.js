@@ -54,7 +54,8 @@ var generativeText = {
 		verticalAlign: ['List'],
 		textDecoration: ['List'],
 		textTransform: ['List'],
-		fontWeight: ['List']
+		fontWeight: ['List'],
+		clear: ['List']
 	},
 	totalSteps: 0,
 	currentStep: 0,
