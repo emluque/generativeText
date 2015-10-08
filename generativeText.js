@@ -19,6 +19,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+"use strict";
+
 var generativeText = {
 	defs: {
 		rotate: ['Rotate'],
@@ -172,7 +174,7 @@ var generativeText = {
 				this.applyPFunc(opts.pObj, elem, 'preFunc');
 			}
 
-			var t = text[i];
+			var t = text[i], newElement;
 			if( /\s/.test(t) ) {
 
 				newElement = jQuery('<span>&nbsp;</span>');
@@ -252,6 +254,8 @@ var generativeText = {
 			if(opts && opts.pObj && opts.pObj.preFunc && opts.pObj.preFunc instanceof Function) {
 				this.applyPFunc(opts.pObj, elem, 'preFunc');
 			}
+
+			var newElement;
 
 			switch(opts.textSpaces) {
 				case 'style':
