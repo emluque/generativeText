@@ -97,17 +97,8 @@ generativeText.prototype = {
 			return;
 		}
 
-		this.currentStep = 0;
-		this.memory = [];
-
-		//Set total steps
-		this.totalSteps = elems.length;
-
 		for(var i=0; i < elems.length; i++) {
-			var jel = elems[i];
-			this.generateStyle(jel);
-			if(!!opts && !!opts.memory) this.memory.push(jel);
-			this.currentStep++;
+            this.applyToElement(elems[i]);
 		}
 	},
 	styleToJSON: function( style ) {
@@ -130,20 +121,25 @@ generativeText.prototype = {
 			return;
 		}
 
-		this.currentStep = 0;
-		this.memory = [];
+        this.applyToElement(elem);
 
-		if(!!this.opts) {
-			if(this.opts.applyTo == "words") {
-				this.applyToWords(elem);
-				return;
-			}
-		} else {
-			this.opts = {};
-		}
-
-		this.applyToText(elem);
 	},
+    applyToElement: function(elem) {
+        this.currentStep = 0;
+        this.memory = [];
+        this.container = elem;
+
+        if(!!this.opts) {
+            if(this.opts.applyTo == "words") {
+                this.applyToWords(elem);
+                return;
+            }
+        } else {
+            this.opts = {};
+        }
+
+        this.applyToText(elem);
+    },
 	initializeApplyToText: function(text) {
 
 		//style is default
@@ -161,7 +157,8 @@ generativeText.prototype = {
 
 		if(!!this.opts.pObj) {
 			this.opts.pObj.totalSteps = this.totalSteps;
-			this.opts.pObj.memory = this.memory;
+            this.opts.pObj.memory = this.memory;
+            this.opts.pObj.container = this.container;
 		}
 
 		this.stepFuncObj.totalSteps = this.totalSteps;
@@ -248,6 +245,7 @@ generativeText.prototype = {
 		if(!!this.opts.pObj) {
             this.opts.pObj.totalSteps = this.totalSteps;
             this.opts.pObj.memory = this.memory;
+            this.opts.pObj.container = this.container;
 		}
 		
 		this.stepFuncObj.totalSteps = this.totalSteps;
@@ -370,7 +368,7 @@ generativeText.prototype = {
 					el.style[styleName] = this.generateNumericStyle(params[p], this.defs[p][1]);
 				break;
 				case 'Color':
-					el.style[styleName] = this.generateColorStyle( params[p]);
+					el.style[styleName] = "#" + this.generateColorStyle( params[p]);
 				break;
 				case 'List':
 					if(styleName == 'background-image') {

@@ -37,6 +37,12 @@ main {
 .example-placeholder { border: 1px solid black; padding: 3em; border-radius: 10px;}
 .example-placeholder-text { font-size: 3em;}
 .example-placeholder-text span { display: inline-block; height: 70px; overflow: hidden;}
+.example-placeholder-text.normal{ font-size: 1em;}
+.example-placeholder-text.normal span { height: 34px; font-size: 1.7em;}
+.normal h4 {
+	margin: 0;
+	font-weight: normal;
+}
 </style>
 
 <script type="text/javascript">
@@ -66,20 +72,22 @@ main {
 		var ex1 = new generativeText(params1);
 		ex1.applyToElementById("example1");
 
+		ex1.applyToElementsByClassName("example2");
+
 		var params2 = {
 			backgroundColor: {
 				type: 'list',
 				values: [
-					'#ca3a11',
-					'#333333',
+					'ca3a11',
+					'333333',
 				],
 				steps:true,
 			},
 			color: {
 				type: 'list',
 				values: [
-					'#333333',
-					'#ca3a11',
+					'333333',
+					'ca3a11',
 				],
 				steps:true,
 			}
@@ -90,7 +98,83 @@ main {
 			textSpaces: 'both',
 		}
 		var ex2 = new generativeText(params2, opts2);
-		ex2.applyToElementById("example2");
+		ex2.applyToElementById("example3");
+
+		var params4 = {
+			fontSize: {
+				type:'generate',
+				unit:'em',
+				min:0.4,
+				max:1,
+				steps:true,
+				stepFunction:function (f) {
+					two_pi = 6.2832;
+					step = two_pi / this.totalSteps;
+					val = (Math.cos( (step * this.currentStep ) ) +1) / 2;
+					return this.min + (this.range * val);
+				}
+			}
+		};
+
+		var ex4 = new generativeText(params4);
+		ex4.applyToElementById("example4");
+
+		var params5 = {
+			color: {
+				type:'generate',
+				r: {
+					min: '00',
+					max: 'AA',
+					steps: true
+				},
+				g: {
+					min: '00',
+					max: 'AA',
+					steps: true
+				},
+				b: {
+					min: '66',
+					max: 'AA',
+					steps: true
+				}
+			}
+		};
+
+		var lineBreaks = {
+			lastSpace: 0,
+			containerWidth: 0,
+			first: true,
+
+			posFunc: function() {
+
+				if(this.containerWidth == 0) this.containerWidth = this.container.clientWidth;
+
+				var current = this.memory[ this.currentStep ];
+
+				//Test for Space
+				if( /\s/.test(current.innerText) ) {
+					this.lastSpace = this.currentStep;
+				}
+				var rightMargin = current.offsetLeft + current.offsetWidth;
+				if(rightMargin > (this.container.clientWidth - 30)) {
+					var br = document.createElement('br');
+					this.container.insertBefore(br, this.memory[this.lastSpace]);
+					this.memory[this.lastSpace].style.display = "none";
+				}
+
+
+				this.first = false;
+			}
+		};
+
+		var opts5 = {
+			textSpaces:'nostyle',
+			pObj: lineBreaks,
+			memory: true
+		};
+
+		var ex5 = new generativeText(params5, opts5);
+		ex5.applyToElementById("example5");
 
 	});
 </script>
@@ -105,7 +189,7 @@ main {
 		<h3>Basic example</h3>
 		<p>Randomly select a different font-family for each letter. Will produce a different result on each load of the page.</p>
 		<div class="example-placeholder">
-			<div id="example1" class="example-placeholder-text">Never mind the Bollocks, here's generativeText!</div>
+			<div id="example1" class="example-placeholder-text">Nevermind the Bollocks, here's generativeText!</div>
 		</div>
 		<h4>Code</h4>
 	<pre><code>
@@ -136,10 +220,32 @@ ex1.applyToElementById("fontFace-example");
 	</div>
 
 	<div class="example">
-		<h3>Apply to words example</h3>
-		<p>Change background and foreground color, step by step and apply it to the words on the text.</p>
+		<h3>Apply to various elements at a time.</h3>
+		<p>Same as first example, but applying by class name. See source or inspect elements to see the HTML code.</p>
 		<div class="example-placeholder">
-			<div id="example2" class="example-placeholder-text">Never mind the Bollocks, here's generativeText!</div>
+			<div class="example-placeholder-text normal">
+				<h4 class="example2">generativeText!</h4>
+				<p>The preceding h4 has class "example2".</p>
+				<h4 class="example2">So does this one!</h4>
+				<p>In fact, ALL h4s on this div have that class.</p>
+				<h4 class="example2">This one does too!</h4>
+				<p>The other thing is that we are reusing the object and parameters from the previous example.</p>
+				<h4 class="example2">Ain't that neat!</h4>
+			</div>
+		</div>
+		<h4>Code</h4>
+	<pre><code>
+//We are reusing the object from the previous example
+ex1.applyToElementsByClassName("example2");
+	</code></pre>
+	</div>
+
+
+	<div class="example">
+		<h3>Apply to words</h3>
+		<p>Change background and foreground color by repeated steps and apply it to the words on the text.</p>
+		<div class="example-placeholder">
+			<div id="example3" class="example-placeholder-text">This reminds me of 90's Wired Mag for some reason.</div>
 		</div>
 		<h4>Code</h4>
 	<pre><code>
@@ -168,7 +274,105 @@ var opts2 = {
 }
 
 var ex2 = new generativeText(params2, opts2);
-ex2.applyToElementById("example2");
+ex2.applyToElementById("example3");
+	</code></pre>
+	</div>
+
+	<div class="example">
+		<h3>Using Step functions</h3>
+		<p>You can use all kind of weird functions you want on the parameters.</p>
+		<div class="example-placeholder">
+			<div id="example4" class="example-placeholder-text">This text will bend to a weird and cool shape.</div>
+		</div>
+		<h4>Code</h4>
+	<pre><code>
+var params4 = {
+	fontSize: {
+		type:'generate',
+		unit:'em',
+		min:0.4,
+		max:1,
+		steps:true,
+		stepFunction: function (f) {
+			two_pi = 6.2832;
+			step = two_pi / this.totalSteps;
+			val = (Math.cos( (step * this.currentStep ) ) +1) / 2;
+			return this.min + (this.range * val);
+		}
+	}
+};
+
+var ex4 = new generativeText(params4);
+ex4.applyToElementById("example4");
+	</code></pre>
+	</div>
+
+
+	<div class="example">
+		<h3>Using Post or Pre functions</h3>
+		<p>You can use Post or Pre functions to each step of the process. This P functions will be will be run before or after each element is processed.</p>
+		<div class="example-placeholder">
+			<div id="example5" class="example-placeholder-text  no-wierdness">Usually used in reference to a computer application, a text-based application is one whose primary input and output are based on text rather than graphics or sound. This does not mean that text-based applications do not have graphics or sound, just that the graphics or sound are secondary to the text.</div>
+		</div>
+		<h4>Code</h4>
+	<pre><code>
+var params5 = {
+	color: {
+		type:'generate',
+		r: {
+			min: '00',
+			max: 'AA',
+			steps: true
+		},
+		g: {
+			min: '00',
+			max: 'AA',
+			steps: true
+		},
+		b: {
+			min: '66',
+			max: 'AA',
+			steps: true
+		}
+	}
+};
+
+var lineBreaks = {
+	lastSpace: 0,
+	containerWidth: 0,
+	first: true,
+
+	posFunc: function() {
+
+		if(this.containerWidth == 0) this.containerWidth = this.container.clientWidth;
+
+		var current = this.memory[ this.currentStep ];
+
+		//Test for Space
+		if( /\s/.test(current.innerText) ) {
+			this.lastSpace = this.currentStep;
+		}
+		var rightMargin = current.offsetLeft + current.offsetWidth;
+		if(rightMargin > (this.container.clientWidth - 30)) {
+			var br = document.createElement('br');
+			this.container.insertBefore(br, this.memory[this.lastSpace]);
+			this.memory[this.lastSpace].style.display = "none";
+		}
+
+
+		this.first = false;
+	}
+};
+
+var opts5 = {
+	textSpaces:'nostyle',
+	pObj: lineBreaks,
+	memory: true
+};
+
+var ex5 = new generativeText(params5, opts5);
+ex5.applyToElementById("example5");
+
 	</code></pre>
 	</div>
 
