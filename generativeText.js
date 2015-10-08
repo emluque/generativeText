@@ -21,7 +21,12 @@ THE SOFTWARE.
 
 "use strict";
 
-var generativeText = {
+var generativeText = function(params, options) {
+	this.params = params;
+	this.opts = options;
+}
+
+generativeText.prototype = {
 	defs: {
 		rotate: ['Rotate'],
 		fontSize: ['Numeric'],
@@ -84,11 +89,11 @@ var generativeText = {
 	currentStep: 0,
 	memory: [],
 	stepFuncObj: {},
-	applyToElementsByClassName: function(className, params, opts) {
+	applyToElementsByClassName: function(className) {
 
 		var elems = document.getElementsByClassName(className);
 		if(elems.length === 0) {
-			console.log("Not a valid className: " + className);
+			throw ("generativeText Error - Not a valid className: " + className);
 			return;
 		}
 
@@ -100,7 +105,7 @@ var generativeText = {
 
 		for(var i=0; i < elems.length; i++) {
 			var jel = elems[i];
-			this.generateStyle(params, jel);
+			this.generateStyle(jel);
 			if(!!opts && !!opts.memory) this.memory.push(jel);
 			this.currentStep++;
 		}
@@ -117,52 +122,52 @@ var generativeText = {
 		strJSON += "}";
 	    return strJSON;
 	},
-	applyToElementById: function (id, params, opts) {
+	applyToElementById: function (id) {
 
 		var elem = document.getElementById(id);
 		if(!elem) {
-			console.log("Not a valid ID: " + id);
+			throw ("generativeText Error - Not a valid ID: " + id);
 			return;
 		}
 
 		this.currentStep = 0;
 		this.memory = [];
 
-		if(!!opts) {
-			if(opts.applyTo == "words") {
-				this.applyToWords(elem, params, opts);
+		if(!!this.opts) {
+			if(this.opts.applyTo == "words") {
+				this.applyToWords(elem);
 				return;
 			}
 		} else {
-			opts = {};
+			this.opts = {};
 		}
 
-		this.applyToText(elem, params, opts);				
+		this.applyToText(elem);
 	},
-	initializeApplyToText: function(text, opts) {
+	initializeApplyToText: function(text) {
 
 		//style is default
-		if( typeof opts.textSpaces == 'undefined') opts.textSpaces = 'style';
+		if( typeof this.opts.textSpaces == 'undefined') this.opts.textSpaces = 'style';
 
 		var length = text.length;
 
 		//Set total steps
 		this.totalSteps = length;
 
-		if(opts.textSpaces == 'nostyleorcount' || opts.textSpaces == 'remove') {
+		if(this.opts.textSpaces == 'nostyleorcount' || this.opts.textSpaces == 'remove') {
 			var countTextSpaces = text.split(" ").length - 1;
 			this.totalSteps = this.totalSteps - countTextSpaces;
 		}
 
-		if(!!opts.pObj) {
-			opts.pObj.totalSteps = this.totalSteps;
-			opts.pObj.memory = this.memory;
+		if(!!this.opts.pObj) {
+			this.opts.pObj.totalSteps = this.totalSteps;
+			this.opts.pObj.memory = this.memory;
 		}
 
 		this.stepFuncObj.totalSteps = this.totalSteps;
 
 	},
-	applyToText: function( elem, params, opts ) {
+	applyToText: function( elem) {
 
 		var text = elem.innerText;
 
@@ -170,13 +175,13 @@ var generativeText = {
 		elem.innerHTML = "";
 
 		//remove
-		if( typeof opts.removeSpaceDups == 'undefined') opts.removeSpaceDups = true;
+		if( typeof this.opts.removeSpaceDups == 'undefined') this.opts.removeSpaceDups = true;
 
-		if(opts.removeSpaceDups) {
+		if(this.opts.removeSpaceDups) {
 			text = text.replace(/\s+/g, ' ');
 		}
 
-		this.initializeApplyToText(text, opts);
+		this.initializeApplyToText(text);
 
 		var length = text.length;
 
@@ -184,8 +189,8 @@ var generativeText = {
 		for(var i=0; i<length; i++) {
 
 			//Pre Function
-			if(!!opts && !!opts.pObj && !!opts.pObj.preFunc && opts.pObj.preFunc instanceof Function) {
-				this.applyPFunc(opts.pObj, elem, 'preFunc');
+			if(!!this.opts && !!this.opts.pObj && !!this.opts.pObj.preFunc && this.opts.pObj.preFunc instanceof Function) {
+				this.applyPFunc(this.opts.pObj, elem, 'preFunc');
 			}
 
 			var t = text[i];
@@ -195,16 +200,16 @@ var generativeText = {
 
 				newElement.innerHTML = '&nbsp;';
 
-				switch(opts.textSpaces) {
+				switch(this.opts.textSpaces) {
 					case 'style':
-						this.generateStyle( params, newElement );
-						this.appendTextElement(elem, newElement, opts);
+						this.generateStyle( this.params, newElement );
+						this.appendTextElement(elem, newElement);
 					break;
 					case 'nostyle':
-						this.appendTextElement(elem, newElement, opts);
+						this.appendTextElement(elem, newElement);
 					break;
 					case 'nostyleorcount':
-						this.appendTextElement(elem, newElement, opts);
+						this.appendTextElement(elem, newElement);
 						this.currentStep--;
 					break;
 					case 'remove':
@@ -213,42 +218,42 @@ var generativeText = {
 				}				
 			} else {
 				newElement.innerText = t;
-				this.generateStyle( params, newElement );
-				this.appendTextElement(elem, newElement, opts);
+				this.generateStyle( this.params, newElement );
+				this.appendTextElement(elem, newElement);
 			}
 			
 			//Post Function
-			if(!!opts && !!opts.pObj && !!opts.pObj.posFunc && opts.pObj.posFunc instanceof Function) {
-				this.applyPFunc(opts.pObj, elem, 'posFunc');
+			if(!!this.opts && !!this.opts.pObj && !!this.opts.pObj.posFunc && this.opts.pObj.posFunc instanceof Function) {
+				this.applyPFunc(this.opts.pObj, elem, 'posFunc');
 			}
 
 			this.currentStep++;
 		}
 	},
-	appendTextElement: function(elem, ne, opts) {
-				if(!!opts && !!opts.memory) this.memory.push( ne );
+	appendTextElement: function(elem, ne) {
+				if(!!this.opts && !!this.opts.memory) this.memory.push( ne );
 				elem.appendChild( ne );
 	},
-	initializeApplyToWords: function(opts, length) {
+	initializeApplyToWords: function(length) {
 
 		//style is default
-		if( typeof opts.textSpaces == 'undefined') opts.textSpaces = 'remove';
+		if( typeof this.opts.textSpaces == 'undefined') this.opts.textSpaces = 'remove';
 
-		if(opts.textSpaces == 'style' || opts.textSpaces == 'nostyle') {
+		if(this.opts.textSpaces == 'style' || this.opts.textSpaces == 'nostyle') {
 			this.totalSteps = (length*2) - 1;
 		} else {
 			this.totalSteps = length;
 		}
 
-		if(!!opts.pObj) {
-			opts.pObj.totalSteps = this.totalSteps;
-			opts.pObj.memory = this.memory;
+		if(!!this.opts.pObj) {
+            this.opts.pObj.totalSteps = this.totalSteps;
+            this.opts.pObj.memory = this.memory;
 		}
 		
 		this.stepFuncObj.totalSteps = this.totalSteps;
 
 	},
-	applyToWords: function( elem, params, opts ) {
+	applyToWords: function( elem ) {
 
 		var text = elem.innerText;
 
@@ -262,91 +267,96 @@ var generativeText = {
 
 		var length = words.length;
 
-		this.initializeApplyToWords(opts, length);
+		this.initializeApplyToWords(this.opts, length);
 
 		for(var i=0; i<length; i++) {
 
 			//Pre Function
-			if(opts && opts.pObj && opts.pObj.preFunc && opts.pObj.preFunc instanceof Function) {
-				this.applyPFunc(opts.pObj, elem, 'preFunc');
+			if(this.opts && this.opts.pObj && this.opts.pObj.preFunc && this.opts.pObj.preFunc instanceof Function) {
+				this.applyPFunc(this.opts.pObj, elem, 'preFunc');
 			}
 
 			var newElement = document.createElement('span');
 
-			switch(opts.textSpaces) {
+			switch(this.opts.textSpaces) {
 				case 'style':
 					newElement.innerText = words[i];
-					this.generateStyle( params, newElement );
-					this.appendTextElement(elem, newElement, opts);
+					this.generateStyle( this.params, newElement );
+					this.appendTextElement(elem, newElement, this.opts);
 
 					if(i!=(length-1)) {
 						this.currentStep++;
 						var spaceElement = document.createElement('span');
 						spaceElement.innerHTML = '&nbsp;';
-						this.generateStyle( params, spaceElement );
-						this.appendTextElement(elem, spaceElement, opts);
+						this.generateStyle( this.params, spaceElement);
+						this.appendTextElement(elem, spaceElement);
 					}
 				break;
 				case 'nostyle':
 					newElement.innerText = words[i];
-					this.generateStyle( params, newElement );
-					this.appendTextElement(elem, newElement, opts);
+					this.generateStyle( this.params, newElement );
+					this.appendTextElement(elem, newElement);
 
 					if(i!=(length-1)) {
 						this.currentStep++;
 						var spaceElement = document.createElement('span');
 						spaceElement.innerHTML = '&nbsp;';
-						this.appendTextElement(elem, spaceElement, opts);
+						this.appendTextElement(elem, spaceElement);
 					}
 				break;
 				case 'nostyleorcount':
 					newElement.innerText = words[i];
-					this.appendTextElement(elem, newElement, opts);
-					this.generateStyle( params, newElement );
+					this.appendTextElement(elem, newElement);
+					this.generateStyle( this.params, newElement );
 
 					if(i!=(length-1)) {
 						var spaceElement = document.createElement('span');
 						spaceElement.innerText = ' ';
-						this.appendTextElement(elem, spaceElement, opts);
+						this.appendTextElement(elem, spaceElement);
 					}
 				break;
 				case 'remove':
 					newElement.innerText = words[i];
-					this.generateStyle( params, newElement );
-					this.appendTextElement(elem, newElement, opts);
+					this.generateStyle( this.params, newElement );
+					this.appendTextElement(elem, newElement);
 				break;
 				case 'even':
 					if( (i % 2) != 0) {
 						newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
-						this.generateStyle( params, newElement );
+						this.generateStyle( this.params, newElement);
 					} else {
 						newElement.innerText = words[i];
-						this.generateStyle( params, newElement );
+						this.generateStyle( this.params, newElement);
 					}
-					this.appendTextElement(elem, newElement, opts);
+					this.appendTextElement(elem, newElement);
 				break;
-				case 'odd':
-					if( (i % 2) == 0) {
-						newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
-						this.generateStyle( params, newElement );
-					} else {
-						newElement.innerText = words[i];
-						this.generateStyle( params, newElement );
-				}
-					this.appendTextElement(elem, newElement, opts);
-				break;
-			}		
+                case 'odd':
+                    if( (i % 2) == 0) {
+                        newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
+                        this.generateStyle( this.params, newElement);
+                    } else {
+                        newElement.innerText = words[i];
+                        this.generateStyle( this.params, newElement);
+                    }
+                    this.appendTextElement(elem, newElement);
+                    break;
+                case 'both':
+                    newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
+                    this.generateStyle( this.params, newElement);
+                    this.appendTextElement(elem, newElement);
+                    break;
+			}
 
 			//Post Function
-			if(!!opts && !!opts.pObj && !!opts.pObj.posFunc && opts.pObj.posFunc instanceof Function) {
-				this.applyPFunc(opts.pObj, elem, 'posFunc');
+			if(!!this.opts && !!this.opts.pObj && !!this.opts.pObj.posFunc && this.opts.pObj.posFunc instanceof Function) {
+				this.applyPFunc(this.opts.pObj, elem, 'posFunc');
 			}
 
 			this.currentStep++;
 		}
 
 	},
-	generateStyle: function( params, el ) {
+	generateStyle: function( params, el) {
 		var styleDefinition = "";
 
 		for(var p in params) {
@@ -360,7 +370,7 @@ var generativeText = {
 					el.style[styleName] = this.generateNumericStyle(params[p], this.defs[p][1]);
 				break;
 				case 'Color':
-					el.style[styleName] = '#' + this.generateColorStyle( params[p]);
+					el.style[styleName] = this.generateColorStyle( params[p]);
 				break;
 				case 'List':
 					if(styleName == 'background-image') {

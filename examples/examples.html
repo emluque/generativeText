@@ -1,0 +1,178 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="../generativeText.js"></script>
+
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700|Source+Code+Pro' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Alegreya+Sans+SC|Exo+2|Oleo+Script+Swash+Caps|IM+Fell+Great+Primer|Gilda+Display|Macondo+Swash+Caps|PT+Mono|Chicle|Sigmar+One|Lily+Script+One|Denk+One|Montaga|Mystery+Quest|Alike+Angular' rel='stylesheet' type='text/css'>
+
+<style type="text/css">
+body {
+	font-family: 'Open Sans', sans-serif;
+	margin: 0;
+}
+
+code {
+	font-family: 'Source Code Pro', Courier, monospace;
+}
+
+header {
+	background-color: #ca3a11;
+	color: #f0f0f0;
+	padding: 1em;
+}
+
+main {
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+.example h3 {
+	font-size: 1.6em;
+	color: #ca3a11;
+}
+
+.example-placeholder { border: 1px solid black; padding: 3em; border-radius: 10px;}
+.example-placeholder-text { font-size: 3em;}
+.example-placeholder-text span { display: inline-block; height: 70px; overflow: hidden;}
+</style>
+
+<script type="text/javascript">
+	jQuery( document ).ready(function( $ ) {
+
+		var params1 = {
+			fontFamily: {
+				values: [
+					"'Alegreya Sans SC', sans-serif",
+					"'Exo 2', sans-serif",
+					"'Oleo Script Swash Caps', cursive",
+					"'IM Fell Great Primer', serif",
+					"'Gilda Display', serif",
+					"'Macondo Swash Caps', cursive",
+					"'PT Mono', sans-serif",
+					"'Chicle', cursive",
+					"'Sigmar One', cursive",
+					"'Lily Script One', cursive",
+					"'Denk One', sans-serif",
+					"'Montaga', serif",
+					"'Mystery Quest', cursive",
+					"'Alike Angular', serif"
+				]
+			}
+		};
+
+		var ex1 = new generativeText(params1);
+		ex1.applyToElementById("example1");
+
+		var params2 = {
+			backgroundColor: {
+				type: 'list',
+				values: [
+					'#ca3a11',
+					'#333333',
+				],
+				steps:true,
+			},
+			color: {
+				type: 'list',
+				values: [
+					'#333333',
+					'#ca3a11',
+				],
+				steps:true,
+			}
+		};
+
+		var opts2 = {
+			applyTo: "words",
+			textSpaces: 'both',
+		}
+		var ex2 = new generativeText(params2, opts2);
+		ex2.applyToElementById("example2");
+
+	});
+</script>
+
+</head>
+
+<body>
+<header><h1>generativeText examples</h1></header>
+<main>
+
+	<div class="example">
+		<h3>Basic example</h3>
+		<p>Randomly select a different font-family for each letter. Will produce a different result on each load of the page.</p>
+		<div class="example-placeholder">
+			<div id="example1" class="example-placeholder-text">Never mind the Bollocks, here's generativeText!</div>
+		</div>
+		<h4>Code</h4>
+	<pre><code>
+var params = {
+	fontFamily: {
+		values: [
+			"'Alegreya Sans SC', sans-serif",
+			"'Exo 2', sans-serif",
+			"'Oleo Script Swash Caps', cursive",
+			"'IM Fell Great Primer', serif",
+			"'Gilda Display', serif",
+			"'Macondo Swash Caps', cursive",
+			"'PT Mono', sans-serif",
+			"'Chicle', cursive",
+			"'Sigmar One', cursive",
+			"'Lily Script One', cursive",
+			"'Denk One', sans-serif",
+			"'Montaga', serif",
+			"'Mystery Quest', cursive",
+			"'Alike Angular', serif"
+		]
+	}
+};
+
+var ex1 = new generativeText(params);
+ex1.applyToElementById("fontFace-example");
+	</code></pre>
+	</div>
+
+	<div class="example">
+		<h3>Apply to words example</h3>
+		<p>Change background and foreground color, step by step and apply it to the words on the text.</p>
+		<div class="example-placeholder">
+			<div id="example2" class="example-placeholder-text">Never mind the Bollocks, here's generativeText!</div>
+		</div>
+		<h4>Code</h4>
+	<pre><code>
+var params2 = {
+	backgroundColor: {
+		type: 'list',
+		values: [
+			'#ca3a11',
+			'#333333',
+		],
+		steps:true,
+	},
+	color: {
+		type: 'list',
+		values: [
+			'#333333',
+			'#ca3a11',
+		],
+		steps:true,
+	}
+};
+
+var opts2 = {
+	applyTo: "words",
+	textSpaces: 'both',
+}
+
+var ex2 = new generativeText(params2, opts2);
+ex2.applyToElementById("example2");
+	</code></pre>
+	</div>
+
+</main>
+
+</body>
+</html>
