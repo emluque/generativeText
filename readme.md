@@ -1,9 +1,11 @@
 ### generativeText
 
-An experimental (currently it's a work in progress) javascript generative design library for CSS text transformations. See the examples to understand what I mean.
+I' m going to be working during the next weeks to change this completely. Among the changes we'll see soon are:
 
-I'm currently working on this. I'm using github as a versioning system. Once I have reached an acceptable level of completion I will update this file with some documentation and a proper explanation of what this library does and it's intentions.
+. Take out the jQuery Dependencies. Make it to a pure Javascript Library.
+. Move the whole thing to create objects, rather than using a monolithic library. This should help to add a proper resizing function.
+. Clean the whole thing up.
+. Write a complete test suit.
+. Add all CSS properties that are currently being used (text shadows, transform, etc)
+. Write propper documentation, some examples and a proper GUI to test it.
 
-## Dependencies
-
-I have developed this on top of: jQuery 1.10.2 . Have no idea if it works with earlier versions.

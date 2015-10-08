@@ -84,7 +84,14 @@ var generativeText = {
 	currentStep: 0,
 	memory: [],
 	stepFuncObj: {},
-	applyToElems: function(elems, params, opts) {
+	applyToElementsByClassName: function(className, params, opts) {
+
+		var elems = document.getElementsByClassName(className);
+		if(elems.length === 0) {
+			console.log("Not a valid className: " + className);
+			return;
+		}
+
 		this.currentStep = 0;
 		this.memory = [];
 
@@ -92,7 +99,7 @@ var generativeText = {
 		this.totalSteps = elems.length;
 
 		for(var i=0; i < elems.length; i++) {
-			jel = jQuery(elems[i]);
+			var jel = elems[i];
 			this.generateStyle(params, jel);
 			if(!!opts && !!opts.memory) this.memory.push(jel);
 			this.currentStep++;
@@ -110,7 +117,14 @@ var generativeText = {
 		strJSON += "}";
 	    return strJSON;
 	},
-	applyToElem: function (elem, params, opts) {
+	applyToElementById: function (id, params, opts) {
+
+		var elem = document.getElementById(id);
+		if(!elem) {
+			console.log("Not a valid ID: " + id);
+			return;
+		}
+
 		this.currentStep = 0;
 		this.memory = [];
 
@@ -150,10 +164,10 @@ var generativeText = {
 	},
 	applyToText: function( elem, params, opts ) {
 
-		var text = elem.text();
+		var text = elem.innerText;
 
 		//Empty element
-		elem.empty();
+		elem.innerHTML = "";
 
 		//remove
 		if( typeof opts.removeSpaceDups == 'undefined') opts.removeSpaceDups = true;
@@ -174,10 +188,12 @@ var generativeText = {
 				this.applyPFunc(opts.pObj, elem, 'preFunc');
 			}
 
-			var t = text[i], newElement;
+			var t = text[i];
+			var newElement = document.createElement('span');
+
 			if( /\s/.test(t) ) {
 
-				newElement = jQuery('<span>&nbsp;</span>');
+				newElement.innerHTML = '&nbsp;';
 
 				switch(opts.textSpaces) {
 					case 'style':
@@ -196,7 +212,7 @@ var generativeText = {
 					break;
 				}				
 			} else {
-				newElement = jQuery('<span>' + t + '</span>');
+				newElement.innerText = t;
 				this.generateStyle( params, newElement );
 				this.appendTextElement(elem, newElement, opts);
 			}
@@ -211,7 +227,7 @@ var generativeText = {
 	},
 	appendTextElement: function(elem, ne, opts) {
 				if(!!opts && !!opts.memory) this.memory.push( ne );
-				elem.append( ne );
+				elem.appendChild( ne );
 	},
 	initializeApplyToWords: function(opts, length) {
 
@@ -234,10 +250,10 @@ var generativeText = {
 	},
 	applyToWords: function( elem, params, opts ) {
 
-		var text = elem.text();
+		var text = elem.innerText;
 
 		//Empty element
-		elem.empty();
+		elem.innerHTML = "";
 
 		text = text.replace(/(&nbsp;)+/g, ' ');
 		text = text.replace(/\s+/g, ' ');
@@ -255,63 +271,66 @@ var generativeText = {
 				this.applyPFunc(opts.pObj, elem, 'preFunc');
 			}
 
-			var newElement;
+			var newElement = document.createElement('span');
 
 			switch(opts.textSpaces) {
 				case 'style':
-					newElement = jQuery('<span>' + words[i] + '</span>');
+					newElement.innerText = words[i];
 					this.generateStyle( params, newElement );
 					this.appendTextElement(elem, newElement, opts);
 
 					if(i!=(length-1)) {
 						this.currentStep++;
-						newElement = jQuery('<span>&nbsp;</span>');
-						this.generateStyle( params, newElement );
-						this.appendTextElement(elem, newElement, opts);
+						var spaceElement = document.createElement('span');
+						spaceElement.innerHTML = '&nbsp;';
+						this.generateStyle( params, spaceElement );
+						this.appendTextElement(elem, spaceElement, opts);
 					}
 				break;
 				case 'nostyle':
-					newElement = jQuery('<span>' + words[i] + '</span>');
+					newElement.innerText = words[i];
 					this.generateStyle( params, newElement );
 					this.appendTextElement(elem, newElement, opts);
 
 					if(i!=(length-1)) {
 						this.currentStep++;
-						newElement = jQuery('<span>&nbsp;</span>');
-						this.appendTextElement(elem, newElement, opts);
+						var spaceElement = document.createElement('span');
+						spaceElement.innerHTML = '&nbsp;';
+						this.appendTextElement(elem, spaceElement, opts);
 					}
 				break;
 				case 'nostyleorcount':
-					newElement = jQuery('<span>' + words[i] + '</span>');
+					newElement.innerText = words[i];
 					this.appendTextElement(elem, newElement, opts);
 					this.generateStyle( params, newElement );
 
 					if(i!=(length-1)) {
-						newElement = jQuery('<span>&nbsp;</span>');
-						this.appendTextElement(elem, newElement, opts);
+						var spaceElement = document.createElement('span');
+						spaceElement.innerText = ' ';
+						this.appendTextElement(elem, spaceElement, opts);
 					}
 				break;
 				case 'remove':
-					newElement = jQuery('<span>' + words[i] + '</span>');
+					newElement.innerText = words[i];
 					this.generateStyle( params, newElement );
 					this.appendTextElement(elem, newElement, opts);
 				break;
 				case 'even':
 					if( (i % 2) != 0) {
-						newElement = jQuery('<span>' + ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'') + '</span>');
+						newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
 						this.generateStyle( params, newElement );
 					} else {
-						newElement = jQuery('<span>' + words[i] + '</span>');						
+						newElement.innerText = words[i];
 						this.generateStyle( params, newElement );
 					}
 					this.appendTextElement(elem, newElement, opts);
 				break;
 				case 'odd':
 					if( (i % 2) == 0) {
-						newElement = jQuery('<span>' + ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'') + '</span>');
+						newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
 						this.generateStyle( params, newElement );
 					} else {
-						newElement = jQuery('<span>' + words[i] + '</span>');						
+						newElement.innerText = words[i];
 						this.generateStyle( params, newElement );
 				}
 					this.appendTextElement(elem, newElement, opts);
@@ -338,24 +357,24 @@ var generativeText = {
 
 			switch( this.defs[ p ][0] ) {
 				case 'Numeric':
-					el.css(styleName, this.generateNumericStyle(params[p], this.defs[p][1]) );
+					el.style[styleName] = this.generateNumericStyle(params[p], this.defs[p][1]);
 				break;
 				case 'Color':
-					el.css(styleName, '#' + this.generateColorStyle( params[p]) );
+					el.style[styleName] = '#' + this.generateColorStyle( params[p]);
 				break;
 				case 'List':
 					if(styleName == 'background-image') {
-						el.css(styleName, "url('" + this.generateListStyle( params[p] ) + "')");
+						el.style[styleName] = "url('" + this.generateListStyle( params[p] ) + "')";
 					} else {
-						el.css(styleName, this.generateListStyle( params[p] ));
+						el.style[styleName] = this.generateListStyle( params[p] );
 					}
 				break;
 				case 'Rotate':
 					params[p].unit = "";
 					var val = this.generateNumericVariation(params[p]);
-					el.css({ 	"transform" : "rotate(" + val + "deg)",
-								"-ms-transform" : "rotate(" + val + "deg)",
-								"-webkit-transform" : "rotate(" + val + "deg)" });
+					el.style["transform"] = "rotate(" + val + "deg)";
+					el.style["-ms-transform"] = "rotate(" + val + "deg)";
+					el.style["-webkit-transform"] = "rotate(" + val + "deg)";
 				break;
 			}
 		}

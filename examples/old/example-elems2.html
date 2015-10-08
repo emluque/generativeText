@@ -30,7 +30,7 @@ jQuery( document ).ready(function( $ ) {
 	var opts = {
 		memory:true
 	};
-		generativeText.applyToElems( jQuery("#example > p"), params, opts );
+		generativeText.applyToElementsByClassName("ex", params, opts );
 	});
 
 
@@ -57,15 +57,15 @@ jQuery( document ).ready(function( $ ) {
 	<div class="example-placeholder">
 		<div id="example">
 			<p><strong>Facebook, Twitter, Et al.</strong></p>
-			<p>A Cacophony of voices,</p>
-			<p>7.2B Discourses, multiple choices.</p>
-			<p>Rebuznos, graznidos y gritos,</p>
-			<p>I just might be developing <em>Tinitus</em>.</p>
-			<p>Is it just a reflector, or maybe a connector,</p>
-			<p>conversely moving, no sign of director.</p>
-			<p>Yapping, rapping, rhyming, chatting.</p>
-			<p>Permanently. Simultaneously.</p>
-			<p>Cadavre Exquis</p>
+			<p class="ex">A Cacophony of voices,</p>
+			<p class="ex">7.2B Discourses, multiple choices.</p>
+			<p class="ex">Rebuznos, graznidos y gritos,</p>
+			<p class="ex">I just might be developing <em>Tinitus</em>.</p>
+			<p class="ex">Is it just a reflector, or maybe a connector,</p>
+			<p class="ex">conversely moving, no sign of director.</p>
+			<p class="ex">Yapping, rapping, rhyming, chatting.</p>
+			<p class="ex">Permanently. Simultaneously.</p>
+			<p class="ex">Cadavre Exquis</p>
 		</div>
 		<div class="actions">
 			<a href="javascript:;">Apply</a>

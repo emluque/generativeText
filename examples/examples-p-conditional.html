@@ -38,18 +38,18 @@ jQuery( document ).ready(function( $ ) {
 				return "#" + arr[0] + arr[1] + arr[2];
 			}
 			
-			var currentBG = rgbToHex(this.memory[ this.currentStep ].css('background-color'));
+			var currentBG = rgbToHex(this.memory[ this.currentStep ].style['background-color']);
 
 			switch( currentBG ) {
 				case '#FF0000':
 				case '#BF3030':
 				case '#A60000':
-					this.memory[ this.currentStep ].css("color", "white");
+					this.memory[ this.currentStep ].style["color"] = "white";
 				break;
 				case '#FF4040':
 				case '#FF7373':
 				default:
-					this.memory[ this.currentStep ].css("color", "black");
+					this.memory[ this.currentStep ].style["color"] =  "black";
 				break;
 			} 
 
@@ -74,7 +74,7 @@ jQuery( document ).ready(function( $ ) {
 			memory: true,
 			pObj: { posFunc: cond1Function }
 		}
-		generativeText.applyToElem( jQuery("#cond1-example"), params, opts );
+		generativeText.applyToElementById( "cond1-example", params, opts );
 	});
 
 
