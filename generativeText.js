@@ -164,9 +164,15 @@ generativeText.prototype = {
 		this.stepFuncObj.totalSteps = this.totalSteps;
 
 	},
-	applyToText: function( elem) {
+	applyToText: function(elem) {
 
-		var text = elem.innerText;
+		var text;
+
+		if(!!elem.textContent) {
+			text = elem.textContent;
+		} else {
+			text = elem.innerText;
+		}
 
 		//Empty element
 		elem.innerHTML = "";
@@ -214,7 +220,7 @@ generativeText.prototype = {
 					break;
 				}				
 			} else {
-				newElement.innerText = t;
+				newElement.innerHTML = t;
 				this.generateStyle( this.params, newElement );
 				this.appendTextElement(elem, newElement);
 			}
@@ -253,7 +259,13 @@ generativeText.prototype = {
 	},
 	applyToWords: function( elem ) {
 
-		var text = elem.innerText;
+		var text;
+
+		if(!!elem.textContent) {
+			text = elem.textContent;
+		} else {
+			text = elem.innerText;
+		}
 
 		//Empty element
 		elem.innerHTML = "";
@@ -278,7 +290,7 @@ generativeText.prototype = {
 
 			switch(this.opts.textSpaces) {
 				case 'style':
-					newElement.innerText = words[i];
+					newElement.innerHTML = words[i];
 					this.generateStyle( this.params, newElement );
 					this.appendTextElement(elem, newElement, this.opts);
 
@@ -291,7 +303,7 @@ generativeText.prototype = {
 					}
 				break;
 				case 'nostyle':
-					newElement.innerText = words[i];
+					newElement.innerHTML = words[i];
 					this.generateStyle( this.params, newElement );
 					this.appendTextElement(elem, newElement);
 
@@ -303,18 +315,18 @@ generativeText.prototype = {
 					}
 				break;
 				case 'nostyleorcount':
-					newElement.innerText = words[i];
+					newElement.innerHTML = words[i];
 					this.appendTextElement(elem, newElement);
 					this.generateStyle( this.params, newElement );
 
 					if(i!=(length-1)) {
 						var spaceElement = document.createElement('span');
-						spaceElement.innerText = ' ';
+						spaceElement.innerHTML = ' ';
 						this.appendTextElement(elem, spaceElement);
 					}
 				break;
 				case 'remove':
-					newElement.innerText = words[i];
+					newElement.innerHTML = words[i];
 					this.generateStyle( this.params, newElement );
 					this.appendTextElement(elem, newElement);
 				break;
@@ -323,7 +335,7 @@ generativeText.prototype = {
 						newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
 						this.generateStyle( this.params, newElement);
 					} else {
-						newElement.innerText = words[i];
+						newElement.innerHTML = words[i];
 						this.generateStyle( this.params, newElement);
 					}
 					this.appendTextElement(elem, newElement);
@@ -333,7 +345,7 @@ generativeText.prototype = {
                         newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
                         this.generateStyle( this.params, newElement);
                     } else {
-                        newElement.innerText = words[i];
+                        newElement.innerHTML = words[i];
                         this.generateStyle( this.params, newElement);
                     }
                     this.appendTextElement(elem, newElement);

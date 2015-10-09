@@ -152,11 +152,18 @@ main {
 				var current = this.memory[ this.currentStep ];
 
 				//Test for Space
-				if( /\s/.test(current.innerText) ) {
+				var text;
+				if(!!current.textContent) {
+					text = current.textContent;
+				} else {
+					text = current.innerText;
+				}
+
+				if( /\s/.test(text) ) {
 					this.lastSpace = this.currentStep;
 				}
 				var rightMargin = current.offsetLeft + current.offsetWidth;
-				if(rightMargin > (this.container.clientWidth - 30)) {
+				if(rightMargin > (this.container.clientWidth - 30) && !this.first) {
 					var br = document.createElement('br');
 					this.container.insertBefore(br, this.memory[this.lastSpace]);
 					this.memory[this.lastSpace].style.display = "none";
@@ -349,11 +356,18 @@ var lineBreaks = {
 		var current = this.memory[ this.currentStep ];
 
 		//Test for Space
-		if( /\s/.test(current.innerText) ) {
+		var text;
+		if(!!current.textContent) {
+			text = current.textContent;
+		} else {
+			text = current.innerText;
+		}
+
+		if( /\s/.test(text) ) {
 			this.lastSpace = this.currentStep;
 		}
 		var rightMargin = current.offsetLeft + current.offsetWidth;
-		if(rightMargin > (this.container.clientWidth - 30)) {
+		if(rightMargin > (this.container.clientWidth - 30) && !this.first) {
 			var br = document.createElement('br');
 			this.container.insertBefore(br, this.memory[this.lastSpace]);
 			this.memory[this.lastSpace].style.display = "none";
