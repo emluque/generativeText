@@ -164,8 +164,7 @@ generativeText.prototype = {
 		this.stepFuncObj.totalSteps = this.totalSteps;
 
 	},
-	applyToText: function(elem) {
-
+	getElementText: function(elem) {
 		var text;
 
 		if(!!elem.textContent) {
@@ -173,6 +172,11 @@ generativeText.prototype = {
 		} else {
 			text = elem.innerText;
 		}
+		return text;
+	},
+	applyToText: function(elem) {
+
+		var text = this.getElementText(elem);
 
 		//Empty element
 		elem.innerHTML = "";
@@ -259,13 +263,7 @@ generativeText.prototype = {
 	},
 	applyToWords: function( elem ) {
 
-		var text;
-
-		if(!!elem.textContent) {
-			text = elem.textContent;
-		} else {
-			text = elem.innerText;
-		}
+		var text = this.getElementText(elem);
 
 		//Empty element
 		elem.innerHTML = "";
