@@ -473,26 +473,26 @@ generativeText.prototype = {
 
 		}
 	},
-	generateListStyle: function(params, unit) {
+	generateListStyle: function(param, unit) {
 		if(!!unit) params.unit = unit;
-		return this.generateListVariation(params);
+		return this.generateListVariation(param);
 	},
-	generateListVariation: function(params) {
-		if(typeof params.unit === 'undefined') params.unit = ""; 
+	generateListVariation: function(param) {
+		if(typeof param.unit === 'undefined') param.unit = "";
 
-		if( !!params.steps && params.steps == true) {
-			if(!!params.stepFunction && params.stepFunction instanceof Function) {
+		if( !!param.steps && param.steps == true) {
+			if(!!param.stepFunction && param.stepFunction instanceof Function) {
 
 				this.stepFuncObj.currentStep = this.currentStep;
-				this.stepFuncObj.valuesLength = params.values.length;
+				this.stepFuncObj.valuesLength = param.values.length;
 
-				return params.values[ Math.floor( params.stepFunction.apply(this.stepFuncObj) ) ] + params.unit;
+				return param.values[ Math.floor( param.stepFunction.apply(this.stepFuncObj) ) ] + param.unit;
 			} else {
-				return params.values[ this.currentStep %  params.values.length] + params.unit;
+				return param.values[ this.currentStep %  param.values.length] + param.unit;
 			}
 		} else {
-			var randomIndex = Math.floor((Math.random()*params.values.length));		
-			return params.values[ randomIndex ] + params.unit;
+			var randomIndex = Math.floor((Math.random()*param.values.length));
+			return param.values[ randomIndex ] + param.unit;
 		}
 	},
 	roundUnit: function(val, unit) {
