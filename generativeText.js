@@ -394,33 +394,33 @@ generativeText.prototype = {
 		}
 		return styleDefinition;
 	},
-	generateColorStyle: function(params) {
-		return this.generateColorVariation(params);
+	generateColorStyle: function(param) {
+		return this.generateColorVariation(param);
 	},
-	generateColorVariation: function(params) {
-		params.unit = "";
-		switch(params.type) {
+	generateColorVariation: function(param) {
+		param.unit = "";
+		switch(param.type) {
 			case 'list':
-				return this.generateListVariation(params);
-			break;
+				return this.generateListVariation(param);
+				break;
 			case 'random':
 				var rgb = { min:'00', max:'FF'};
 				return this.generateRGBHex(rgb) + this.generateRGBHex(rgb) + this.generateRGBHex(rgb);
-			break;
+				break;
 			case 'generate':
 			default:
 				var rgbHex = "";
-				if(typeof params.r != 'undefined') rgbHex += this.generateRGBHex(params.r);
-				if(typeof params.g != 'undefined') rgbHex += this.generateRGBHex(params.g);
-				if(typeof params.b != 'undefined') rgbHex += this.generateRGBHex(params.b);
+				if(typeof param.r != 'undefined') rgbHex += this.generateRGBHex(param.r);
+				if(typeof param.g != 'undefined') rgbHex += this.generateRGBHex(param.g);
+				if(typeof param.b != 'undefined') rgbHex += this.generateRGBHex(param.b);
 				return rgbHex;
-			break;
+				break;
 		}
 	},
 	generateRGBHex: function(c) {
 		if(!!c.fixed) {
 			return c.fixed;
-		} else if(!!c.min && !!c.max) {
+		} else if(typeof c.min != 'undefined' && typeof c.max != 'undefined') {
 			var range = parseInt(c.max, 16) - parseInt(c.min, 16);
 			if(typeof c.steps != 'undefined' && c.steps == true) {
 				if(!!c.stepFunction && c.stepFunction instanceof Function) {
@@ -440,6 +440,9 @@ generativeText.prototype = {
 			} else {
 				return this.rgbCheck((parseInt(c.min, 16) + Math.floor((Math.random()*range)) ).toString(16));
 			}
+		} else {
+			throw ("generativeText Error - Color Parameter without either fixed or (min and max) value: (" + c.fixed + ", " + c.min + ", " + c.max + ")" );
+			return;
 		}
 	},
 	rgbCheck: function(s) {
@@ -451,7 +454,6 @@ generativeText.prototype = {
 		return this.generateNumericVariation(param);
 	},
 	generateNumericVariation: function( param ) {
-
 		//Pixels is default unit
 		if(typeof param.unit == 'undefined') param.unit = "px";
 
@@ -482,7 +484,6 @@ generativeText.prototype = {
 						return this.roundUnit( (param.min + (( range/this.totalSteps)*this.currentStep)), param.unit );
 					}
 				} else {
-					console.log("Aca puto");
 					return this.roundUnit( ((Math.random()*range) + param.min), param.unit);
 				}
 				break;
@@ -494,7 +495,6 @@ generativeText.prototype = {
 		return this.generateListVariation(param);
 	},
 	generateListVariation: function(param) {
-		console.log()
 		if(!param.values || !(param.values.constructor === Array) || (param.values.constructor === Array && param.values.length < 1)) {
 			throw ("generativeText Error - List Parameter without values.");
 			return;

@@ -31,6 +31,17 @@ describe("GenerativeText", function() {
 
   });
 
+  describe('.rgbCheck()', function() {
+
+    it("should return RGB Units properly", function() {
+      var mock = new generativeText();
+      expect(mock.rgbCheck("5")).toEqual("05");
+      expect(mock.rgbCheck("15")).toEqual("15");
+      expect(mock.rgbCheck("aa")).toEqual("aa");
+    });
+
+  });
+
   describe(".generateListVariation()", function() {
 
     var param = {};
@@ -169,5 +180,95 @@ describe("GenerativeText", function() {
     });
 
   });
+
+  describe(".generateRGBHex()", function() {
+    var param = {};
+    it("should throw an exception if param.fixed or (param.min and param.max) are not set", function() {
+      var mock = new generativeText();
+      expect(mock.generateRGBHex).toThrow();
+    });
+
+    it("should return a fixed value when using param.fixed", function() {
+      param.fixed = "aa";
+      var mock = new generativeText();
+      expect(mock.generateRGBHex(param)).toBe('aa');
+    });
+
+    it("should return a random value within param.values when not using steps", function() {
+      param.fixed = null;
+      param.min = "aa";
+      param.max = "cc";
+      var mock = new generativeText();
+      var testGreater = mock.generateRGBHex(param) >= "aa";
+      expect(testGreater).toBe(true);
+      var testSmaller = mock.generateRGBHex(param) <= "cc";
+      expect(testSmaller).toBe(true);
+    });
+
+    it("should return a value based on the currentStep when using steps", function() {
+      param.fixed = null;
+      param.min = "00";
+      param.max = "10";
+      param.steps = true;
+      var mock = new generativeText();
+      mock.totalSteps = 15;
+      mock.currentStep = 0;
+      expect(mock.generateRGBHex(param)).toBe('00');
+      mock.currentStep = 2;
+      expect(mock.generateRGBHex(param)).toBe('02');
+      mock.currentStep = 10;
+      expect(mock.generateRGBHex(param)).toBe('0a');
+
+    });
+
+    it("should return the value in the key returned by the stepFunction when using stepFunction", function() {
+      param.fixed = null;
+      param.min = "aa";
+      param.max = "cc";
+      param.steps = true;
+      param.stepFunction = function() {
+        return 16;
+      };
+      var mock = new generativeText();
+      expect(mock.generateRGBHex(param)).toBe('10');
+    });
+
+    it("should provide stepFunction with access to currentStep, totalSteps, range, min and max", function() {
+      param.fixed = null;
+      param.min = '00';
+      param.max = '80';
+      param.steps = true;
+      param.stepFunction = function() {
+        return this.currentStep;
+      };
+      var mock = new generativeText();
+      mock.currentStep = 32;
+      expect(mock.generateRGBHex(param)).toBe('20');
+
+      param.stepFunction = function() {
+        return this.totalSteps;
+      };
+      mock.totalSteps = 255;
+      expect(mock.generateRGBHex(param)).toBe('ff');
+
+      param.stepFunction = function() {
+        return this.range;
+      };
+      expect(mock.generateRGBHex(param)).toBe('80');
+
+      param.stepFunction = function() {
+        return this.min;
+      };
+      expect(mock.generateRGBHex(param)).toBe('00');
+
+      param.stepFunction = function() {
+        return this.max;
+      };
+      expect(mock.generateRGBHex(param)).toBe('80');
+    });
+
+  });
+
+
 
 });
