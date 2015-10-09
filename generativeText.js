@@ -461,6 +461,11 @@ generativeText.prototype = {
 				break;
 			case "generate":
 			default:
+				if(typeof param.min == 'undefined' || typeof param.max == 'undefined') {
+					throw ("generativeText Error - Numeric Parameter without min or max value: (" + param.min + ", " + param.max + ")" );
+					return;
+				}
+
 				var range = param.max - param.min;
 				if( !!param.steps && param.steps == true) {
 					if(!!param.stepFunction && param.stepFunction instanceof Function) {
@@ -477,6 +482,7 @@ generativeText.prototype = {
 						return this.roundUnit( (param.min + (( range/this.totalSteps)*this.currentStep)), param.unit );
 					}
 				} else {
+					console.log("Aca puto");
 					return this.roundUnit( ((Math.random()*range) + param.min), param.unit);
 				}
 				break;
@@ -488,8 +494,9 @@ generativeText.prototype = {
 		return this.generateListVariation(param);
 	},
 	generateListVariation: function(param) {
-		if(!param.values instanceof Array || (param.values instanceof Array && param.values.length < 1)) {
-			throw ("generativeText Error - List Parameter without values: " + param);
+		console.log()
+		if(!param.values || !(param.values.constructor === Array) || (param.values.constructor === Array && param.values.length < 1)) {
+			throw ("generativeText Error - List Parameter without values.");
 			return;
 		}
 
