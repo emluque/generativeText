@@ -32,9 +32,15 @@ describe("GenerativeText", function() {
   });
 
   describe(".generateListVariation()", function() {
-    var param = {
-      values: [0, 1,2,3,4]
-    }
+
+    var param = {};
+    it("should throw an exception if param.values is not an array", function() {
+
+      var mock = new generativeText();
+      expect(mock.generateListVariation(param)).toThrow();
+    });
+
+    param.values = [0, 1,2,3,4];
 
     it("should return a random value within param.values when not using steps", function() {
       var mock = new generativeText();
@@ -62,7 +68,7 @@ describe("GenerativeText", function() {
       expect(mock.generateListVariation(param)).toBe('2');
     });
 
-    it("should provide stepFunction with access to currentStep and valuesLength", function() {
+    it("should provide stepFunction with access to currentStep, totalSteps and valuesLength", function() {
       param.steps = true;
       param.stepFunction = function() {
         return this.currentStep + 1;
@@ -72,9 +78,25 @@ describe("GenerativeText", function() {
       expect(mock.generateListVariation(param)).toBe('2');
 
       param.stepFunction = function() {
+        return this.totalSteps + 1;
+      };
+      mock.totalSteps = 1;
+      expect(mock.generateListVariation(param)).toBe('2');
+
+      param.stepFunction = function() {
         return this.valuesLength - 1;
       };
       expect(mock.generateListVariation(param)).toBe('4');
+    });
+
+  });
+
+
+  describe(".generateNumericVariation()", function() {
+    it("should return a random value within param.values when not using steps", function() {
+      var mock = new generativeText();
+      expect(mock.generateListVariation(param)).toBeLessThan(5);
+      expect(mock.generateListVariation(param)).toBeGreaterThan(-1);
     });
 
   });

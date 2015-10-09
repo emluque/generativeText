@@ -161,8 +161,6 @@ generativeText.prototype = {
             this.opts.pObj.container = this.container;
 		}
 
-		this.stepFuncObj.totalSteps = this.totalSteps;
-
 	},
 	getElementText: function(elem) {
 		var text;
@@ -258,8 +256,6 @@ generativeText.prototype = {
             this.opts.pObj.container = this.container;
 		}
 		
-		this.stepFuncObj.totalSteps = this.totalSteps;
-
 	},
 	applyToWords: function( elem ) {
 
@@ -429,12 +425,14 @@ generativeText.prototype = {
 			if(typeof c.steps != 'undefined' && c.steps == true) {
 				if(!!c.stepFunction && c.stepFunction instanceof Function) {
 
-					this.stepFuncObj.currentStep = this.currentStep;
-					this.stepFuncObj.range = range;
-					this.stepFuncObj.min = parseInt(c.min, 16);
-					this.stepFuncObj.max = parseInt(c.max, 16);
+					var stepFuncObj = {};
+					stepFuncObj.totalSteps = this.totalSteps;
+					stepFuncObj.currentStep = this.currentStep;
+					stepFuncObj.range = range;
+					stepFuncObj.min = parseInt(c.min, 16);
+					stepFuncObj.max = parseInt(c.max, 16);
 
-					return this.rgbCheck(Math.floor( c.stepFunction.apply(this.stepFuncObj)).toString(16));
+					return this.rgbCheck(Math.floor( c.stepFunction.apply( stepFuncObj )).toString(16));
 				} else {
 					var colorStep = range / this.totalSteps;
 					return this.rgbCheck((parseInt(c.min, 16) + Math.floor(colorStep * this.currentStep) ).toString(16));
@@ -448,55 +446,64 @@ generativeText.prototype = {
 		if(s.length == 1) s = "0" + s;
 		return s;
 	},
-	generateNumericStyle: function(params, unit) {
-		if(!!unit) params.unit = unit;
-		return this.generateNumericVariation(params);
+	generateNumericStyle: function(param, unit) {
+		if(!!unit) param.unit = unit;
+		return this.generateNumericVariation(param);
 	},
-	generateNumericVariation: function( params ) {
+	generateNumericVariation: function( param ) {
 
 		//Pixels is default unit
-		if(typeof params.unit == 'undefined') params.unit = "px";
+		if(typeof param.unit == 'undefined') param.unit = "px";
 
-		switch(params.type) {
+		switch(param.type) {
 			case "list":
-				return this.generateListVariation(params);
-			break;
+				return this.generateListVariation(param);
+				break;
 			case "generate":
 			default:
-				var range = params.max - params.min;
-				if( !!params.steps && params.steps == true) {
-					if(!!params.stepFunction && params.stepFunction instanceof Function) {
+				var range = param.max - param.min;
+				if( !!param.steps && param.steps == true) {
+					if(!!param.stepFunction && param.stepFunction instanceof Function) {
 
-						this.stepFuncObj.currentStep = this.currentStep;
-						this.stepFuncObj.range = range;
-						this.stepFuncObj.min = params.min;
-						this.stepFuncObj.max = params.max;
+						var stepFuncObj = {};
+						stepFuncObj.totalSteps = this.totalSteps;
+						stepFuncObj.currentStep = this.currentStep;
+						stepFuncObj.range = range;
+						stepFuncObj.min = param.min;
+						stepFuncObj.max = param.max;
 
-						return this.roundUnit( params.stepFunction.apply(this.stepFuncObj), params.unit );
+						return this.roundUnit( param.stepFunction.apply(stepFuncObj), param.unit );
 					} else {
-						return this.roundUnit( (params.min + (( range/this.totalSteps)*this.currentStep)), params.unit );
+						return this.roundUnit( (param.min + (( range/this.totalSteps)*this.currentStep)), param.unit );
 					}
 				} else {
-					return this.roundUnit( ((Math.random()*range) + params.min), params.unit);
+					return this.roundUnit( ((Math.random()*range) + param.min), param.unit);
 				}
-			break;
+				break;
 
 		}
 	},
 	generateListStyle: function(param, unit) {
-		if(!!unit) params.unit = unit;
+		if(!!unit) param.unit = unit;
 		return this.generateListVariation(param);
 	},
 	generateListVariation: function(param) {
+		if(!param.values instanceof Array || (param.values instanceof Array && param.values.length < 1)) {
+			throw ("generativeText Error - List Parameter without values: " + param);
+			return;
+		}
+
 		if(typeof param.unit === 'undefined') param.unit = "";
 
 		if( !!param.steps && param.steps == true) {
 			if(!!param.stepFunction && param.stepFunction instanceof Function) {
 
-				this.stepFuncObj.currentStep = this.currentStep;
-				this.stepFuncObj.valuesLength = param.values.length;
+				var stepFuncObj = {};
+				stepFuncObj.totalSteps = this.totalSteps;
+				stepFuncObj.currentStep = this.currentStep;
+				stepFuncObj.valuesLength = param.values.length;
 
-				return param.values[ Math.floor( param.stepFunction.apply(this.stepFuncObj) ) ] + param.unit;
+				return param.values[ Math.floor( param.stepFunction.apply(stepFuncObj) ) ] + param.unit;
 			} else {
 				return param.values[ this.currentStep %  param.values.length] + param.unit;
 			}
