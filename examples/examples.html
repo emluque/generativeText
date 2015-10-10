@@ -140,44 +140,8 @@ main {
 			}
 		};
 
-		var lineBreaks = {
-			lastSpace: 0,
-			containerWidth: 0,
-			first: true,
-
-			posFunc: function() {
-
-				if(this.containerWidth == 0) this.containerWidth = this.container.clientWidth;
-
-				var current = this.memory[ this.currentStep ];
-
-				//Test for Space
-				var text;
-				if(!!current.textContent) {
-					text = current.textContent;
-				} else {
-					text = current.innerText;
-				}
-
-				if( /\s/.test(text) ) {
-					this.lastSpace = this.currentStep;
-				}
-				var rightMargin = current.offsetLeft + current.offsetWidth;
-				if(rightMargin > (this.container.clientWidth - 30) && !this.first) {
-					var br = document.createElement('br');
-					this.container.insertBefore(br, this.memory[this.lastSpace]);
-					this.memory[this.lastSpace].style.display = "none";
-				}
-
-
-				this.first = false;
-			}
-		};
-
 		var opts5 = {
-			textSpaces:'nostyle',
-			pObj: lineBreaks,
-			memory: true
+			applyTo: "wrapped",
 		};
 
 		var ex5 = new generativeText(params5, opts5);

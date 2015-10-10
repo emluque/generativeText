@@ -129,16 +129,22 @@ generativeText.prototype = {
         this.memory = [];
         this.container = elem;
 
-        if(!!this.opts) {
-            if(this.opts.applyTo == "words") {
-                this.applyToWords(elem);
-                return;
-            }
-        } else {
-            this.opts = {};
-        }
+		//Set opts.applyTo default
+        if(!this.opts) this.opts = {};
+		if(!this.opts.applyTo) this.opts.applyTo = "text";
 
-        this.applyToText(elem);
+		switch(this.opts.applyTo) {
+			case "words":
+				this.applyToWords(elem);
+				break;
+			case "wrapped":
+				this.applyToWrapped(elem);
+				break;
+			case "text":
+			default:
+				this.applyToText(elem);
+				break;
+		}
     },
 	initializeApplyToText: function(text) {
 
@@ -239,6 +245,78 @@ generativeText.prototype = {
 				if(!!this.opts && !!this.opts.memory) this.memory.push( ne );
 				elem.appendChild( ne );
 	},
+	applyToWrapped: function(elem) {
+
+		var text = this.getElementText(elem);
+
+		//Empty element
+		elem.innerHTML = "";
+
+		//remove
+		if( typeof this.opts.removeSpaceDups == 'undefined') this.opts.removeSpaceDups = true;
+
+		if(this.opts.removeSpaceDups) {
+			text = text.replace(/\s+/g, ' ');
+		}
+
+		this.initializeApplyToText(text);
+
+		var length = text.length;
+
+		var wrapper = document.createElement('span');
+		wrapper.style.whiteSpace = "nowrap";
+
+		//Add new elements
+		for(var i=0; i<length; i++) {
+
+			//Pre Function
+			if(!!this.opts && !!this.opts.pObj && !!this.opts.pObj.preFunc && this.opts.pObj.preFunc instanceof Function) {
+				this.applyPFunc(this.opts.pObj, elem, 'preFunc');
+			}
+
+			var t = text[i];
+			var newElement = document.createElement('span');
+
+			if( /\s/.test(t) ) {
+
+				this.appendTextElement(elem, wrapper);
+				var wrapper = document.createElement('span');
+				wrapper.style.whiteSpace = "nowrap";
+
+				newElement.innerHTML = '&nbsp;';
+
+				switch(this.opts.textSpaces) {
+					case 'style':
+						this.generateStyle( this.params, newElement );
+						this.appendTextElement(elem, newElement);
+						break;
+					case 'nostyle':
+						this.appendTextElement(elem, newElement);
+						break;
+					case 'nostyleorcount':
+						this.appendTextElement(elem, newElement);
+						this.currentStep--;
+						break;
+					case 'remove':
+						this.currentStep--;
+						break;
+				}
+			} else {
+				newElement.innerHTML = t;
+				this.generateStyle( this.params, newElement );
+				this.appendTextElement(wrapper, newElement);
+			}
+
+			//Post Function
+			if(!!this.opts && !!this.opts.pObj && !!this.opts.pObj.posFunc && this.opts.pObj.posFunc instanceof Function) {
+				this.applyPFunc(this.opts.pObj, elem, 'posFunc');
+			}
+
+			this.currentStep++;
+		}
+		this.appendTextElement(elem, wrapper);
+	},
+
 	initializeApplyToWords: function(length) {
 
 		//style is default
