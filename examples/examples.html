@@ -36,7 +36,8 @@ main {
 
 .example-placeholder { border: 1px solid black; padding: 3em; border-radius: 10px;}
 .example-placeholder-text { font-size: 3em;}
-.example-placeholder-text span { display: inline-block; height: 70px; overflow: hidden;}
+.example-placeholder-text span { display: inline-block; }
+.example-placeholder-text.height70 span { height: 70px; overflow: hidden; }
 .example-placeholder-text.normal{ font-size: 1em;}
 .example-placeholder-text.normal span { height: 34px; font-size: 1.7em;}
 .normal h4 {
@@ -104,12 +105,12 @@ main {
 			fontSize: {
 				type:'generate',
 				unit:'em',
-				min:0.4,
-				max:1,
+				min:0.3,
+				max:1.2,
 				steps:true,
 				stepFunction:function (f) {
 					two_pi = 6.2832;
-					step = two_pi / this.totalSteps;
+					step = (two_pi * 6) / this.totalSteps;
 					val = (Math.cos( (step * this.currentStep ) ) +1) / 2;
 					return this.min + (this.range * val);
 				}
@@ -147,6 +148,50 @@ main {
 		var ex5 = new generativeText(params5, opts5);
 		ex5.applyToElementById("example5");
 
+		var params6 = {
+			color: {
+				type:'list',
+				values: ['ff0000', '000000', 'efefef'],
+			}
+		};
+
+		var conditionalBackground = {
+
+			values: ['ff0000', '000000', 'efefef'],
+
+			posFunc: function() {
+
+				var current = this.memory[ this.currentStep ];
+				var color = current.style.color;
+				var rand = Math.round(Math.random());
+				switch(color) {
+					case "rgb(255, 0, 0)":
+						var key = 1 + rand;
+						break;
+					case "rgb(0, 0, 0)":
+						var key = (2 + rand) % 3;
+						break;
+					case "rgb(239, 239, 239)":
+						var key = rand;
+						break;
+				}
+				current.style.backgroundColor = "#" + this.values[ key ];
+			}
+		};
+
+		var opts6 = {
+			applyTo: 'words',
+			pObj: conditionalBackground,
+			memory: true,
+			textSpaces: "both",
+
+		};
+
+		var ex6 = new generativeText(params6, opts6);
+		ex6.applyToElementById("example6");
+
+
+
 	});
 </script>
 
@@ -160,7 +205,7 @@ main {
 		<h3>Basic example</h3>
 		<p>Randomly select a different font-family for each letter. Will produce a different result on each load of the page.</p>
 		<div class="example-placeholder">
-			<div id="example1" class="example-placeholder-text">Nevermind the Bollocks, here's generativeText!</div>
+			<div id="example1" class="example-placeholder-text height70">Nevermind the Bollocks, here's generativeText!</div>
 		</div>
 		<h4>Code</h4>
 	<pre><code>
@@ -216,7 +261,7 @@ ex1.applyToElementsByClassName("example2");
 		<h3>Apply to words</h3>
 		<p>Change background and foreground color by repeated steps and apply it to the words on the text.</p>
 		<div class="example-placeholder">
-			<div id="example3" class="example-placeholder-text">This reminds me of 90's Wired Mag for some reason.</div>
+			<div id="example3" class="example-placeholder-text height70">This reminds me of 90's Wired Mag for some reason.</div>
 		</div>
 		<h4>Code</h4>
 	<pre><code>
@@ -253,7 +298,7 @@ ex2.applyToElementById("example3");
 		<h3>Using Step functions</h3>
 		<p>You can use all kind of weird functions you want on the parameters.</p>
 		<div class="example-placeholder">
-			<div id="example4" class="example-placeholder-text">This text will bend to a weird and cool shape.</div>
+			<div id="example4" class="example-placeholder-text">This text will bend into a weird and cool shape. Isn't this pretty amazing? I'm just adding some more text here so that in the next example I can show you the difference bettween using applyTo: "text" and applyTo: "wrapped".</div>
 		</div>
 		<h4>Code</h4>
 	<pre><code>
@@ -278,10 +323,9 @@ ex4.applyToElementById("example4");
 	</code></pre>
 	</div>
 
-
 	<div class="example">
-		<h3>Using Post or Pre functions</h3>
-		<p>You can use Post or Pre functions to each step of the process. This P functions will be will be run before or after each element is processed.</p>
+		<h3>applyTo: "wrapped"</h3>
+		<p>As you probably saw on the last example, by default, generativeText text breaks lines to fit the container width. This means that a line break may occur anywhere on the word. This can be prevented by using applyTo: "wrapped"</p>
 		<div class="example-placeholder">
 			<div id="example5" class="example-placeholder-text  no-wierdness">Usually used in reference to a computer application, a text-based application is one whose primary input and output are based on text rather than graphics or sound. This does not mean that text-based applications do not have graphics or sound, just that the graphics or sound are secondary to the text.</div>
 		</div>
@@ -308,44 +352,8 @@ var params5 = {
 	}
 };
 
-var lineBreaks = {
-	lastSpace: 0,
-	containerWidth: 0,
-	first: true,
-
-	posFunc: function() {
-
-		if(this.containerWidth == 0) this.containerWidth = this.container.clientWidth;
-
-		var current = this.memory[ this.currentStep ];
-
-		//Test for Space
-		var text;
-		if(!!current.textContent) {
-			text = current.textContent;
-		} else {
-			text = current.innerText;
-		}
-
-		if( /\s/.test(text) ) {
-			this.lastSpace = this.currentStep;
-		}
-		var rightMargin = current.offsetLeft + current.offsetWidth;
-		if(rightMargin > (this.container.clientWidth - 30) && !this.first) {
-			var br = document.createElement('br');
-			this.container.insertBefore(br, this.memory[this.lastSpace]);
-			this.memory[this.lastSpace].style.display = "none";
-		}
-
-
-		this.first = false;
-	}
-};
-
 var opts5 = {
-	textSpaces:'nostyle',
-	pObj: lineBreaks,
-	memory: true
+	applyTo: "wrapped",
 };
 
 var ex5 = new generativeText(params5, opts5);
@@ -353,6 +361,61 @@ ex5.applyToElementById("example5");
 
 	</code></pre>
 	</div>
+
+	<div class="example">
+		<h3>Using Post or Pre functions</h3>
+		<p>You can use Post or Pre functions to each step of the process. This P functions will be will be run before or after each element is processed.</p>		<div class="example-placeholder">
+			<div id="example6" class="example-placeholder-text  no-wierdness">Usually used in reference to a computer application, a text-based application is one whose primary input and output are based on text rather than graphics or sound. This does not mean that text-based applications do not have graphics or sound, just that the graphics or sound are secondary to the text.</div>
+		</div>
+		<h4>Code</h4>
+	<pre><code>
+var params6 = {
+	color: {
+		type:'list',
+		values: ['ff0000', '000000', 'efefef'],
+	}
+};
+
+var conditionalBackground = {
+
+	values: ['ff0000', '000000', 'eeeeee'],
+
+	posFunc: function() {
+
+		var current = this.memory[ this.currentStep ];
+		var color = current.style.color;
+		var rand = Math.round(Math.random());
+		switch(color) {
+			case "rgb(255, 0, 0)":
+				var key = 1 + rand;
+				break;
+			case "rgb(0, 0, 0)":
+				var key = (2 + rand) % 3;
+				break;
+			case "rgb(239, 239, 239)":
+				var key = rand;
+			break;
+		}
+		current.style.backgroundColor = "#" + this.values[ key ];
+	}
+};
+
+var opts6 = {
+	applyTo: 'words',
+	pObj: conditionalBackground,
+	memory: true,
+	textSpaces: "both",
+};
+
+var ex6 = new generativeText(params6, opts6);
+ex6.applyToElementById("example6");
+
+	</code></pre>
+	</div>
+
+
+
+
 
 </main>
 

@@ -439,8 +439,6 @@ generativeText.prototype = {
 
 	},
 	generateStyle: function( params, el) {
-		var styleDefinition = "";
-
 		for(var p in params) {
 			//Check if definition exists
 			if(typeof this.defs[ p ] == 'undefined') {
@@ -473,7 +471,6 @@ generativeText.prototype = {
 				break;
 			}
 		}
-		return styleDefinition;
 	},
 	generateColorStyle: function(param) {
 		return "#" + this.generateColorVariation(param);
