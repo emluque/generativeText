@@ -473,7 +473,9 @@ generativeText.prototype = {
 		}
 	},
 	generateColorStyle: function(param) {
-		return "#" + this.generateColorVariation(param);
+		var tr = this.generateColorVariation(param);
+		if(tr.charAt(0) === "#") return tr;
+		return "#" + tr;
 	},
 	generateColorVariation: function(param) {
 		param.unit = "";

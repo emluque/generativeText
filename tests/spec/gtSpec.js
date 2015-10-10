@@ -387,7 +387,7 @@ describe("GenerativeText", function() {
   });
 
   describe(".generateColorStyle()", function() {
-    it("should prefix th value with a '#'", function() {
+    it("should prefix the color value with a '#'", function() {
       var param = {};
       param.r = {fixed:'aa'};
       param.g = {fixed:'bb'};
@@ -395,6 +395,13 @@ describe("GenerativeText", function() {
       var gt = new generativeText();
 
       expect(gt.generateColorStyle(param)).toBe('#aabbcc');
+    });
+
+    it("should not prefix the color value with a '#' if it already has that prefix", function() {
+      var param = { values:['#aaaaaa'], type: 'list'};
+      var gt = new generativeText();
+
+      expect(gt.generateColorStyle(param)).toBe('#aaaaaa');
     });
 
   });
