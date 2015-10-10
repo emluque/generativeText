@@ -374,7 +374,7 @@ generativeText.prototype = {
 					el.style[styleName] = this.generateNumericStyle(params[p], this.defs[p][1]);
 				break;
 				case 'Color':
-					el.style[styleName] = "#" + this.generateColorStyle( params[p]);
+					el.style[styleName] = this.generateColorStyle( params[p]);
 				break;
 				case 'List':
 					if(styleName == 'background-image') {
@@ -395,7 +395,7 @@ generativeText.prototype = {
 		return styleDefinition;
 	},
 	generateColorStyle: function(param) {
-		return this.generateColorVariation(param);
+		return "#" + this.generateColorVariation(param);
 	},
 	generateColorVariation: function(param) {
 		param.unit = "";
@@ -410,9 +410,13 @@ generativeText.prototype = {
 			case 'generate':
 			default:
 				var rgbHex = "";
-				if(typeof param.r != 'undefined') rgbHex += this.generateRGBHex(param.r);
-				if(typeof param.g != 'undefined') rgbHex += this.generateRGBHex(param.g);
-				if(typeof param.b != 'undefined') rgbHex += this.generateRGBHex(param.b);
+				if(typeof param.r == 'undefined' || typeof param.g == 'undefined' || typeof param.b == 'undefined'){
+					throw ("generativeText Error - Color without either r, g or b. You need to have them all, remember you can use fixed.");
+					return;
+				}
+				rgbHex += this.generateRGBHex(param.r);
+				rgbHex += this.generateRGBHex(param.g);
+				rgbHex += this.generateRGBHex(param.b);
 				return rgbHex;
 				break;
 		}

@@ -44,22 +44,24 @@ describe("GenerativeText", function() {
 
   describe(".generateListVariation()", function() {
 
-    var param = {};
     it("should throw an exception if param.values is not an array", function() {
 
       var mock = new generativeText();
       expect(mock.generateListVariation).toThrow();
     });
 
-    param.values = [0,1,2,3,4];
 
     it("should return a random value within param.values when not using steps", function() {
+      var param = {};
+      param.values = [0,1,2,3,4];
       var mock = new generativeText();
       expect(mock.generateListVariation(param)).toBeLessThan(5);
       expect(mock.generateListVariation(param)).toBeGreaterThan(-1);
     });
 
     it("should return a value based on the currentStep when using steps", function() {
+      var param = {};
+      param.values = [0,1,2,3,4];
       param.steps = true;
       var mock = new generativeText();
       mock.currentStep = 2;
@@ -71,6 +73,8 @@ describe("GenerativeText", function() {
     });
 
     it("should return the value in the key returned by the stepFunction when using stepFunction", function() {
+      var param = {};
+      param.values = [0,1,2,3,4];
       param.steps = true;
       param.stepFunction = function() {
         return 3;
@@ -80,6 +84,8 @@ describe("GenerativeText", function() {
     });
 
     it("should provide stepFunction with access to currentStep, totalSteps and valuesLength", function() {
+      var param = {};
+      param.values = [0,1,2,3,4];
       param.steps = true;
       param.stepFunction = function() {
         return this.currentStep + 1;
@@ -102,17 +108,35 @@ describe("GenerativeText", function() {
 
   });
 
+  describe(".generateListStyle()", function() {
+    it("should add the unit (argument to the function) when the param does not have it", function() {
+      var param = {};
+      param.values = [6];
+      var mock = new generativeText();
+      expect(mock.generateListStyle(param, 'px')).toBe('6px');
+    });
+  });
 
   describe(".generateNumericVariation()", function() {
 
-    var param = {};
     it("should throw an exception if param.min or param.max is not set", function() {
 
       var mock = new generativeText();
       expect(mock.generateNumericVariation).toThrow();
     });
 
+    it("should behave like a list variation when type is list", function() {
+      var param = {};
+      param.values = [1];
+      param.type = "list";
+      var mock = new generativeText();
+      expect(mock.generateNumericVariation(param)).toBe('1px');
+    });
+
+
+    var param = {};
     it("should return a random value within param.values when not using steps", function() {
+      var param = {};
       param.min = 0;
       param.max = 5;
       param.unit = "";
@@ -122,6 +146,7 @@ describe("GenerativeText", function() {
     });
 
     it("should return a value based on the currentStep when using steps", function() {
+      var param = {};
       param.min = 0;
       param.max = 5;
       param.unit = "";
@@ -138,6 +163,11 @@ describe("GenerativeText", function() {
     });
 
     it("should return the value in the key returned by the stepFunction when using stepFunction", function() {
+      var param = {};
+      param.min = 0;
+      param.max = 5;
+      param.unit = "";
+      param.steps = true;
       param.stepFunction = function() {
         return 3;
       };
@@ -146,6 +176,7 @@ describe("GenerativeText", function() {
     });
 
     it("should provide stepFunction with access to currentStep, totalSteps, range, min and max", function() {
+      var param = {};
       param.min = 0;
       param.max = 5;
       param.unit = "";
@@ -181,94 +212,157 @@ describe("GenerativeText", function() {
 
   });
 
+  describe(".generateNumericStyle()", function() {
+    it("should add the unit (argument to the function) when the param does not have it", function() {
+      var param = {};
+      param.values = [6];
+      param.type = "list";
+      var mock = new generativeText();
+      expect(mock.generateNumericStyle(param, 'px')).toBe('6px');
+    });
+  });
+
+
   describe(".generateRGBHex()", function() {
-    var param = {};
-    it("should throw an exception if param.fixed or (param.min and param.max) are not set", function() {
+    it("should throw an exception if c.fixed or (c.min and c.max) are not set", function() {
       var mock = new generativeText();
       expect(mock.generateRGBHex).toThrow();
     });
 
-    it("should return a fixed value when using param.fixed", function() {
-      param.fixed = "aa";
+    it("should return a fixed value when using c.fixed", function() {
+      var c = {};
+      c.fixed = "aa";
       var mock = new generativeText();
-      expect(mock.generateRGBHex(param)).toBe('aa');
+      expect(mock.generateRGBHex(c)).toBe('aa');
     });
 
-    it("should return a random value within param.values when not using steps", function() {
-      param.fixed = null;
-      param.min = "aa";
-      param.max = "cc";
+    it("should return a random value within c.values when not using steps", function() {
+      var c = {};
+      c.fixed = null;
+      c.min = "aa";
+      c.max = "cc";
       var mock = new generativeText();
-      var testGreater = mock.generateRGBHex(param) >= "aa";
+      var testGreater = mock.generateRGBHex(c) >= "aa";
       expect(testGreater).toBe(true);
-      var testSmaller = mock.generateRGBHex(param) <= "cc";
+      var testSmaller = mock.generateRGBHex(c) <= "cc";
       expect(testSmaller).toBe(true);
     });
 
     it("should return a value based on the currentStep when using steps", function() {
-      param.fixed = null;
-      param.min = "00";
-      param.max = "10";
-      param.steps = true;
+      var c = {};
+      c.fixed = null;
+      c.min = "00";
+      c.max = "10";
+      c.steps = true;
       var mock = new generativeText();
       mock.totalSteps = 15;
       mock.currentStep = 0;
-      expect(mock.generateRGBHex(param)).toBe('00');
+      expect(mock.generateRGBHex(c)).toBe('00');
       mock.currentStep = 2;
-      expect(mock.generateRGBHex(param)).toBe('02');
+      expect(mock.generateRGBHex(c)).toBe('02');
       mock.currentStep = 10;
-      expect(mock.generateRGBHex(param)).toBe('0a');
+      expect(mock.generateRGBHex(c)).toBe('0a');
 
     });
 
     it("should return the value in the key returned by the stepFunction when using stepFunction", function() {
-      param.fixed = null;
-      param.min = "aa";
-      param.max = "cc";
-      param.steps = true;
-      param.stepFunction = function() {
+      var c = {};
+      c.fixed = null;
+      c.min = "aa";
+      c.max = "cc";
+      c.steps = true;
+      c.stepFunction = function() {
         return 16;
       };
       var mock = new generativeText();
-      expect(mock.generateRGBHex(param)).toBe('10');
+      expect(mock.generateRGBHex(c)).toBe('10');
     });
 
     it("should provide stepFunction with access to currentStep, totalSteps, range, min and max", function() {
-      param.fixed = null;
-      param.min = '00';
-      param.max = '80';
-      param.steps = true;
-      param.stepFunction = function() {
+      var c = {};
+      c.fixed = null;
+      c.min = '00';
+      c.max = '80';
+      c.steps = true;
+      c.stepFunction = function() {
         return this.currentStep;
       };
       var mock = new generativeText();
       mock.currentStep = 32;
-      expect(mock.generateRGBHex(param)).toBe('20');
+      expect(mock.generateRGBHex(c)).toBe('20');
 
-      param.stepFunction = function() {
+      c.stepFunction = function() {
         return this.totalSteps;
       };
       mock.totalSteps = 255;
-      expect(mock.generateRGBHex(param)).toBe('ff');
+      expect(mock.generateRGBHex(c)).toBe('ff');
 
-      param.stepFunction = function() {
+      c.stepFunction = function() {
         return this.range;
       };
-      expect(mock.generateRGBHex(param)).toBe('80');
+      expect(mock.generateRGBHex(c)).toBe('80');
 
-      param.stepFunction = function() {
+      c.stepFunction = function() {
         return this.min;
       };
-      expect(mock.generateRGBHex(param)).toBe('00');
+      expect(mock.generateRGBHex(c)).toBe('00');
 
-      param.stepFunction = function() {
+      c.stepFunction = function() {
         return this.max;
       };
-      expect(mock.generateRGBHex(param)).toBe('80');
+      expect(mock.generateRGBHex(c)).toBe('80');
     });
 
   });
 
+  describe(".generateColorVariation()", function() {
 
+    it("should behave like a list variation when type is list", function() {
+      var param = {};
+      param.values = ["787878"];
+      param.type = "list";
+      var mock = new generativeText();
+      expect(mock.generateColorVariation(param)).toBe('787878');
+    });
+
+    it("should throw an exception when either r,g or b are not set", function() {
+      var param = {};
+      param.r = {fixed:'00'};
+      param.g = {fixed:'00'};
+      var mock = new generativeText();
+
+      var exceptionThrown = false;
+      try {
+        mock.generateColorVariation(param);
+      } catch(e) {
+        exceptionThrown = true;
+      }
+      expect(exceptionThrown).toBe(true);
+    });
+
+    it("should agregate r,g and b", function() {
+      var param = {};
+      param.r = {fixed:'aa'};
+      param.g = {fixed:'bb'};
+      param.b = {fixed:'cc'};
+      var mock = new generativeText();
+
+      expect(mock.generateColorVariation(param)).toBe('aabbcc');
+    });
+
+  });
+
+  describe(".generateColorStyle()", function() {
+    it("should prefix th value with a '#'", function() {
+      var param = {};
+      param.r = {fixed:'aa'};
+      param.g = {fixed:'bb'};
+      param.b = {fixed:'cc'};
+      var mock = new generativeText();
+
+      expect(mock.generateColorStyle(param)).toBe('#aabbcc');
+    });
+
+  });
 
 });
