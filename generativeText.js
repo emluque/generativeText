@@ -365,7 +365,10 @@ generativeText.prototype = {
 
 		for(var p in params) {
 			//Check if definition exists
-			if(typeof this.defs[ p ] == 'undefined') continue;
+			if(typeof this.defs[ p ] == 'undefined') {
+				throw ("generativeText Error - rule name is not supported: '" + p + "'");
+				return;
+			}
 
 			var styleName = p.replace(/([A-Z])/g, function(m){ return '-' + m.toLowerCase(); } );
 

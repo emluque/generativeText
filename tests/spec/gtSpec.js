@@ -42,6 +42,40 @@ describe("GenerativeText", function() {
 
   });
 
+  describe('.getElementText()', function() {
+    it("should get the text from inside a DOM node", function() {
+      var mockElement = document.createElement("div");
+      mockElement.innerHTML = "<p>aaaa<span>bbbb</span>cccc</p>"
+      var mock = new generativeText();
+      expect(mock.getElementText(mockElement)).toEqual("aaaabbbbcccc");
+    });
+
+  });
+
+  describe('.appendTextElement()', function() {
+    it("should append an element", function() {
+      var mockElement = document.createElement("div");
+      var mockNewElement = document.createElement("span");
+      mockNewElement.innerHTML = "AAAA";
+      var mock = new generativeText();
+      mock.appendTextElement(mockElement,mockNewElement);
+      expect(mockElement.innerHTML).toEqual("<span>AAAA</span>");
+    });
+
+    it("should append an element to memory if memory is set on opts", function() {
+      var mockElement = document.createElement("div");
+      var mockNewElement = document.createElement("span");
+      mockNewElement.innerHTML = "AAAA";
+      var mock = new generativeText();
+      mock.opts = {memory: true};
+      mock.appendTextElement(mockElement,mockNewElement);
+
+      expect(mock.memory).toEqual([mockNewElement]);
+    });
+
+  });
+
+
   describe(".generateListVariation()", function() {
 
     it("should throw an exception if param.values is not an array", function() {
@@ -363,6 +397,76 @@ describe("GenerativeText", function() {
       expect(mock.generateColorStyle(param)).toBe('#aabbcc');
     });
 
+  });
+
+  describe(".generateStyle()", function() {
+
+    it("should throw an exception when the rule name does not exist in defs", function() {
+      var params = {
+        pedro: {},
+      };
+      var mock = new generativeText();
+
+      var exceptionThrown = false;
+      try {
+        mock.generateColorVariation(param);
+      } catch(e) {
+        exceptionThrown = true;
+      }
+      expect(exceptionThrown).toBe(true);
+    });
+
+    it("should work on list rules", function() {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        fontFamily: { values:['Helvetica']},
+      };
+      var mock = new generativeText();
+
+      mock.generateStyle(params, elem);
+      expect( elem.style.fontFamily).toBe('Helvetica');
+    });
+
+    it("should work on numeric rules", function() {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        fontSize: { values:['1.4'], unit: 'em',  type: 'list'},
+      };
+      var mock = new generativeText();
+
+      mock.generateStyle(params, elem);
+      expect( elem.style.fontSize).toBe('1.4em');
+    });
+
+    it("should work on color rules", function() {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        color: { values:['aaaaaa'], type: 'list'},
+      };
+      var mock = new generativeText();
+
+      mock.generateStyle(params, elem);
+      expect( elem.style.color).toBe('rgb(170, 170, 170)');
+    });
+
+    it("should work on various rules at a time", function() {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        fontFamily: { values:['Helvetica']},
+        fontSize: { values:['1.4'], unit: 'em',  type: 'list'},
+        color: { values:['aaaaaa'], type: 'list'},
+      };
+      var mock = new generativeText();
+
+      mock.generateStyle(params, elem);
+      expect( elem.style.fontFamily).toBe('Helvetica');
+      expect( elem.style.fontSize).toBe('1.4em');
+      expect( elem.style.color).toBe('rgb(170, 170, 170)');
+    });
   });
 
 });
