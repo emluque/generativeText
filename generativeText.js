@@ -487,6 +487,7 @@ generativeText.prototype = {
 						}
 					}
 					var val = this.generateNumericStyle(params[p], unit);
+					console.log(val);
 					var strVal = p + "(" + val + ")";
 					this.setTransformStyle(el, "transform", strVal);
 					this.setTransformStyle(el, "-ms-transform", strVal);

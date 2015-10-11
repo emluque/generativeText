@@ -846,6 +846,30 @@ describe("GenerativeText", function() {
       expect(elem.style.transform).toBe('rotateX(30deg)');
     });
 
+    it("should work on transform rules that are not deg", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        translateX: {values: ['30'], type: 'list'},
+      };
+      var gt = new generativeText();
+
+      gt.generateStyle(params, elem);
+      expect(elem.style.transform).toBe('translateX(30px)');
+    });
+
+    it("should work on transform rules that are not deg an specify their own rule", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        translateX: {values: ['45'], unit: "em", type: 'list'},
+      };
+      var gt = new generativeText();
+
+      gt.generateStyle(params, elem);
+      expect(elem.style.transform).toBe('translateX(45em)');
+    });
+
     it("should work on various transform rules at a time", function () {
       var elem = document.createElement('span');
       elem.textContent = "A"
@@ -873,6 +897,42 @@ describe("GenerativeText", function() {
       expect(elem.style.fontFamily).toBe('Helvetica');
       expect(elem.style.fontSize).toBe('1.4em');
       expect(elem.style.color).toBe('rgb(170, 170, 170)');
+    });
+  });
+
+//  setTransformStyle: function(elem, style, val)
+  describe(".setTransformStyle()", function() {
+
+    it("should set transform rules", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var val = "rotateX(90deg)";
+
+      var gt = new generativeText();
+      gt.setTransformStyle(elem, "transform", val);
+      expect(elem.style.transform).toBe('rotateX(90deg)');
+    });
+
+    it("should set multiple transform rules", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var gt = new generativeText();
+      gt.setTransformStyle(elem, "transform", "rotateX(90deg)");
+      gt.setTransformStyle(elem, "transform", "skewX(45deg)");
+      expect(elem.style.transform).toBe('rotateX(90deg) skewX(45deg)');
+    });
+
+    it("should set the rules only once when adding browser specific syntax", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var gt = new generativeText();
+      gt.setTransformStyle(elem, "transform", "rotateX(90deg)");
+      gt.setTransformStyle(elem, "transform", "skewX(45deg)");
+      gt.setTransformStyle(elem, "-ms-transform", "rotateX(90deg)");
+      gt.setTransformStyle(elem, "-ms-transform", "skewX(45deg)");
+      gt.setTransformStyle(elem, "-webkit-transform", "rotateX(90deg)");
+      gt.setTransformStyle(elem, "-webkit-transform", "skewX(45deg)");
+      expect(elem.style.transform).toBe('rotateX(90deg) skewX(45deg)');
     });
   });
 
