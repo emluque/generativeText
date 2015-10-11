@@ -34,7 +34,17 @@ var generativeText = function(params, options) {
 
 generativeText.prototype = {
 	defs: {
-		rotate: ['Rotate'],
+		rotate: ['Transform', "deg"],
+		rotateX: ['Transform', "deg"],
+		rotateY: ['Transform', "deg"],
+		rotateZ: ['Transform', "deg"],
+		skewX: ['Transform', "deg"],
+		skewY: ['Transform', "deg"],
+		translateX: ['Transform', "px"],
+		translateY: ['Transform', "px"],
+		translateZ: ['Transform', "px"],
+		scaleX: ['Transform', "float"],
+		scaleY: ['Transform', "float"],
 		fontSize: ['Numeric'],
 		left: ['Numeric'],
 		right: ['Numeric'],
@@ -66,7 +76,7 @@ generativeText.prototype = {
 		width: ['Numeric'],
 		maxWidth: ['Numeric'],
 		minWidth: ['Numeric'],
-		opacity: ['Numeric', ";", "opacity"],
+		opacity: ['Numeric', ";", "float"],
 		letterSpacing: ['Numeric'],
 		wordSpacing: ['Numeric'],
 		lineHeight: ['Numeric'],
@@ -465,15 +475,40 @@ generativeText.prototype = {
 						el.style[styleName] = this.generateListStyle( params[p] );
 					}
 				break;
-				case 'Rotate':
-					params[p].unit = "";
-					var val = this.generateNumericVariation(params[p]);
-					el.style["transform"] = "rotate(" + val + "deg)";
-					el.style["-ms-transform"] = "rotate(" + val + "deg)";
-					el.style["-webkit-transform"] = "rotate(" + val + "deg)";
+				case 'Transform':
+					var unit = "";
+					if( this.defs[p][1] == "deg") {
+						unit = "deg";
+					} else {
+						if(params[p].unit) {
+							unit = params[p].unit;
+						} else {
+							unit = this.defs[p][1];
+						}
+					}
+					var val = this.generateNumericStyle(params[p], unit);
+					var strVal = p + "(" + val + ")";
+					this.setTransformStyle(el, "transform", strVal);
+					this.setTransformStyle(el, "-ms-transform", strVal);
+					this.setTransformStyle(el, "-webkit-transform", strVal);
 				break;
 			}
 		}
+	},
+	setTransformStyle: function(elem, style, val) {
+		var old = elem.style[style];
+		//nothing on transform
+		if(typeof old == "undefined") {
+			elem.style[style] = tmp + val;
+			return;
+		}
+		var tmp = old.split(" ");
+		for(var i=0; i<tmp.length; i++) {
+			//it was set somehow
+			if(tmp[i].trim() == val.trim()) return;
+		}
+		//does not exist on transform list
+		elem.style[style] = tmp + val;
 	},
 	generateColorStyle: function(param) {
 		var tr = this.generateColorVariation(param);
@@ -609,10 +644,9 @@ generativeText.prototype = {
 	},
 	roundUnit: function(val, unit) {
 		switch(unit) {
-			case "opacity":
-			//opacity is .2 but has no unit
+			case "float":
+			//treat as float but with no unit
 				return val.toFixed(2);
-			break;
 			case "em":
 			case "%":
 				return val.toFixed(2) + unit;

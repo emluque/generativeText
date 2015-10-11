@@ -834,6 +834,31 @@ describe("GenerativeText", function() {
       expect(elem.style.color).toBe('rgb(170, 170, 170)');
     });
 
+    it("should work on transform rules", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        rotateX: {values: ['30'], type: 'list'},
+      };
+      var gt = new generativeText();
+
+      gt.generateStyle(params, elem);
+      expect(elem.style.transform).toBe('rotateX(30deg)');
+    });
+
+    it("should work on various transform rules at a time", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        rotateX: {values: ['30'], type: 'list'},
+        skewX:  {values: ['30'], type: 'list'},
+      };
+      var gt = new generativeText();
+
+      gt.generateStyle(params, elem);
+      expect(elem.style.transform).toBe('rotateX(30deg) skewX(30deg)');
+    });
+
     it("should work on various rules at a time", function () {
       var elem = document.createElement('span');
       elem.textContent = "A"
@@ -1185,7 +1210,7 @@ describe("GenerativeText", function() {
 
     it("should round Units differently according to unit type", function () {
       var gt = new generativeText();
-      expect(gt.roundUnit(98.75689, "opacity")).toEqual("98.76");
+      expect(gt.roundUnit(98.75689, "float")).toEqual("98.76");
       expect(gt.roundUnit(98.75689, "em")).toEqual("98.76em");
       expect(gt.roundUnit(98.75, "px")).toEqual("99px");
     });
