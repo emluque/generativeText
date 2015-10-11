@@ -495,37 +495,59 @@ generativeText.prototype = {
 					this.setBrowserStyle(el, "-webkit-transform", strVal);
 				break;
 				case 'BoxShadow':
-					if(typeof params[p].hShadow == "undefined" || typeof params[p].vShadow == "undefined" || typeof params[p].blur == "undefined" || typeof params[p].spread == "undefined" || typeof params[p].color == "undefined") {
-						throw ("generativeText Error - BoxShadow without either hShadow, vShadow, blur, spread or color.");
-						return;
-					}
 					var strVal = "";
-					if(!!params[p].inset && params[p].inset) strVal = "inset";
-					strVal += " " + this.generateNumericStyle(params[p].hShadow, 'px');
-					strVal += " " + this.generateNumericStyle(params[p].vShadow, 'px');
-					strVal += " " + this.generateNumericStyle(params[p].blur, 'px');
-					strVal += " " + this.generateNumericStyle(params[p].spread, 'px');
-					strVal += " " + this.generateColorStyle(params[p].color);
+					if(params[p].constructor === Array) {
+						for(var i=0; i<params[p].length; i++) {
+							strVal += (i==0? "":", ") + this.generateBoxShadowStyle(params[p][i]);
+						}
+					} else {
+						strVal += this.generateBoxShadowStyle(params[p]);
+					}
 					this.setBrowserStyle(el, "box-shadow", strVal);
 					this.setBrowserStyle(el, "-moz-box-shadow", strVal);
 					this.setBrowserStyle(el, "-webkit-box-shadow", strVal);
 					break;
 				case 'TextShadow':
-					if(typeof params[p].hShadow == "undefined" || typeof params[p].vShadow == "undefined" || typeof params[p].blurRadius == "undefined" || typeof params[p].color == "undefined") {
-						throw ("generativeText Error - TextShadow without either hShadow, vShadow, blurRadius or color.");
-						return;
-					}
 					var strVal = "";
-					strVal += " " + this.generateNumericStyle(params[p].hShadow, 'px');
-					strVal += " " + this.generateNumericStyle(params[p].vShadow, 'px');
-					strVal += " " + this.generateNumericStyle(params[p].blurRadius, 'px');
-					strVal += " " + this.generateColorStyle(params[p].color);
+					if(params[p].constructor === Array) {
+						for(var i=0; i<params[p].length; i++) {
+							strVal += (i==0? "":", ") + this.generateTextShadowStyle(params[p][i]);
+						}
+					} else {
+						strVal += this.generateTextShadowStyle(params[p]);
+					}
 					this.setBrowserStyle(el, "text-shadow", strVal);
 					this.setBrowserStyle(el, "-moz-text-shadow", strVal);
 					this.setBrowserStyle(el, "-webkit-text-shadow", strVal);
 					break;
 			}
 		}
+	},
+	generateBoxShadowStyle: function(param) {
+		if(typeof param.hShadow == "undefined" || typeof param.vShadow == "undefined" || typeof param.blur == "undefined" || typeof param.spread == "undefined" || typeof param.color == "undefined") {
+			throw ("generativeText Error - BoxShadow without either hShadow, vShadow, blur, spread or color.");
+			return;
+		}
+		var strVal = "";
+		if(!!param.inset && param.inset) strVal = "inset";
+		strVal += " " + this.generateNumericStyle(param.hShadow, 'px');
+		strVal += " " + this.generateNumericStyle(param.vShadow, 'px');
+		strVal += " " + this.generateNumericStyle(param.blur, 'px');
+		strVal += " " + this.generateNumericStyle(param.spread, 'px');
+		strVal += " " + this.generateColorStyle(param.color);
+		return strVal;
+	},
+	generateTextShadowStyle: function(param) {
+		if(typeof param.hShadow == "undefined" || typeof param.vShadow == "undefined" || typeof param.blurRadius == "undefined" || typeof param.color == "undefined") {
+			throw ("generativeText Error - TextShadow without either hShadow, vShadow, blurRadius or color.");
+			return;
+		}
+		var strVal = "";
+		strVal += " " + this.generateNumericStyle(param.hShadow, 'px');
+		strVal += " " + this.generateNumericStyle(param.vShadow, 'px');
+		strVal += " " + this.generateNumericStyle(param.blurRadius, 'px');
+		strVal += " " + this.generateColorStyle(param.color);
+		return strVal;
 	},
 	setBrowserStyle: function(elem, style, val) {
 		var old = elem.style[style];
