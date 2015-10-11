@@ -22,8 +22,14 @@ THE SOFTWARE.
 "use strict";
 
 var generativeText = function(params, options) {
+	//initialize
 	this.params = params;
 	this.opts = options;
+
+	this.totalSteps = 0;
+	this.currentStep = 0;
+	this.memory = [];
+
 }
 
 generativeText.prototype = {
@@ -85,10 +91,6 @@ generativeText.prototype = {
 		fontWeight: ['List'],
 		clear: ['List']
 	},
-	totalSteps: 0,
-	currentStep: 0,
-	memory: [],
-	stepFuncObj: {},
 	applyToElementsByClassName: function(className) {
 
 		var elems = document.getElementsByClassName(className);
@@ -127,7 +129,6 @@ generativeText.prototype = {
     applyToElement: function(elem) {
         this.currentStep = 0;
         this.memory = [];
-        this.container = elem;
 
 		//Set opts.applyTo default
         if(!this.opts) this.opts = {};
@@ -145,6 +146,8 @@ generativeText.prototype = {
 				this.applyToText(elem);
 				break;
 		}
+		//Clean up Unused References
+		this.freepObj();
     },
 	getElementText: function(elem) {
 		var text;
@@ -160,11 +163,23 @@ generativeText.prototype = {
 		if(!!this.opts && !!this.opts.memory) this.memory.push( ne );
 		elem.appendChild( ne );
 	},
-	initializePObj: function() {
+	cleanUp: function() {
+			this.freepObj();
+			delete this.memory;
+
+	},
+	freepObj: function() {
+		if(!!this.opts.pObj) {
+			delete this.opts.pObj.memory;
+			delete this.opts.pObj.container;
+		}
+
+	},
+	initializePObj: function(elem) {
 		if(!!this.opts.pObj) {
 			this.opts.pObj.totalSteps = this.totalSteps;
 			this.opts.pObj.memory = this.memory;
-			this.opts.pObj.container = this.container;
+			this.opts.pObj.container = elem;
 		}
 	},
 	initializeApplyToText: function(text) {
@@ -181,7 +196,6 @@ generativeText.prototype = {
 			var countTextSpaces = text.split(" ").length - 1;
 			this.totalSteps = this.totalSteps - countTextSpaces;
 		}
-		this.initializePObj();
 	},
 	applyToText: function(elem) {
 
@@ -198,6 +212,7 @@ generativeText.prototype = {
 		}
 
 		this.initializeApplyToText(text);
+		this.initializePObj(elem);
 
 		var length = text.length;
 
@@ -206,7 +221,7 @@ generativeText.prototype = {
 
 			//Pre Function
 			if(!!this.opts && !!this.opts.pObj && !!this.opts.pObj.preFunc && this.opts.pObj.preFunc instanceof Function) {
-				this.applyPFunc(this.opts.pObj, elem, 'preFunc');
+				this.applyPFunc(this.opts.pObj, 'preFunc');
 			}
 
 			var t = text[i];
@@ -240,7 +255,7 @@ generativeText.prototype = {
 			
 			//Post Function
 			if(!!this.opts && !!this.opts.pObj && !!this.opts.pObj.posFunc && this.opts.pObj.posFunc instanceof Function) {
-				this.applyPFunc(this.opts.pObj, elem, 'posFunc');
+				this.applyPFunc(this.opts.pObj, 'posFunc');
 			}
 
 			this.currentStep++;
@@ -261,6 +276,7 @@ generativeText.prototype = {
 		}
 
 		this.initializeApplyToText(text);
+		this.initializePObj(elem);
 
 		var length = text.length;
 
@@ -272,7 +288,7 @@ generativeText.prototype = {
 
 			//Pre Function
 			if(!!this.opts && !!this.opts.pObj && !!this.opts.pObj.preFunc && this.opts.pObj.preFunc instanceof Function) {
-				this.applyPFunc(this.opts.pObj, elem, 'preFunc');
+				this.applyPFunc(this.opts.pObj, 'preFunc');
 			}
 
 			var t = text[i];
@@ -310,7 +326,7 @@ generativeText.prototype = {
 
 			//Post Function
 			if(!!this.opts && !!this.opts.pObj && !!this.opts.pObj.posFunc && this.opts.pObj.posFunc instanceof Function) {
-				this.applyPFunc(this.opts.pObj, elem, 'posFunc');
+				this.applyPFunc(this.opts.pObj, 'posFunc');
 			}
 
 			this.currentStep++;
@@ -327,8 +343,6 @@ generativeText.prototype = {
 		} else {
 			this.totalSteps = length;
 		}
-
-		this.initializePObj();
 	},
 	applyToWords: function( elem ) {
 
@@ -345,12 +359,13 @@ generativeText.prototype = {
 		var length = words.length;
 
 		this.initializeApplyToWords(this.opts, length);
+		this.initializePObj(elem);
 
 		for(var i=0; i<length; i++) {
 
 			//Pre Function
 			if(this.opts && this.opts.pObj && this.opts.pObj.preFunc && this.opts.pObj.preFunc instanceof Function) {
-				this.applyPFunc(this.opts.pObj, elem, 'preFunc');
+				this.applyPFunc(this.opts.pObj, 'preFunc');
 			}
 
 			var newElement = document.createElement('span');
@@ -426,7 +441,7 @@ generativeText.prototype = {
 
 			//Post Function
 			if(!!this.opts && !!this.opts.pObj && !!this.opts.pObj.posFunc && this.opts.pObj.posFunc instanceof Function) {
-				this.applyPFunc(this.opts.pObj, elem, 'posFunc');
+				this.applyPFunc(this.opts.pObj, 'posFunc');
 			}
 
 			this.currentStep++;
@@ -614,9 +629,8 @@ generativeText.prototype = {
 			break;
 		}
 	},
-	applyPFunc: function(pObj, elem, funcName) {
+	applyPFunc: function(pObj, funcName) {
 		pObj.currentStep = this.currentStep;
-		pObj.elem = elem;
 
 		pObj[ funcName ]();
 	}

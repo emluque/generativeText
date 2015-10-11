@@ -483,7 +483,8 @@ describe("GenerativeText", function() {
       gt.opts = { pObj: {} };
       gt.totalSteps = 127;
 
-      gt.initializePObj();
+      var elem = document.createElement('div');
+      gt.initializePObj(elem);
       expect(gt.opts.pObj.totalSteps).toBe(127);
 
     });
@@ -493,7 +494,8 @@ describe("GenerativeText", function() {
       gt.opts = { pObj: {} };
       gt.memory = [1,2,3];
 
-      gt.initializePObj();
+      var elem = document.createElement('div');
+      gt.initializePObj(elem);
       expect(gt.opts.pObj.memory).toBe(gt.memory);
 
     });
@@ -502,12 +504,9 @@ describe("GenerativeText", function() {
       var gt = new generativeText();
       gt.opts = { pObj: {} };
 
-      var el = document.createElement('div');
-
-      gt.container = el;
-
-      gt.initializePObj();
-      expect(gt.opts.pObj.container).toBe(gt.container);
+      var elem = document.createElement('div');
+      gt.initializePObj(elem);
+      expect(gt.opts.pObj.container).toBe(elem);
 
     });
 
@@ -549,5 +548,166 @@ describe("GenerativeText", function() {
     });
   });
 
+  describe(".applyToText()", function () {
+
+    it("should set true as default for opts.removeSpaceDups if it had not been set", function () {
+      var gt = new generativeText();
+      gt.opts = {};
+      gt.params = {};
+      var elem = document.createElement('div');
+      elem.innerHTML = "0"
+      gt.applyToText(elem);
+      expect(gt.opts.removeSpaceDups).toBe(true);
+
+    });
+
+    it("should remove space duplicates when this option is true", function () {
+      var gt = new generativeText();
+      gt.opts = {};
+      gt.params = {};
+      var elem = document.createElement('div');
+      elem.innerHTML = "0   0"
+      gt.applyToText(elem);
+      expect(elem.textContent.length).toBe(3);
+
+    });
+
+    it("should wrap each character in a <span>", function () {
+      var gt = new generativeText();
+      gt.opts = {};
+      gt.params = {};
+      var elem = document.createElement('div');
+      elem.innerHTML = "123"
+      gt.applyToText(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans.length).toBe(3);
+      expect(spans[0].textContent).toBe("1");
+      expect(spans[1].textContent).toBe("2");
+      expect(spans[2].textContent).toBe("3");
+
+    });
+
+    it("should wrap spaces in a <span> when textSpaces is set to 'style'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'style'};
+      gt.params = {};
+      var elem = document.createElement('div');
+      elem.innerHTML = "1 3"
+      gt.applyToText(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans.length).toBe(3);
+      expect(spans[0].textContent).toBe("1")
+      expect(/\s/.test(spans[1].textContent)).toBe(true);
+      expect(spans[2].textContent).toBe("3");
+    });
+
+    it("should style characters sequentially", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'style'};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "12345"
+      gt.applyToText(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].style.fontSize).toBe("1em");
+      expect(spans[1].style.fontSize).toBe("2em");
+      expect(spans[2].style.fontSize).toBe("3em");
+      expect(spans[3].style.fontSize).toBe("1em");
+      expect(spans[4].style.fontSize).toBe("2em");
+    });
+
+    it("should style spaces when textSpaces is set to 'style'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'style'};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "1 3"
+      gt.applyToText(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].style.fontSize).toBe("1em");
+      expect(spans[1].style.fontSize).toBe("2em");
+      expect(spans[2].style.fontSize).toBe("3em");
+    });
+
+    it("should not style spaces when textSpaces is set to 'nostyle'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'nostyle'};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "1 3"
+      gt.applyToText(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].style.fontSize).toBe("1em");
+      expect(spans[1].style.fontSize).toBe("");
+      expect(spans[2].style.fontSize).toBe("3em");
+    });
+
+    it("should not style spaces, skip count on applying of style when textSpaces is set to 'nostyleorcount'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'nostyleorcount'};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "1 3"
+      gt.applyToText(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].style.fontSize).toBe("1em");
+      expect(spans[1].style.fontSize).toBe("");
+      expect(spans[2].style.fontSize).toBe("2em");
+    });
+
+    it("should remove spaces when textSpaces is set to 'remove'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'remove'};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "1 3"
+      gt.applyToText(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans.length).toBe(2);
+      expect(spans[0].style.fontSize).toBe("1em");
+      expect(spans[1].style.fontSize).toBe("2em");
+    });
+
+    it("should call pObj.preFunc()", function () {
+      var gt = new generativeText();
+      gt.opts = {
+        pObj: {
+          preFunc: function() {
+            if(this.memory.length > 0) {
+              var previous = this.memory[ this.currentStep -1 ];
+              previous.style.fontWeight = "300";
+            }
+          }
+        },
+        memory: true,
+      };
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "1 3"
+      gt.applyToText(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].style.fontWeight).toBe("300");
+    });
+
+    it("should call pObj.posFunc()", function () {
+      var gt = new generativeText();
+      gt.opts = {
+        pObj: {
+          posFunc: function() {
+            var current = this.memory[ this.currentStep ];
+            current.style.fontWeight = "300";
+          }
+        },
+        memory: true,
+      };
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "13"
+      gt.applyToText(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].style.fontWeight).toBe("300");
+    });
+
+  });
 
 });
