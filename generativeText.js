@@ -355,6 +355,9 @@ generativeText.prototype = {
 
 		text = text.replace(/(&nbsp;)+/g, ' ');
 		text = text.replace(/\s+/g, ' ');
+		if(this.opts.textSpaces == 'odd' || this.opts.textSpaces == 'even'  || this.opts.textSpaces == 'all'  || this.opts.textSpaces == 'remove' ) {
+			text = text.trim();
+		}
 
 		var words = text.split(/\s+/);
 
@@ -405,7 +408,7 @@ generativeText.prototype = {
 
 					if(i!=(length-1)) {
 						var spaceElement = document.createElement('span');
-						spaceElement.innerHTML = ' ';
+						spaceElement.innerHTML = '&nbsp;';
 						this.appendTextElement(elem, spaceElement);
 					}
 				break;
@@ -434,7 +437,7 @@ generativeText.prototype = {
                     }
                     this.appendTextElement(elem, newElement);
                     break;
-                case 'both':
+                case 'all':
                     newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
                     this.generateStyle( this.params, newElement);
                     this.appendTextElement(elem, newElement);

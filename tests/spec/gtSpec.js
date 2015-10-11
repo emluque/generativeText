@@ -904,4 +904,263 @@ describe("GenerativeText", function() {
 
   });
 
+  describe(".initializeApplyToWords()", function () {
+
+    it("should set 'remove' as the default textspaces on opts if none is given", function () {
+      var gt = new generativeText();
+      gt.opts = {};
+      var text = "0123456789";
+      gt.initializeApplyToWords(10);
+      expect(gt.opts.textSpaces).toBe('remove');
+
+    });
+
+    it("should set totalSteps based on the length parameter", function () {
+      var gt = new generativeText();
+      gt.opts = {};
+      var text = "0123456789";
+      gt.initializeApplyToWords(10);
+      expect(gt.totalSteps).toBe(10);
+
+    });
+
+    it("should set totalSteps to account for spaces if opts.textSpaces is set to 'style' or 'nostyle'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: "style"};
+      var text = "0123456789";
+      gt.initializeApplyToWords(10);
+      expect(gt.totalSteps).toBe(19);
+
+    });
+
+  });
+
+  describe(".applyToWords()", function () {
+
+    it("should remove duplicated spaces", function () {
+      var gt = new generativeText();
+      gt.opts = {textSpaces: "style"};
+      gt.params = {};
+      var elem = document.createElement('div');
+      elem.innerHTML = "aaa    aaaa";
+      gt.applyToWords(elem);
+      expect(elem.getElementsByTagName('span').length).toBe(3);
+
+    });
+
+    it("should wrap each word in a <span>", function () {
+      var gt = new generativeText();
+      gt.opts = {};
+      gt.params = {};
+      var elem = document.createElement('div');
+      elem.innerHTML = "one two three";
+      gt.applyToWords(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans.length).toBe(3);
+      expect(spans[0].textContent).toBe("one");
+      expect(spans[1].textContent).toBe("two");
+      expect(spans[2].textContent).toBe("three");
+
+    });
+
+    it("should style words sequentially", function () {
+      var gt = new generativeText();
+      gt.opts = {};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "one two three four five";
+      gt.applyToWords(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].style.fontSize).toBe("1em");
+      expect(spans[1].style.fontSize).toBe("2em");
+      expect(spans[2].style.fontSize).toBe("3em");
+      expect(spans[3].style.fontSize).toBe("1em");
+      expect(spans[4].style.fontSize).toBe("2em");
+    });
+
+    it("should transform to '&nbsp' entity and style spaces when using textSpaces = 'style'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'style'};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "one two three four five";
+      gt.applyToWords(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].style.fontSize).toBe("1em");
+      expect(spans[1].style.fontSize).toBe("2em");
+      expect(spans[2].style.fontSize).toBe("3em");
+      expect(spans[3].style.fontSize).toBe("1em");
+      expect(spans[4].style.fontSize).toBe("2em");
+      expect(spans[5].style.fontSize).toBe("3em");
+      expect(spans[6].style.fontSize).toBe("1em");
+      expect(spans[7].style.fontSize).toBe("2em");
+      expect(spans[8].style.fontSize).toBe("3em");
+
+      expect(spans[1].innerHTML).toBe("&nbsp;");
+      expect(spans[3].innerHTML).toBe("&nbsp;");
+      expect(spans[5].innerHTML).toBe("&nbsp;");
+      expect(spans[7].innerHTML).toBe("&nbsp;");
+    });
+
+    it("should transform to '&nbsp' entity but not style spaces when using textSpaces = 'nostyle'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'nostyle'};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "one two three four five";
+      gt.applyToWords(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].style.fontSize).toBe("1em");
+      expect(spans[1].style.fontSize).toBe("");
+      expect(spans[2].style.fontSize).toBe("3em");
+      expect(spans[3].style.fontSize).toBe("");
+      expect(spans[4].style.fontSize).toBe("2em");
+      expect(spans[5].style.fontSize).toBe("");
+      expect(spans[6].style.fontSize).toBe("1em");
+      expect(spans[7].style.fontSize).toBe("");
+      expect(spans[8].style.fontSize).toBe("3em");
+
+      expect(spans[1].innerHTML).toBe("&nbsp;");
+      expect(spans[3].innerHTML).toBe("&nbsp;");
+      expect(spans[5].innerHTML).toBe("&nbsp;");
+      expect(spans[7].innerHTML).toBe("&nbsp;");
+    });
+
+    it("should transform to '&nbsp' entity but not style spaces or count when using textSpaces = 'nostyleorcount'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'nostyleorcount'};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "one two three four five";
+      gt.applyToWords(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].style.fontSize).toBe("1em");
+      expect(spans[1].style.fontSize).toBe("");
+      expect(spans[2].style.fontSize).toBe("2em");
+      expect(spans[3].style.fontSize).toBe("");
+      expect(spans[4].style.fontSize).toBe("3em");
+      expect(spans[5].style.fontSize).toBe("");
+      expect(spans[6].style.fontSize).toBe("1em");
+      expect(spans[7].style.fontSize).toBe("");
+      expect(spans[8].style.fontSize).toBe("2em");
+
+      expect(spans[1].innerHTML).toBe("&nbsp;");
+      expect(spans[3].innerHTML).toBe("&nbsp;");
+      expect(spans[5].innerHTML).toBe("&nbsp;");
+      expect(spans[7].innerHTML).toBe("&nbsp;");
+    });
+
+    it("should remove spaces when using textSpaces = 'nostyleorcount'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'remove'};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "one two three four five";
+      gt.applyToWords(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans.length).toBe(5);
+    });
+
+    it("should remove spaces and add '&nbsp' entities at the beginning and end of even elements, while not adding a '&nbsp' entitiy at the beggining or the end of the sequence, when using textSpaces = 'even'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'even'};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "one two three four";
+      gt.applyToWords(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].innerHTML).toBe("one");
+      expect(spans[1].innerHTML).toBe("&nbsp;two&nbsp;");
+      expect(spans[2].innerHTML).toBe("three");
+      expect(spans[3].innerHTML).toBe("&nbsp;four");
+    });
+
+    it("should remove spaces and add '&nbsp' entities at the beginning and end of odd elements, while not adding a '&nbsp' entitiy at the beggining or the end of the sequence, when using textSpaces = 'odd'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'odd'};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "one two three ";
+      gt.applyToWords(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].innerHTML).toBe("one&nbsp;");
+      expect(spans[1].innerHTML).toBe("two");
+      expect(spans[2].innerHTML).toBe("&nbsp;three");
+    });
+
+    it("should remove spaces and add '&nbsp' entities at the beginning and end of all elements, while not adding a '&nbsp' entitiy at the beggining or the end of the sequence, when using textSpaces = 'all'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'all'};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "one two three ";
+      gt.applyToWords(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].innerHTML).toBe("one&nbsp;");
+      expect(spans[1].innerHTML).toBe("&nbsp;two&nbsp;");
+      expect(spans[2].innerHTML).toBe("&nbsp;three");
+    });
+
+    it("should call pObj.preFunc() if it exists", function () {
+      var gt = new generativeText();
+      gt.opts = {
+        pObj: {
+          preFunc: function() {
+            if(this.memory.length > 0) {
+              var previous = this.memory[ this.currentStep -1 ];
+              previous.style.fontWeight = "300";
+            }
+          }
+        },
+        memory: true,
+      };
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "1 3";
+      gt.applyToWords(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].style.fontWeight).toBe("300");
+    });
+
+    it("should call pObj.posFunc() if it exists", function () {
+      var gt = new generativeText();
+      gt.opts = {
+        pObj: {
+          posFunc: function() {
+            var current = this.memory[ this.currentStep ];
+            current.style.fontWeight = "300";
+          }
+        },
+        memory: true,
+      };
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "13";
+      gt.applyToWords(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].style.fontWeight).toBe("300");
+    });
+
+    it("should give pObj.pFuncs access to currentStep", function () {
+      var gt = new generativeText();
+      gt.opts = {
+        pObj: {
+          posFunc: function() {
+            var current = this.memory[ this.currentStep ];
+            current.style.fontWeight = "300";
+          }
+        },
+        memory: true,
+      };
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "00 11 222 3 4444";
+      gt.applyToWords(elem);
+      expect(gt.opts.pObj.currentStep).toBe(4);
+    });
+
+
+  });
+
+
 });
