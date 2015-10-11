@@ -212,15 +212,6 @@ pip-log.txt
 *.mo
 
 #Mr Developer
-.mr.developer.cfg
-jquery-1.10.2.min.js
-design
-Todo
-Documentation
-textures/10_5431.JPG
-*.JPG
-textures/files.txt
-examples-p-linebreak-justify.html
-nada.html
-
 .idea
+examples
+examples/*
