@@ -91,6 +91,17 @@ generativeText.prototype = {
 		fontWeight: ['List'],
 		clear: ['List']
 	},
+	applyToElementById: function (id) {
+
+		var elem = document.getElementById(id);
+		if(!elem) {
+			throw ("generativeText Error - Not a valid ID: " + id);
+			return;
+		}
+
+		this.applyToElement(elem);
+
+	},
 	applyToElementsByClassName: function(className) {
 
 		var elems = document.getElementsByClassName(className);
@@ -102,29 +113,6 @@ generativeText.prototype = {
 		for(var i=0; i < elems.length; i++) {
             this.applyToElement(elems[i]);
 		}
-	},
-	styleToJSON: function( style ) {
-		var strJSON = "{";
-		var cssDirectives = style.split(";");
-	    var length = cssDirectives.length-1;
-		for(var i=0; i < length; i++) {
-			var cssDirective = cssDirectives[i].split(":");
-				strJSON += '"' + cssDirective[0] + '":"' + cssDirective[1] + '"';
-				strJSON += (i == length-1)?"":","; 
-		}
-		strJSON += "}";
-	    return strJSON;
-	},
-	applyToElementById: function (id) {
-
-		var elem = document.getElementById(id);
-		if(!elem) {
-			throw ("generativeText Error - Not a valid ID: " + id);
-			return;
-		}
-
-        this.applyToElement(elem);
-
 	},
     applyToElement: function(elem) {
         this.currentStep = 0;
@@ -544,10 +532,6 @@ generativeText.prototype = {
 			return;
 		}
 	},
-	rgbCheck: function(s) {
-		if(s.length == 1) s = "0" + s;
-		return s;
-	},
 	generateNumericStyle: function(param, unit) {
 		if(!!unit) param.unit = unit;
 		return this.generateNumericVariation(param);
@@ -618,6 +602,11 @@ generativeText.prototype = {
 			return param.values[ randomIndex ] + param.unit;
 		}
 	},
+	applyPFunc: function(pObj, funcName) {
+		pObj.currentStep = this.currentStep;
+
+		pObj[ funcName ]();
+	},
 	roundUnit: function(val, unit) {
 		switch(unit) {
 			case "opacity":
@@ -634,9 +623,21 @@ generativeText.prototype = {
 			break;
 		}
 	},
-	applyPFunc: function(pObj, funcName) {
-		pObj.currentStep = this.currentStep;
+	rgbCheck: function(s) {
+		if(s.length == 1) s = "0" + s;
+		return s;
+	},
+	styleToJSON: function( style ) {
+		var strJSON = "{";
+		var cssDirectives = style.split(";");
+		var length = cssDirectives.length-1;
+		for(var i=0; i < length; i++) {
+			var cssDirective = cssDirectives[i].split(":");
+			strJSON += '"' + cssDirective[0] + '":"' + cssDirective[1] + '"';
+			strJSON += (i == length-1)?"":",";
+		}
+		strJSON += "}";
+		return strJSON;
+	},
 
-		pObj[ funcName ]();
-	}
 };
