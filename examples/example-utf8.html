@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="../generativeText.js"></script>
+
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700|Source+Code+Pro' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Alegreya+Sans+SC|Exo+2|Oleo+Script+Swash+Caps|IM+Fell+Great+Primer|Gilda+Display|Macondo+Swash+Caps|PT+Mono|Chicle|Sigmar+One|Lily+Script+One|Denk+One|Montaga|Mystery+Quest|Alike+Angular' rel='stylesheet' type='text/css'>
+
+<style type="text/css">
+body {
+	font-family: 'Open Sans', sans-serif;
+	margin: 0;
+}
+
+code {
+	font-family: 'Source Code Pro', Courier, monospace;
+}
+
+header {
+	background-color: #ca3a11;
+	color: #f0f0f0;
+	padding: 1em;
+}
+
+main {
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+.example h3 {
+	font-size: 1.6em;
+	color: #ca3a11;
+}
+
+.example-placeholder { border: 1px solid black; padding: 3em; border-radius: 10px;}
+.example-placeholder-text { font-size: 1em;}
+.example-placeholder-text span { display: inline-block; }
+.example-placeholder-text.height70 span { height: 70px; overflow: hidden; }
+.example-placeholder-text.normal{ font-size: 1.4em;}
+.example-placeholder-text.normal span { height: 34px; font-size: 1.7em;}
+.normal h4 {
+	margin: 0;
+	font-weight: normal;
+}
+</style>
+
+<script type="text/javascript">
+	jQuery( document ).ready(function( $ ) {
+
+		var params4 = {
+			fontSize: {
+				type:'generate',
+				unit:'em',
+				min:5,
+				max:0.4,
+				steps:true,
+				stepFunction: function (f) {
+					two_pi = 6.2832;
+					step = two_pi / this.totalSteps;
+					val = (Math.cos( (step * this.currentStep ) ) +1) / 2;
+					return this.min + (this.range * val);
+				}
+			}
+		};
+
+		var ex4 = new generativeText(params4);
+		ex4.applyToElementById("example4");
+
+	});
+</script>
+
+</head>
+
+<body>
+<header><h1>generativeText examples</h1></header>
+<main>
+
+
+	<div class="example">
+		<h3>UTF8</h3>
+		<p>If the page has character set UTF8, then generativeText works with UTF8 text.</p>
+		<div class="example-placeholder">
+			<div id="example5" class="example-placeholder-text  no-wierdness">			<div id="example4" class="example-placeholder-text">イロハニホヘト チリヌルヲ ワカヨタレソ ツネナラム</div>
+			</div>
+		</div>
+		<h4>Code</h4>
+	<pre><code>
+
+var params4 = {
+	fontSize: {
+		type:'generate',
+		unit:'em',
+		min:5,
+		max:0.4,
+		steps:true,
+		stepFunction: function (f) {
+			two_pi = 6.2832;
+			step = two_pi / this.totalSteps;
+			val = (Math.cos( (step * this.currentStep ) ) +1) / 2;
+			return this.min + (this.range * val);
+		}
+	}
+};
+
+var ex4 = new generativeText(params4);
+ex4.applyToElementById("example4");
+
+	</code></pre>
+	</div>
+
+
+</main>
+
+</body>
+</html>
