@@ -165,10 +165,12 @@ generativeText.prototype = {
 	},
 	cleanUp: function() {
 			this.freepObj();
-			delete this.memory;
-
+			if(this.opts.memory == true) {
+				delete this.memory;
+			}
 	},
 	freepObj: function() {
+		//Clean up references that were used temporarily
 		if(!!this.opts.pObj) {
 			delete this.opts.pObj.memory;
 			delete this.opts.pObj.container;
