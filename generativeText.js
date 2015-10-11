@@ -146,6 +146,27 @@ generativeText.prototype = {
 				break;
 		}
     },
+	getElementText: function(elem) {
+		var text;
+
+		if(!!elem.textContent) {
+			text = elem.textContent;
+		} else {
+			text = elem.innerText;
+		}
+		return text;
+	},
+	appendTextElement: function(elem, ne) {
+		if(!!this.opts && !!this.opts.memory) this.memory.push( ne );
+		elem.appendChild( ne );
+	},
+	initializePObj: function() {
+		if(!!this.opts.pObj) {
+			this.opts.pObj.totalSteps = this.totalSteps;
+			this.opts.pObj.memory = this.memory;
+			this.opts.pObj.container = this.container;
+		}
+	},
 	initializeApplyToText: function(text) {
 
 		//style is default
@@ -160,23 +181,7 @@ generativeText.prototype = {
 			var countTextSpaces = text.split(" ").length - 1;
 			this.totalSteps = this.totalSteps - countTextSpaces;
 		}
-
-		if(!!this.opts.pObj) {
-			this.opts.pObj.totalSteps = this.totalSteps;
-            this.opts.pObj.memory = this.memory;
-            this.opts.pObj.container = this.container;
-		}
-
-	},
-	getElementText: function(elem) {
-		var text;
-
-		if(!!elem.textContent) {
-			text = elem.textContent;
-		} else {
-			text = elem.innerText;
-		}
-		return text;
+		this.initializePObj();
 	},
 	applyToText: function(elem) {
 
@@ -240,10 +245,6 @@ generativeText.prototype = {
 
 			this.currentStep++;
 		}
-	},
-	appendTextElement: function(elem, ne) {
-				if(!!this.opts && !!this.opts.memory) this.memory.push( ne );
-				elem.appendChild( ne );
 	},
 	applyToWrapped: function(elem) {
 
@@ -316,7 +317,6 @@ generativeText.prototype = {
 		}
 		this.appendTextElement(elem, wrapper);
 	},
-
 	initializeApplyToWords: function(length) {
 
 		//style is default
@@ -328,12 +328,7 @@ generativeText.prototype = {
 			this.totalSteps = length;
 		}
 
-		if(!!this.opts.pObj) {
-            this.opts.pObj.totalSteps = this.totalSteps;
-            this.opts.pObj.memory = this.memory;
-            this.opts.pObj.container = this.container;
-		}
-		
+		this.initializePObj();
 	},
 	applyToWords: function( elem ) {
 
