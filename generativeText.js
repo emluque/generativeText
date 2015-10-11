@@ -34,6 +34,8 @@ var generativeText = function(params, options) {
 
 generativeText.prototype = {
 	defs: {
+		boxShadow: ['BoxShadow'],
+		textShadow: ['TextShadow'],
 		rotate: ['Transform', "deg"],
 		rotateX: ['Transform', "deg"],
 		rotateY: ['Transform', "deg"],
@@ -487,16 +489,45 @@ generativeText.prototype = {
 						}
 					}
 					var val = this.generateNumericStyle(params[p], unit);
-					console.log(val);
 					var strVal = p + "(" + val + ")";
-					this.setTransformStyle(el, "transform", strVal);
-					this.setTransformStyle(el, "-ms-transform", strVal);
-					this.setTransformStyle(el, "-webkit-transform", strVal);
+					this.setBrowserStyle(el, "transform", strVal);
+					this.setBrowserStyle(el, "-ms-transform", strVal);
+					this.setBrowserStyle(el, "-webkit-transform", strVal);
 				break;
+				case 'BoxShadow':
+					if(typeof params[p].hShadow == "undefined" || typeof params[p].vShadow == "undefined" || typeof params[p].blur == "undefined" || typeof params[p].spread == "undefined" || typeof params[p].color == "undefined") {
+						throw ("generativeText Error - BoxShadow without either hShadow, vShadow, blur, spread or color.");
+						return;
+					}
+					var strVal = "";
+					if(!!params[p].inset && params[p].inset) strVal = "inset";
+					strVal += " " + this.generateNumericStyle(params[p].hShadow, 'px');
+					strVal += " " + this.generateNumericStyle(params[p].vShadow, 'px');
+					strVal += " " + this.generateNumericStyle(params[p].blur, 'px');
+					strVal += " " + this.generateNumericStyle(params[p].spread, 'px');
+					strVal += " " + this.generateColorStyle(params[p].color);
+					this.setBrowserStyle(el, "box-shadow", strVal);
+					this.setBrowserStyle(el, "-moz-box-shadow", strVal);
+					this.setBrowserStyle(el, "-webkit-box-shadow", strVal);
+					break;
+				case 'TextShadow':
+					if(typeof params[p].hShadow == "undefined" || typeof params[p].vShadow == "undefined" || typeof params[p].blurRadius == "undefined" || typeof params[p].color == "undefined") {
+						throw ("generativeText Error - TextShadow without either hShadow, vShadow, blurRadius or color.");
+						return;
+					}
+					var strVal = "";
+					strVal += " " + this.generateNumericStyle(params[p].hShadow, 'px');
+					strVal += " " + this.generateNumericStyle(params[p].vShadow, 'px');
+					strVal += " " + this.generateNumericStyle(params[p].blurRadius, 'px');
+					strVal += " " + this.generateColorStyle(params[p].color);
+					this.setBrowserStyle(el, "text-shadow", strVal);
+					this.setBrowserStyle(el, "-moz-text-shadow", strVal);
+					this.setBrowserStyle(el, "-webkit-text-shadow", strVal);
+					break;
 			}
 		}
 	},
-	setTransformStyle: function(elem, style, val) {
+	setBrowserStyle: function(elem, style, val) {
 		var old = elem.style[style];
 		//nothing on transform
 		if(typeof old == "undefined") {

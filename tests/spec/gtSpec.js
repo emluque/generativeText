@@ -900,8 +900,8 @@ describe("GenerativeText", function() {
     });
   });
 
-//  setTransformStyle: function(elem, style, val)
-  describe(".setTransformStyle()", function() {
+//  setBrowserStyle: function(elem, style, val)
+  describe(".setBrowserStyle()", function() {
 
     it("should set transform rules", function () {
       var elem = document.createElement('span');
@@ -909,7 +909,7 @@ describe("GenerativeText", function() {
       var val = "rotateX(90deg)";
 
       var gt = new generativeText();
-      gt.setTransformStyle(elem, "transform", val);
+      gt.setBrowserStyle(elem, "transform", val);
       expect(elem.style.transform).toBe('rotateX(90deg)');
     });
 
@@ -917,8 +917,8 @@ describe("GenerativeText", function() {
       var elem = document.createElement('span');
       elem.textContent = "A"
       var gt = new generativeText();
-      gt.setTransformStyle(elem, "transform", "rotateX(90deg)");
-      gt.setTransformStyle(elem, "transform", "skewX(45deg)");
+      gt.setBrowserStyle(elem, "transform", "rotateX(90deg)");
+      gt.setBrowserStyle(elem, "transform", "skewX(45deg)");
       expect(elem.style.transform).toBe('rotateX(90deg) skewX(45deg)');
     });
 
@@ -926,12 +926,12 @@ describe("GenerativeText", function() {
       var elem = document.createElement('span');
       elem.textContent = "A"
       var gt = new generativeText();
-      gt.setTransformStyle(elem, "transform", "rotateX(90deg)");
-      gt.setTransformStyle(elem, "transform", "skewX(45deg)");
-      gt.setTransformStyle(elem, "-ms-transform", "rotateX(90deg)");
-      gt.setTransformStyle(elem, "-ms-transform", "skewX(45deg)");
-      gt.setTransformStyle(elem, "-webkit-transform", "rotateX(90deg)");
-      gt.setTransformStyle(elem, "-webkit-transform", "skewX(45deg)");
+      gt.setBrowserStyle(elem, "transform", "rotateX(90deg)");
+      gt.setBrowserStyle(elem, "transform", "skewX(45deg)");
+      gt.setBrowserStyle(elem, "-ms-transform", "rotateX(90deg)");
+      gt.setBrowserStyle(elem, "-ms-transform", "skewX(45deg)");
+      gt.setBrowserStyle(elem, "-webkit-transform", "rotateX(90deg)");
+      gt.setBrowserStyle(elem, "-webkit-transform", "skewX(45deg)");
       expect(elem.style.transform).toBe('rotateX(90deg) skewX(45deg)');
     });
   });
