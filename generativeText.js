@@ -34,8 +34,18 @@ var generativeText = function(params, options) {
 
 generativeText.prototype = {
 	defs: {
-		boxShadow: ['BoxShadow'],
-		textShadow: ['TextShadow'],
+		/* Filter */
+		filterGrayScale: ['filter', '%'],
+		filterSepia: ['filter', '%'],
+		filterSaturate: ['filter', '%'],
+		filterHueRotate: ['filter', 'deg'],
+		filterInvert: ['filter', '%'],
+		filterOpacity: ['filter', '%'],
+		filterBrightness: ['filter', '%'],
+		filterContrast: ['filter', '%'],
+		filterBlur: ['filter', 'px'],
+		filterDropShadow: ['filterDropShadow'],
+		/* Transform */
 		rotate: ['Transform', "deg"],
 		rotateX: ['Transform', "deg"],
 		rotateY: ['Transform', "deg"],
@@ -47,6 +57,8 @@ generativeText.prototype = {
 		translateZ: ['Transform', "px"],
 		scaleX: ['Transform', "float"],
 		scaleY: ['Transform', "float"],
+		boxShadow: ['BoxShadow'],
+		textShadow: ['TextShadow'],
 		fontSize: ['Numeric'],
 		left: ['Numeric'],
 		right: ['Numeric'],
@@ -563,6 +575,31 @@ generativeText.prototype = {
 					this.setBrowserStyle(el, "-moz-text-shadow", strVal);
 					this.setBrowserStyle(el, "-webkit-text-shadow", strVal);
 					break;
+				case 'filter':
+					var unit = "";
+					if( this.defs[p][1] == "deg") {
+						unit = "deg";
+					} else {
+						if(params[p].unit) {
+							unit = params[p].unit;
+						} else {
+							unit = this.defs[p][1];
+						}
+					}
+					var val = this.generateNumericStyle(params[p], unit);
+					var filterName = p.replace("filter", "").toLowerCase();
+					if(filterName == 'huerotate') filterName = 'hue-rotate';
+
+					var strVal = filterName + "(" + val + ")";
+					this.setBrowserStyle(el, "filter", strVal);
+					this.setBrowserStyle(el, "-webkit-filter", strVal);
+					break;
+				case 'filterDropShadow':
+					console.log(params[p]);
+					var strVal = "drop-shadow(" + this.generateTextShadowStyle(params[p]) + ")";
+					this.setBrowserStyle(el, "filter", strVal);
+					this.setBrowserStyle(el, "-webkit-filter", strVal);
+					break;
 			}
 		}
 	},
@@ -596,7 +633,7 @@ generativeText.prototype = {
 		var old = elem.style[style];
 		//nothing on transform
 		if(typeof old == "undefined") {
-			elem.style[style] = tmp + val;
+			elem.style[style] = val;
 			return;
 		}
 		var tmp = old.split(" ");
