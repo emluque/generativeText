@@ -34,86 +34,100 @@ var generativeText = function(params, options) {
 
 generativeText.prototype = {
 	defs: {
-		/* Filter */
-		filterGrayScale: ['filter', '%'],
-		filterSepia: ['filter', '%'],
-		filterSaturate: ['filter', '%'],
-		filterHueRotate: ['filter', 'deg'],
-		filterInvert: ['filter', '%'],
-		filterOpacity: ['filter', '%'],
-		filterBrightness: ['filter', '%'],
-		filterContrast: ['filter', '%'],
-		filterBlur: ['filter', 'px'],
-		filterDropShadow: ['filterDropShadow'],
-		/* Transform */
-		transformRotate: ['Transform', "deg"],
-		transformRotateX: ['Transform', "deg"],
-		transformRotateY: ['Transform', "deg"],
-		transformRotateZ: ['Transform', "deg"],
-		transformSkewX: ['Transform', "deg"],
-		transformSkewY: ['Transform', "deg"],
-		transformTranslateX: ['Transform', "px"],
-		transformTranslateY: ['Transform', "px"],
-		transformTranslateZ: ['Transform', "px"],
-		transformScaleX: ['Transform', "float"],
-		transformScaleY: ['Transform', "float"],
-		boxShadow: ['BoxShadow'],
-		textShadow: ['TextShadow'],
-		fontSize: ['Numeric'],
-		left: ['Numeric'],
-		right: ['Numeric'],
-		top: ['Numeric'],
-		bottom: ['Numeric' ],
-		padding: ['Numeric'],
-		paddingLeft: ['Numeric'],
-		paddingRight: ['Numeric'],
-		paddingTop: ['Numeric'],
-		paddingBottom: ['Numeric'],
-		margin: ['Numeric'],
-		marginLeft: ['Numeric'],
-		marginRight: ['Numeric'],
-		marginTop: ['Numeric'],
-		marginBottom: ['Numeric'],
-		borderRadius: ['Numeric', "%"],
-		borderTopLeftRadius: ['Numeric', "%"],
-		borderTopRightRadius: ['Numeric', "%"],
-		borderBottomLeftRadius: ['Numeric', "%"],
-		borderBottomRightRadius: ['Numeric', "%"],
-		borderWidth: ['Numeric'],
-		borderLeftWidth: ['Numeric'],
-		borderRightWidth: ['Numeric'],
-		borderTopWidth: ['Numeric'],
-		borderBottomWidth: ['Numeric'],
-		height: ['Numeric'],
-		maxHeight: ['Numeric'],
-		minHeight: ['Numeric'],
-		width: ['Numeric'],
-		maxWidth: ['Numeric'],
-		minWidth: ['Numeric'],
-		opacity: ['Numeric', ";", "float"],
-		letterSpacing: ['Numeric'],
-		wordSpacing: ['Numeric'],
-		lineHeight: ['Numeric'],
-		color: ['Color'],
-		backgroundColor: ['Color'],
-		borderColor: ['Color'],
-		borderLeftColor: ['Color'],
-		borderRightColor: ['Color'],
-		borderTopColor: ['Color'],
-		borderBottomColor: ['Color'],
-		fontFamily: ['List'],
-		backgroundImage: ['List'],
-		borderStyle: ['List'],
-		borderLeftStyle: ['List'],
-		borderRightStyle: ['List'],
-		borderTopStyle: ['List'],
-		borderBottomStyle: ['List'],
-		textAlign: ['List'],
-		verticalAlign: ['List'],
-		textDecoration: ['List'],
-		textTransform: ['List'],
-		fontWeight: ['List'],
-		clear: ['List']
+		additiveSymbols: ["List"], //UAYOR
+		alignContent: ["List"], //UAYOR
+		alignItems: ["List"], //UAYOR
+		alignSelf: ["List"], //UAYOR
+		all: ["List"], //UAYOR
+
+		animation: ["List"], //Exp
+		animationDirection: ["List"], //Exp
+		animationDuration: ["Numeric", "s"], //Exp
+		animationFillMode: ["List"], //Exp
+		animationIterationCount: ['Numeric'], //Exp
+		animationName: ["List"], //Exp
+		animationPlayState: ["List"], //Exp
+		animationTimingFunction: ["List"], //Exp
+
+
+		backgroundColor: ["Color"],
+		backgroundImage: ["List"],
+		borderBottomColor: ["Color"],
+		borderBottomLeftRadius: ["Numeric","%"],
+		borderBottomRightRadius: ["Numeric","%"],
+		borderBottomStyle: ["List"],
+		borderBottomWidth: ["Numeric"],
+		borderColor: ["Color"],
+		borderLeftColor: ["Color"],
+		borderLeftStyle: ["List"],
+		borderLeftWidth: ["Numeric"],
+		borderRadius: ["Numeric","%"],
+		borderRightColor: ["Color"],
+		borderRightStyle: ["List"],
+		borderRightWidth: ["Numeric"],
+		borderStyle: ["List"],
+		borderTopColor: ["Color"],
+		borderTopLeftRadius: ["Numeric","%"],
+		borderTopRightRadius: ["Numeric","%"],
+		borderTopStyle: ["List"],
+		borderTopWidth: ["Numeric"],
+		borderWidth: ["Numeric"],
+		bottom: ["Numeric"],
+		boxShadow: ["BoxShadow"],
+		clear: ["List"],
+		color: ["Color"],
+		filterBlur: ["filter","px"],
+		filterBrightness: ["filter","%"],
+		filterContrast: ["filter","%"],
+		filterDropShadow: ["filterDropShadow"],
+		filterGrayScale: ["filter","%"],
+		filterHueRotate: ["filter","deg"],
+		filterInvert: ["filter","%"],
+		filterOpacity: ["filter","%"],
+		filterSaturate: ["filter","%"],
+		filterSepia: ["filter","%"],
+		fontFamily: ["List"],
+		fontSize: ["Numeric"],
+		fontWeight: ["List"],
+		height: ["Numeric"],
+		left: ["Numeric"],
+		letterSpacing: ["Numeric"],
+		lineHeight: ["Numeric"],
+		margin: ["Numeric"],
+		marginBottom: ["Numeric"],
+		marginLeft: ["Numeric"],
+		marginRight: ["Numeric"],
+		marginTop: ["Numeric"],
+		maxHeight: ["Numeric"],
+		maxWidth: ["Numeric"],
+		minHeight: ["Numeric"],
+		minWidth: ["Numeric"],
+		opacity: ["Numeric",";","float"],
+		padding: ["Numeric"],
+		paddingBottom: ["Numeric"],
+		paddingLeft: ["Numeric"],
+		paddingRight: ["Numeric"],
+		paddingTop: ["Numeric"],
+		right: ["Numeric"],
+		textAlign: ["List"],
+		textDecoration: ["List"],
+		textShadow: ["TextShadow"],
+		textTransform: ["List"],
+		top: ["Numeric"],
+		transformRotate: ["Transform","deg"],
+		transformRotateX: ["Transform","deg"],
+		transformRotateY: ["Transform","deg"],
+		transformRotateZ: ["Transform","deg"],
+		transformScaleX: ["Transform","float"],
+		transformScaleY: ["Transform","float"],
+		transformSkewX: ["Transform","deg"],
+		transformSkewY: ["Transform","deg"],
+		transformTranslateX: ["Transform","px"],
+		transformTranslateY: ["Transform","px"],
+		transformTranslateZ: ["Transform","px"],
+		verticalAlign: ["List"],
+		width: ["Numeric"],
+		wordSpacing: ["Numeric"]
 	},
 	applyToElementById: function (id) {
 
@@ -644,7 +658,6 @@ generativeText.prototype = {
 			//it was set somehow
 			if(tmp[i].trim() == val.trim()) return;
 		}
-		console.log(old + "::" + val)
 		//does not exist on transform list
 		elem.style[style] = old + ' ' + val.trim();
 	},
@@ -787,6 +800,7 @@ generativeText.prototype = {
 				return this.removeTrailingZeros(val.toFixed(2));
 			case "em":
 			case "%":
+			case "s":
 				return this.removeTrailingZeros(val.toFixed(2)) + unit;
 			break;
 			case "px":
