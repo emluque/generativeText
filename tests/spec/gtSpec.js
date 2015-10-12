@@ -931,7 +931,7 @@ describe("GenerativeText", function() {
       var elem = document.createElement('span');
       elem.textContent = "A"
       var params = {
-        rotateX: {values: ['30'], type: 'list'},
+        transformRotateX: {values: ['30'], type: 'list'},
       };
       var gt = new generativeText();
 
@@ -943,7 +943,7 @@ describe("GenerativeText", function() {
       var elem = document.createElement('span');
       elem.textContent = "A"
       var params = {
-        translateX: {values: ['30'], type: 'list'},
+        transformTranslateX: {values: ['30'], type: 'list'},
       };
       var gt = new generativeText();
 
@@ -955,7 +955,7 @@ describe("GenerativeText", function() {
       var elem = document.createElement('span');
       elem.textContent = "A"
       var params = {
-        translateX: {values: ['45'], unit: "em", type: 'list'},
+        transformTranslateX: {values: ['45'], unit: "em", type: 'list'},
       };
       var gt = new generativeText();
 
@@ -967,8 +967,8 @@ describe("GenerativeText", function() {
       var elem = document.createElement('span');
       elem.textContent = "A"
       var params = {
-        rotateX: {values: ['30'], type: 'list'},
-        skewX:  {values: ['30'], type: 'list'},
+        transformRotateX: {values: ['30'], type: 'list'},
+        transformSkewX:  {values: ['30'], type: 'list'},
       };
       var gt = new generativeText();
 
@@ -1712,6 +1712,37 @@ describe("GenerativeText", function() {
       expect(gt.roundUnit(98.75689, "float")).toEqual("98.76");
       expect(gt.roundUnit(98.75689, "em")).toEqual("98.76em");
       expect(gt.roundUnit(98.75, "px")).toEqual("99px");
+    });
+
+  });
+
+  describe(".roundUnit()", function () {
+
+    it("should round Units differently according to unit type", function () {
+      var gt = new generativeText();
+      expect(gt.roundUnit(98.75689, "float")).toEqual("98.76");
+      expect(gt.roundUnit(98.75689, "em")).toEqual("98.76em");
+      expect(gt.roundUnit(98.75, "px")).toEqual("99px");
+    });
+
+  });
+
+  describe(".removeTrailingZeros()", function() {
+
+    it("should remove trailing zeros", function () {
+      var gt = new generativeText();
+      expect(gt.removeTrailingZeros("1.5000")).toEqual("1.5");
+      expect(gt.removeTrailingZeros("1.500")).toEqual("1.5");
+      expect(gt.removeTrailingZeros("1.50")).toEqual("1.5");
+      expect(gt.removeTrailingZeros("1.5")).toEqual("1.5");
+      expect(gt.removeTrailingZeros("1.000")).toEqual("1");
+      expect(gt.removeTrailingZeros("1.00")).toEqual("1");
+      expect(gt.removeTrailingZeros("1000.00")).toEqual("1000");
+      expect(gt.removeTrailingZeros("900")).toEqual("900");
+      expect(gt.removeTrailingZeros("15670")).toEqual("15670");
+      expect(gt.removeTrailingZeros("10")).toEqual("10");
+
+
     });
 
   });

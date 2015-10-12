@@ -46,17 +46,17 @@ generativeText.prototype = {
 		filterBlur: ['filter', 'px'],
 		filterDropShadow: ['filterDropShadow'],
 		/* Transform */
-		rotate: ['Transform', "deg"],
-		rotateX: ['Transform', "deg"],
-		rotateY: ['Transform', "deg"],
-		rotateZ: ['Transform', "deg"],
-		skewX: ['Transform', "deg"],
-		skewY: ['Transform', "deg"],
-		translateX: ['Transform', "px"],
-		translateY: ['Transform', "px"],
-		translateZ: ['Transform', "px"],
-		scaleX: ['Transform', "float"],
-		scaleY: ['Transform', "float"],
+		transformRotate: ['Transform', "deg"],
+		transformRotateX: ['Transform', "deg"],
+		transformRotateY: ['Transform', "deg"],
+		transformRotateZ: ['Transform', "deg"],
+		transformSkewX: ['Transform', "deg"],
+		transformSkewY: ['Transform', "deg"],
+		transformTranslateX: ['Transform', "px"],
+		transformTranslateY: ['Transform', "px"],
+		transformTranslateZ: ['Transform', "px"],
+		transformScaleX: ['Transform', "float"],
+		transformScaleY: ['Transform', "float"],
 		boxShadow: ['BoxShadow'],
 		textShadow: ['TextShadow'],
 		fontSize: ['Numeric'],
@@ -544,7 +544,11 @@ generativeText.prototype = {
 						}
 					}
 					var val = this.generateNumericStyle(params[p], unit);
-					var strVal = p + "(" + val + ")";
+
+					var transformName = p.replace("transform", "");
+					var transformName = transformName.charAt(0).toLowerCase() + transformName.slice(1);
+
+					var strVal = transformName + "(" + val + ")";
 					this.setBrowserStyle(el, "transform", strVal);
 					this.setBrowserStyle(el, "-ms-transform", strVal);
 					this.setBrowserStyle(el, "-webkit-transform", strVal);
@@ -640,6 +644,7 @@ generativeText.prototype = {
 			//it was set somehow
 			if(tmp[i].trim() == val.trim()) return;
 		}
+		console.log(old + "::" + val)
 		//does not exist on transform list
 		elem.style[style] = old + ' ' + val.trim();
 	},
@@ -779,16 +784,27 @@ generativeText.prototype = {
 		switch(unit) {
 			case "float":
 			//treat as float but with no unit
-				return val.toFixed(2);
+				return this.removeTrailingZeros(val.toFixed(2));
 			case "em":
 			case "%":
-				return val.toFixed(2) + unit;
+				return this.removeTrailingZeros(val.toFixed(2)) + unit;
 			break;
 			case "px":
 			default:
 				return Math.round(val) + unit;
 			break;
 		}
+	},
+	removeTrailingZeros: function(val) {
+		if(val.indexOf(".") > 0) {
+			while(val.charAt(val.length - 1) === "0") {
+				val = val.slice(0, val.length -1);
+			}
+			if(val.charAt(val.length - 1) === ".") {
+				val = val.slice(0, val.length -1);
+			}
+		}
+		return val;
 	},
 	rgbCheck: function(s) {
 		if(s.length == 1) s = "0" + s;
