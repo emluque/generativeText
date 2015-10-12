@@ -149,6 +149,46 @@ generativeText.prototype = {
 		//Clean up Unused References
 		this.freepObj();
     },
+	applyToElementsSequentially: function(elems) {
+
+		this.currentStep = 0;
+		this.memory = [];
+		//Set opts.applyTo default
+		if(!this.opts) this.opts = {};
+
+		if(!elems.length) {
+			throw ("generativeText Error - Not a collection of elements.");
+			return;
+		}
+
+		//Set total steps
+		this.totalSteps = elems.length;
+
+		for(var i=0; i<elems.length; i++) {
+			var elem = elems[i];
+
+			//remove
+			if( typeof this.opts.removeSpaceDups == 'undefined') this.opts.removeSpaceDups = true;
+
+			this.initializePObj();
+
+			//Pre Function
+			if(!!this.opts && !!this.opts.pObj && !!this.opts.pObj.preFunc && this.opts.pObj.preFunc instanceof Function) {
+				this.applyPFunc(this.opts.pObj, 'preFunc');
+			}
+
+			this.generateStyle( this.params, elem );
+
+			if(!!this.opts && !!this.opts.memory) this.memory.push( elem );
+
+			//Post Function
+			if(!!this.opts && !!this.opts.pObj && !!this.opts.pObj.posFunc && this.opts.pObj.posFunc instanceof Function) {
+				this.applyPFunc(this.opts.pObj, 'posFunc');
+			}
+
+			this.currentStep++;
+		}
+	},
 	getElementText: function(elem) {
 		var text;
 
@@ -157,6 +197,7 @@ generativeText.prototype = {
 		} else {
 			text = elem.innerText;
 		}
+		if(typeof text == "undefined") text = "";
 		return text;
 	},
 	appendTextElement: function(elem, ne) {
@@ -181,7 +222,7 @@ generativeText.prototype = {
 		if(!!this.opts.pObj) {
 			this.opts.pObj.totalSteps = this.totalSteps;
 			this.opts.pObj.memory = this.memory;
-			this.opts.pObj.container = elem;
+			if(!!elem) this.opts.pObj.container = elem;
 		}
 	},
 	initializeApplyToText: function(text) {

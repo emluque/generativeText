@@ -20,9 +20,30 @@ describe("GenerativeText", function() {
 
   });
 
+  describe(".applyToElementById()", function () {
+
+    var gt = new generativeText();
+
+    it("should throw an exception if the id does not exist", function () {
+      expect(gt.applyToElementById).toThrow();
+    });
+
+  });
+
+  describe(".applyToElementsByClassName()", function () {
+
+    var gt = new generativeText();
+
+    it("should throw an exception if the class does not exist", function () {
+      expect(gt.applyToElementsByClassName).toThrow();
+    });
+
+  });
+
   describe(".applyToElement()", function () {
 
     var elem = document.createElement('div');
+    elem.innerHTML = "";
     var gt = new generativeText();
 
     gt.applyToElement(elem);
@@ -41,23 +62,95 @@ describe("GenerativeText", function() {
 
   });
 
-  describe(".applyToElementById()", function () {
+  describe(".applyToElementsSequentially()", function () {
+
+    var elem = document.createElement('div');
+    elem.innerHTML = "<p>aaa</><p>bbb</p><p>ccc</p><p>ddd</p>";
+    var ps = elem.getElementsByTagName('p');
 
     var gt = new generativeText();
 
-    it("should throw an exception if the id does not exist", function () {
-      expect(gt.applyToElementById).toThrow();
+    it("should throw an exception if elems does not have length or has length 0", function () {
+      expect(gt.applyToElementsSequentially).toThrow();
+      var arr = [];
+      var exceptionThrown = false;
+      try {
+        gt.applyToElementsSequentially(arr);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+      expect(exceptionThrown).toBe(true);
+
     });
 
-  });
-
-  describe(".applyToElementsByClassName()", function () {
-
-    var gt = new generativeText();
-
-    it("should throw an exception if the class does not exist", function () {
-      expect(gt.applyToElementsByClassName).toThrow();
+    it("should style DOM elements sequentially", function () {
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.applyToElementsSequentially(ps);
+      expect(ps[0].style.fontSize).toBe("1em");
+      expect(ps[1].style.fontSize).toBe("2em");
+      expect(ps[2].style.fontSize).toBe("3em");
+      expect(ps[3].style.fontSize).toBe("1em");
     });
+
+    it("should appemnd element to memory if opts.memory is set to true", function () {
+      gt.opts = {
+        memory: true,
+      };
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.applyToElementsSequentially(ps);
+      expect(gt.memory[0]).toBe(ps[0]);
+    });
+
+    it("should call pObj.preFunc() if it exists", function () {
+      gt.opts = {
+        pObj: {
+          preFunc: function() {
+            if(this.memory.length > 0) {
+              var previous = this.memory[ this.currentStep -1 ];
+              previous.style.fontWeight = "300";
+            }
+          }
+        },
+        memory: true,
+      };
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.applyToElementsSequentially(ps);
+      expect(ps[0].style.fontWeight).toBe("300");
+    });
+
+    it("should call pObj.posFunc() if it exists", function () {
+      gt.opts = {
+        pObj: {
+          posFunc: function() {
+            var current = this.memory[ this.currentStep ];
+            current.style.fontWeight = "300";
+          }
+        },
+        memory: true,
+      };
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.applyToElementsSequentially(ps);
+      expect(ps[0].style.fontWeight).toBe("300");
+    });
+
+    it("should give pObj.pFuncs access to currentStep", function () {
+      var gt = new generativeText();
+      gt.opts = {
+        pObj: {
+          posFunc: function() {
+            var current = this.memory[ this.currentStep ];
+            current.style.fontWeight = "300";
+          }
+        },
+        memory: true,
+      };
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.applyToElementsSequentially(ps);
+      expect(gt.opts.pObj.currentStep).toBe(3);
+    });
+
+
+
 
   });
 
@@ -898,9 +991,109 @@ describe("GenerativeText", function() {
       expect(elem.style.fontSize).toBe('1.4em');
       expect(elem.style.color).toBe('rgb(170, 170, 170)');
     });
+
+    it("should work on boxShadow rules", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        boxShadow: {
+          hShadow: { type: "list", values: ["1"]},
+          vShadow: { type: "list", values: ["1"]},
+          blur: { type: "list", values: ["1"]},
+          spread: { type: "list", values: ["1"]},
+          color: { type: "list", values: ["#000000"] }
+        }
+      };
+      var gt = new generativeText();
+
+      gt.generateStyle(params, elem);
+
+      var es = elem.style.boxShadow;
+      //different browsers return property as string differently
+      var test = (es === 'rgb(0, 0, 0) 1px 1px 1px 1px' || es === '1px 1px 1px 1px rgb(0, 0, 0)');
+      expect(test).toBe(true);
+    });
+
+    it("should work on boxShadow array rules", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        boxShadow: [
+          {
+            hShadow: { type: "list", values: ["1"]},
+            vShadow: { type: "list", values: ["1"]},
+            blur: { type: "list", values: ["1"]},
+            spread: { type: "list", values: ["1"]},
+            color: { type: "list", values: ["#000000"] }
+          },
+          {
+            hShadow: { type: "list", values: ["2"]},
+            vShadow: { type: "list", values: ["2"]},
+            blur: { type: "list", values: ["2"]},
+            spread: { type: "list", values: ["2"]},
+            color: { type: "list", values: ["#ffffff"] }
+          }
+        ]
+      };
+      var gt = new generativeText();
+
+      gt.generateStyle(params, elem);
+      var es = elem.style.boxShadow;
+      //different browsers return property as string differently
+      var test = (es === 'rgb(0, 0, 0) 1px 1px 1px 1px, rgb(255, 255, 255) 2px 2px 2px 2px' || es === '1px 1px 1px 1px rgb(0, 0, 0), 2px 2px 2px 2px rgb(255, 255, 255)');
+      expect(test).toBe(true);
+    });
+
+    it("should work on textShadow rules", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        textShadow: {
+          hShadow: { type: "list", values: ["1"]},
+          vShadow: { type: "list", values: ["1"]},
+          blurRadius: { type: "list", values: ["1"]},
+          color: { type: "list", values: ["#000000"]},
+        }
+      };
+      var gt = new generativeText();
+
+      gt.generateStyle(params, elem);
+      var es = elem.style.textShadow;
+      //different browsers return property as string differently
+      var test = (es === 'rgb(0, 0, 0) 1px 1px 1px' || es === '1px 1px 1px rgb(0, 0, 0)');
+      expect(test).toBe(true);
+    });
+
+    it("should work on textShadow array rules", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        textShadow: [
+          {
+            hShadow: {type: "list", values: ["1"]},
+            vShadow: {type: "list", values: ["1"]},
+            blurRadius: {type: "list", values: ["1"]},
+            color: {type: "list", values: ["#000000"]},
+          },
+          {
+            hShadow: { type: "list", values: ["2"]},
+            vShadow: { type: "list", values: ["2"]},
+            blurRadius: { type: "list", values: ["2"]},
+            color: { type: "list", values: ["#ffffff"]},
+          }
+        ]
+      };
+      var gt = new generativeText();
+
+      gt.generateStyle(params, elem);
+      var es = elem.style.textShadow;
+      //different browsers return property as string differently
+      var test = (es === 'rgb(0, 0, 0) 1px 1px 1px, rgb(255, 255, 255) 2px 2px 2px' || es === '1px 1px 1px rgb(0, 0, 0), 2px 2px 2px rgb(255, 255, 255)');
+      expect(test).toBe(true);
+    });
+
   });
 
-//  setBrowserStyle: function(elem, style, val)
   describe(".setBrowserStyle()", function() {
 
     it("should set transform rules", function () {
@@ -1265,6 +1458,194 @@ describe("GenerativeText", function() {
 
   });
 
+  describe(".generateBoxShadowStyle()", function () {
+
+    it("should throw an exception if some of the required parameters are not set", function () {
+      var gt = new generativeText();
+
+      var param = 	{
+        hShadow: { min: 0, max: 5, steps: true},
+        vShadow: { min: 0, max: 5, steps: true},
+        blur: { type: "list", values: ["1"]},
+        spread: { type: "list", values: ["1"]},
+        color: { type: "list", values: ["#666666"] }
+      };
+
+      var exceptionThrown = false;
+      try {
+        gt.generateBoxShadowStyle(param);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+
+      expect(exceptionThrown).toBe(false);
+
+      var param = 	{
+        vShadow: { min: 0, max: 5, steps: true},
+        blur: { type: "list", values: ["1"]},
+        spread: { type: "list", values: ["1"]},
+        color: { type: "list", values: ["#666666"] }
+      };
+
+      var exceptionThrown = false;
+      try {
+        gt.generateBoxShadowStyle(param);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+
+      expect(exceptionThrown).toBe(true);
+
+      var param = 	{
+        hShadow: { min: 0, max: 5, steps: true},
+        blur: { type: "list", values: ["1"]},
+        spread: { type: "list", values: ["1"]},
+        color: { type: "list", values: ["#666666"] }
+      };
+
+      var exceptionThrown = false;
+      try {
+        gt.generateBoxShadowStyle(param);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+
+      expect(exceptionThrown).toBe(true);
+
+      var param = 	{
+        hShadow: { min: 0, max: 5, steps: true},
+        vShadow: { min: 0, max: 5, steps: true},
+        spread: { type: "list", values: ["1"]},
+        color: { type: "list", values: ["#666666"] }
+      };
+
+      var exceptionThrown = false;
+      try {
+        gt.generateBoxShadowStyle(param);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+
+      expect(exceptionThrown).toBe(true);
+
+      var param = 	{
+        hShadow: { min: 0, max: 5, steps: true},
+        vShadow: { min: 0, max: 5, steps: true},
+        blur: { type: "list", values: ["1"]},
+        color: { type: "list", values: ["#666666"] }
+      };
+
+      var exceptionThrown = false;
+      try {
+        gt.generateBoxShadowStyle(param);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+
+      expect(exceptionThrown).toBe(true);
+
+      var param = 	{
+        hShadow: { min: 0, max: 5, steps: true},
+        vShadow: { min: 0, max: 5, steps: true},
+        blur: { type: "list", values: ["1"]},
+        spread: { type: "list", values: ["1"]},
+      };
+
+      var exceptionThrown = false;
+      try {
+        gt.generateBoxShadowStyle(param);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+
+      expect(exceptionThrown).toBe(true);
+
+    });
+  });
+
+  describe(".generateTextShadowStyle()", function () {
+
+    it("should throw an exception if some of the required parameters are not set", function () {
+      var gt = new generativeText();
+
+      var param = 	{
+        hShadow: { type: "list", values: ["3"]},
+        vShadow: { type: "list", values: ["3"]},
+        blurRadius: { min: 0, max: 10, steps: true},
+        color: { type: "generate", r: { min: "00", max: "ff", steps: true}, g: { fixed: "88"}, b: {fixed: "88"} }
+      };
+
+      var exceptionThrown = false;
+      try {
+        gt.generateTextShadowStyle(param);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+
+      expect(exceptionThrown).toBe(false);
+
+      var param = 	{
+        vShadow: { type: "list", values: ["3"]},
+        blurRadius: { min: 0, max: 10, steps: true},
+        color: { type: "generate", r: { min: "00", max: "ff", steps: true}, g: { fixed: "88"}, b: {fixed: "88"} }
+      };
+
+      var exceptionThrown = false;
+      try {
+        gt.generateTextShadowStyle(param);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+
+      expect(exceptionThrown).toBe(true);
+
+      var param = 	{
+        hShadow: { type: "list", values: ["3"]},
+        blurRadius: { min: 0, max: 10, steps: true},
+        color: { type: "generate", r: { min: "00", max: "ff", steps: true}, g: { fixed: "88"}, b: {fixed: "88"} }
+      };
+
+      var exceptionThrown = false;
+      try {
+        gt.generateTextShadowStyle(param);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+
+      expect(exceptionThrown).toBe(true);
+
+      var param = 	{
+        hShadow: { type: "list", values: ["3"]},
+        vShadow: { type: "list", values: ["3"]},
+        color: { type: "generate", r: { min: "00", max: "ff", steps: true}, g: { fixed: "88"}, b: {fixed: "88"} }
+      };
+
+      var exceptionThrown = false;
+      try {
+        gt.generateTextShadowStyle(param);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+
+      expect(exceptionThrown).toBe(true);
+
+      var param = 	{
+        hShadow: { type: "list", values: ["3"]},
+        vShadow: { type: "list", values: ["3"]},
+        blurRadius: { min: 0, max: 10, steps: true},
+      };
+
+      var exceptionThrown = false;
+      try {
+        gt.generateTextShadowStyle(param);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+
+      expect(exceptionThrown).toBe(true);
+
+    });
+  });
 
   describe(".roundUnit()", function () {
 
