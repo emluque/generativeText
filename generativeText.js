@@ -325,6 +325,7 @@ generativeText.prototype = {
 
 		var wrapper = document.createElement('span');
 		wrapper.style.whiteSpace = "nowrap";
+		wrapper.setAttribute("class", "gt-nowrap");
 
 		//Add new elements
 		for(var i=0; i<length; i++) {
@@ -342,6 +343,7 @@ generativeText.prototype = {
 				this.appendTextElement(elem, wrapper);
 				var wrapper = document.createElement('span');
 				wrapper.style.whiteSpace = "nowrap";
+				wrapper.setAttribute("class", "gt-nowrap");
 
 				newElement.innerHTML = '&nbsp;';
 
