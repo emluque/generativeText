@@ -595,7 +595,6 @@ generativeText.prototype = {
 					this.setBrowserStyle(el, "-webkit-filter", strVal);
 					break;
 				case 'filterDropShadow':
-					console.log(params[p]);
 					var strVal = "drop-shadow(" + this.generateTextShadowStyle(params[p]) + ")";
 					this.setBrowserStyle(el, "filter", strVal);
 					this.setBrowserStyle(el, "-webkit-filter", strVal);
@@ -632,7 +631,7 @@ generativeText.prototype = {
 	setBrowserStyle: function(elem, style, val) {
 		var old = elem.style[style];
 		//nothing on transform
-		if(typeof old == "undefined") {
+		if(typeof old == "undefined" || old == "") {
 			elem.style[style] = val;
 			return;
 		}
@@ -642,7 +641,7 @@ generativeText.prototype = {
 			if(tmp[i].trim() == val.trim()) return;
 		}
 		//does not exist on transform list
-		elem.style[style] = tmp + val;
+		elem.style[style] = old + ' ' + val.trim();
 	},
 	generateColorStyle: function(param) {
 		var tr = this.generateColorVariation(param);

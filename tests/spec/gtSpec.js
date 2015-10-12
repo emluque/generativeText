@@ -1092,6 +1092,64 @@ describe("GenerativeText", function() {
       expect(test).toBe(true);
     });
 
+    it("should work on filter rules", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        filterHueRotate: {values: ['30'], type: 'list'},
+      };
+      var gt = new generativeText();
+
+      gt.generateStyle(params, elem);
+      var worked = false;
+      //Firefox
+      if(elem.style['filter'] == 'hue-rotate(30deg)') worked = true;
+      //Chrome
+      if(elem.style['-webkit-filter'] == 'hue-rotate(30deg)') worked = true;
+      expect(worked).toBe(true);
+    });
+
+    it("should work on various filter rules at a time", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        filterHueRotate: {values: ['30'], type: 'list'},
+        filterGrayScale: {values: ['30'], type: 'list'},
+        filterBlur: {values: ['30'], type: 'list'},
+      };
+      var gt = new generativeText();
+
+      gt.generateStyle(params, elem);
+      var worked = false;
+      //Firefox
+      if(elem.style['filter'] == 'hue-rotate(30deg) grayscale(30%) blur(30px)') worked = true;
+      //Chrome
+      if(elem.style['-webkit-filter'] == 'hue-rotate(30deg) grayscale(30%) blur(30px)') worked = true;
+      expect(worked).toBe(true);
+    });
+
+    it("should work on filterDropShadow rule", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        filterDropShadow: {
+          hShadow: {type: "list", values: ["1"]},
+          vShadow: {type: "list", values: ["1"]},
+          blurRadius: {type: "list", values: ["1"]},
+          color: {type: "list", values: ["#000000"]},
+        },
+      };
+      var gt = new generativeText();
+
+      gt.generateStyle(params, elem);
+      var worked = false;
+      //Firefox
+      if(elem.style['filter'] == 'drop-shadow(1px 1px 1px rgb(0, 0, 0))') worked = true;
+      //Chrome
+      if(elem.style['-webkit-filter'] == 'drop-shadow(rgb(0, 0, 0) 1px 1px 1px)') worked = true;
+      expect(worked).toBe(true);
+    });
+
   });
 
   describe(".setBrowserStyle()", function() {
