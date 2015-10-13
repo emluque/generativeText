@@ -201,6 +201,15 @@ describe("GenerativeText", function() {
 
     });
 
+    it("should set 'ltr' as the default direction on opts if none is given", function () {
+      var gt = new generativeText();
+      gt.opts = {};
+      var text = "0123456789";
+      gt.initializeApplyToText(text);
+      expect(gt.opts.direction).toBe('ltr');
+
+    });
+
     it("should set totalSteps based on the length of param text", function () {
       var gt = new generativeText();
       gt.opts = {};
@@ -292,6 +301,36 @@ describe("GenerativeText", function() {
       expect(spans[2].style.fontSize).toBe("3em");
       expect(spans[3].style.fontSize).toBe("1em");
       expect(spans[4].style.fontSize).toBe("2em");
+    });
+
+    it("should lay characters sequentially from ltr when opts.direction is 'ltr'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'style', direction: 'ltr'};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "12345";
+      gt.applyToText(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].textContent).toBe("1");
+      expect(spans[1].textContent).toBe("2");
+      expect(spans[2].textContent).toBe("3");
+      expect(spans[3].textContent).toBe("4");
+      expect(spans[4].textContent).toBe("5");
+    });
+
+    it("should lay characters sequentially from rtl when opts.direction is 'rtl'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'style', direction: 'rtl'};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "12345";
+      gt.applyToText(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].textContent).toBe("5");
+      expect(spans[1].textContent).toBe("4");
+      expect(spans[2].textContent).toBe("3");
+      expect(spans[3].textContent).toBe("2");
+      expect(spans[4].textContent).toBe("1");
     });
 
     it("should style spaces when textSpaces is set to 'style'", function () {
@@ -471,6 +510,39 @@ describe("GenerativeText", function() {
       expect(spans[1].style.fontSize).toBe("3em");
     });
 
+    it("should lay characters sequentially from ltr when opts.direction is 'ltr'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'style', direction: 'ltr'};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "123 45";
+      gt.applyToWrapped(elem);
+      var spans = elem.childNodes[0].getElementsByTagName('span');
+      expect(spans[0].textContent).toBe("1");
+      expect(spans[1].textContent).toBe("2");
+      expect(spans[2].textContent).toBe("3");
+      spans = elem.childNodes[2].getElementsByTagName('span');
+      expect(spans[0].textContent).toBe("4");
+      expect(spans[1].textContent).toBe("5");
+    });
+
+    it("should lay characters sequentially from rtl when opts.direction is 'rtl'", function () {
+      var gt = new generativeText();
+      gt.opts = { textSpaces: 'style', direction: 'rtl'};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "123 45";
+      gt.applyToWrapped(elem);
+      var spans = elem.childNodes[0].getElementsByTagName('span');
+      expect(spans[0].textContent).toBe("5");
+      expect(spans[1].textContent).toBe("4");
+      spans = elem.childNodes[2].getElementsByTagName('span');
+      expect(spans[0].textContent).toBe("3");
+      expect(spans[1].textContent).toBe("2");
+      expect(spans[2].textContent).toBe("1");
+    });
+
+
     it("should style spaces when textSpaces is set to 'style'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'style'};
@@ -593,6 +665,16 @@ describe("GenerativeText", function() {
 
     });
 
+    it("should set 'ltr' as the default direction on opts if none is given", function () {
+      var gt = new generativeText();
+      gt.opts = {};
+      var text = "0123456789";
+      gt.initializeApplyToWords(10);
+      expect(gt.opts.direction).toBe('ltr');
+
+    });
+
+
     it("should set totalSteps based on the length parameter", function () {
       var gt = new generativeText();
       gt.opts = {};
@@ -655,6 +737,33 @@ describe("GenerativeText", function() {
       expect(spans[3].style.fontSize).toBe("1em");
       expect(spans[4].style.fontSize).toBe("2em");
     });
+
+    it("should lay words sequentially from ltr when opts.direction is 'ltr'", function () {
+      var gt = new generativeText();
+      gt.opts = { direction: 'ltr' };
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "one two three four five";
+      gt.applyToWords(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].textContent).toBe("one");
+      expect(spans[2].textContent).toBe("three");
+      expect(spans[4].textContent).toBe("five");
+    });
+
+    it("should lay words sequentially from rtl when opts.direction is 'rtl'", function () {
+      var gt = new generativeText();
+      gt.opts = { direction: 'rtl' };
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      var elem = document.createElement('div');
+      elem.innerHTML = "one two three four five";
+      gt.applyToWords(elem);
+      var spans = elem.getElementsByTagName('span');
+      expect(spans[0].textContent).toBe("five");
+      expect(spans[2].textContent).toBe("three");
+      expect(spans[4].textContent).toBe("one");
+    });
+
 
     it("should transform to '&nbsp' entity and style spaces when using textSpaces = 'style'", function () {
       var gt = new generativeText();

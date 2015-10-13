@@ -340,6 +340,8 @@ generativeText.prototype = {
 
 		//style is default
 		if( typeof this.opts.textSpaces == 'undefined') this.opts.textSpaces = 'style';
+		//ltr is default
+		if( typeof this.opts.direction == 'undefined') this.opts.direction = 'ltr';
 
 		var length = text.length;
 
@@ -370,8 +372,18 @@ generativeText.prototype = {
 
 		var length = text.length;
 
+		if(this.opts.direction == "rtl") {
+			var i = length-1;
+			var istop = -1;
+			var iadd = -1;
+		} else {
+			var i = 0;
+			var istop = length;
+			var iadd = 1;
+		}
+
 		//Add new elements
-		for(var i=0; i<length; i++) {
+		while(i != istop) {
 
 			//Pre Function
 			if(!!this.opts && !!this.opts.pObj && !!this.opts.pObj.preFunc && this.opts.pObj.preFunc instanceof Function) {
@@ -413,6 +425,7 @@ generativeText.prototype = {
 			}
 
 			this.currentStep++;
+			i = i + iadd;
 		}
 	},
 	applyToWrapped: function(elem) {
@@ -438,8 +451,19 @@ generativeText.prototype = {
 		wrapper.style.whiteSpace = "nowrap";
 		wrapper.setAttribute("class", "gt-nowrap");
 
+		if(this.opts.direction == "rtl") {
+			var i = length-1;
+			var istop = -1;
+			var iadd = -1;
+		} else {
+			var i = 0;
+			var istop = length;
+			var iadd = 1;
+		}
+
 		//Add new elements
-		for(var i=0; i<length; i++) {
+		while(i != istop) {
+
 
 			//Pre Function
 			if(!!this.opts && !!this.opts.pObj && !!this.opts.pObj.preFunc && this.opts.pObj.preFunc instanceof Function) {
@@ -486,6 +510,7 @@ generativeText.prototype = {
 			}
 
 			this.currentStep++;
+			i = i + iadd;
 		}
 		this.appendTextElement(elem, wrapper);
 	},
@@ -493,6 +518,9 @@ generativeText.prototype = {
 
 		//style is default
 		if( typeof this.opts.textSpaces == 'undefined') this.opts.textSpaces = 'remove';
+		//ltr is default
+		if( typeof this.opts.direction == 'undefined') this.opts.direction = 'ltr';
+
 
 		if(this.opts.textSpaces == 'style' || this.opts.textSpaces == 'nostyle') {
 			this.totalSteps = (length*2) - 1;
@@ -517,10 +545,21 @@ generativeText.prototype = {
 
 		var length = words.length;
 
-		this.initializeApplyToWords(this.opts, length);
+		this.initializeApplyToWords(length);
 		this.initializePObj(elem);
 
-		for(var i=0; i<length; i++) {
+		if(this.opts.direction == "rtl") {
+			var i = length-1;
+			var istop = -1;
+			var iadd = -1;
+		} else {
+			var i = 0;
+			var istop = length;
+			var iadd = 1;
+		}
+
+		//Add new elements
+		while(i != istop) {
 
 			//Pre Function
 			if(this.opts && this.opts.pObj && this.opts.pObj.preFunc && this.opts.pObj.preFunc instanceof Function) {
@@ -604,6 +643,7 @@ generativeText.prototype = {
 			}
 
 			this.currentStep++;
+			i = i + iadd;
 		}
 
 	},
@@ -616,12 +656,6 @@ generativeText.prototype = {
 			}
 
 			var styleName = p.replace(/([A-Z])/g, function(m){ return '-' + m.toLowerCase(); } );
-
-			//Fixed value
-			if(typeof params[ p ] == "string") {
-				el.style[styleName] = params[ p ];
-				continue;
-			}
 
 			switch( this.defs[ p ][0] ) {
 				case 'Numeric':
@@ -712,6 +746,11 @@ generativeText.prototype = {
 		}
 	},
 	generateBoxShadowStyle: function(param) {
+		//Fixed value
+		if(typeof param == "string") {
+			return param;
+		}
+
 		if(typeof param.hShadow == "undefined" || typeof param.vShadow == "undefined" || typeof param.blur == "undefined" || typeof param.spread == "undefined" || typeof param.color == "undefined") {
 			throw ("generativeText Error - BoxShadow without either hShadow, vShadow, blur, spread or color.");
 			return;
@@ -726,6 +765,11 @@ generativeText.prototype = {
 		return strVal;
 	},
 	generateTextShadowStyle: function(param) {
+		//Fixed value
+		if(typeof param == "string") {
+			return param;
+		}
+
 		if(typeof param.hShadow == "undefined" || typeof param.vShadow == "undefined" || typeof param.blurRadius == "undefined" || typeof param.color == "undefined") {
 			throw ("generativeText Error - TextShadow without either hShadow, vShadow, blurRadius or color.");
 			return;
@@ -753,6 +797,10 @@ generativeText.prototype = {
 		elem.style[style] = old + ' ' + val.trim();
 	},
 	generateColorStyle: function(param) {
+		//Fixed value
+		if(typeof param == "string") {
+			return param;
+		}
 		var tr = this.generateColorVariation(param);
 		if(tr.charAt(0) === "#") return tr;
 		return "#" + tr;
@@ -815,6 +863,11 @@ generativeText.prototype = {
 		}
 	},
 	generateNumericStyle: function(param, unit) {
+		//Fixed value
+		if(typeof param == "string") {
+			return param;
+		}
+
 		if(!!unit) param.unit = unit;
 		return this.generateNumericVariation(param);
 	},
@@ -856,6 +909,11 @@ generativeText.prototype = {
 		}
 	},
 	generateListStyle: function(param, unit) {
+		//Fixed value
+		if(typeof param == "string") {
+			return param;
+		}
+
 		if(!!unit) param.unit = unit;
 		return this.generateListVariation(param);
 	},
