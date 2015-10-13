@@ -34,7 +34,6 @@ var generativeText = function(params, options) {
 
 generativeText.prototype = {
 	defs: {
-		additiveSymbols: ["List"], //UAYOR
 		alignContent: ["List"], //UAYOR
 		alignItems: ["List"], //UAYOR
 		alignSelf: ["List"], //UAYOR
@@ -48,8 +47,6 @@ generativeText.prototype = {
 		animationName: ["List"], //Exp
 		animationPlayState: ["List"], //Exp
 		animationTimingFunction: ["List"], //Exp
-
-		appearance: ["List"], //UAYOR
 
 		backfaceVisibility: ["List"], //UAYOR
 
@@ -106,12 +103,21 @@ generativeText.prototype = {
 
 		bottom: ["Numeric"],
 
+		borderDecorationBreak: ["List"], //UAYOR
+
 		boxShadow: ["BoxShadow"],
 
 		boxSizing: ["List"], //UAYOR
 
 		clear: ["List"],
+		clipPath: ["List"], //UAYOR
+
 		color: ["Color"],
+		columns: ["List"], //UAYOR
+
+		cursor: ["List"], //UAYOR
+		display: ["List"], //UAYOR
+
 		filterBlur: ["filter","px"],
 		filterBrightness: ["filter","%"],
 		filterContrast: ["filter","%"],
@@ -122,6 +128,7 @@ generativeText.prototype = {
 		filterOpacity: ["filter","%"],
 		filterSaturate: ["filter","%"],
 		filterSepia: ["filter","%"],
+		
 		fontFamily: ["List"],
 		fontSize: ["Numeric"],
 		fontWeight: ["List"],
