@@ -53,9 +53,9 @@ generativeText.prototype = {
 		backgroundOrigin: { type: "List" }, //UAYOR
 		backgroundColor: { type: "Color" },
 		backgroundImage: { type: "List" },
-		backgroundPosition: { type: "List" }, //MNTBC
+		backgroundPosition: { type: "TwoNumeric", unit: "px" },
 		backgroundRepeact: { type: "List" },
-		backgroundSize: { type: "List" }, //MNTBC
+		backgroundSize: { type: "TwoNumeric", unit: "%" },
 
 		border: { type: "List" }, //USP
 		borderBottom: { type: "List" }, //USP
@@ -114,16 +114,16 @@ generativeText.prototype = {
 		cursor: { type: "List" }, //UAYOR
 		display: { type: "List" }, //UAYOR
 
-		filterBlur: { type: "filter", unit: "px" },
-		filterBrightness: { type: "filter", unit: "%" },
-		filterContrast: { type: "filter", unit: "%" },
-		filterDropShadow: { type: "filterDropShadow" },
-		filterGrayScale: { type: "filter", unit: "%" },
-		filterHueRotate: { type: "filter", unit: "deg" },
-		filterInvert: { type: "filter", unit: "%" },
-		filterOpacity: { type: "filter", unit: "%" },
-		filterSaturate: { type: "filter", unit: "%" },
-		filterSepia: { type: "filter", unit: "%" },
+		filterBlur: { type: "Filter", unit: "px" },
+		filterBrightness: { type: "Filter", unit: "%" },
+		filterContrast: { type: "Filter", unit: "%" },
+		filterDropShadow: { type: "FilterDropShadow" },
+		filterGrayScale: { type: "Filter", unit: "%" },
+		filterHueRotate: { type: "Filter", unit: "deg" },
+		filterInvert: { type: "Filter", unit: "%" },
+		filterOpacity: { type: "Filter", unit: "%" },
+		filterSaturate: { type: "Filter", unit: "%" },
+		filterSepia: { type: "Filter", unit: "%" },
 
 		float: { type: "List" }, //UAYOR
 
@@ -168,8 +168,7 @@ generativeText.prototype = {
 		outlineWidth: { type: "Numeric", unit: "px" },
 
 		perspective: { type: "Numeric", unit: "px" }, //UAYOR
-		perspectiveOrigin: { type: "List" }, //UAYOR
-
+		perspectiveOrigin: { type: "TwoNumeric", unit: "%" },
 
 		padding: { type: "Numeric" },
 		paddingBottom: { type: "Numeric" },
@@ -202,7 +201,7 @@ generativeText.prototype = {
 		transformTranslateY: { type: "Transform", unit: "px" },
 		transformTranslateZ: { type: "Transform", unit: "px" },
 
-		transformOrigin: { type: "List" }, //UAYOR
+		transformOrigin: { type: "ThreeNumeric", unit: "%" },
 
 		transition: { type: "List" }, //UAYOR
 
@@ -719,7 +718,7 @@ generativeText.prototype = {
 					this.setBrowserStyle(el, "-moz-text-shadow", strVal);
 					this.setBrowserStyle(el, "-webkit-text-shadow", strVal);
 					break;
-				case 'filter':
+				case 'Filter':
 					var unit = "";
 					if( this.defs[p].unit == "deg") {
 						unit = "deg";
@@ -738,12 +737,78 @@ generativeText.prototype = {
 					this.setBrowserStyle(el, "filter", strVal);
 					this.setBrowserStyle(el, "-webkit-filter", strVal);
 					break;
-				case 'filterDropShadow':
+				case 'FilterDropShadow':
 					var strVal = "drop-shadow(" + this.generateTextShadowStyle(params[p]) + ")";
 					this.setBrowserStyle(el, "filter", strVal);
 					this.setBrowserStyle(el, "-webkit-filter", strVal);
 					break;
+				case 'TwoNumeric':
+					var unit;
+					if(params[p].unit) {
+						unit = params[p].unit;
+					} else {
+						unit = this.defs[p].unit;
+					}
+					el.style[styleName] = this.generateTwoNumericStyle( params[p], unit);
+					break;
+				case 'ThreeNumeric':
+					var unit;
+					if(params[p].unit) {
+						unit = params[p].unit;
+					} else {
+						unit = this.defs[p].unit;
+					}
+					el.style[styleName] = this.generateThreeNumericStyle( params[p], unit);
+					break;
 			}
+		}
+	},
+	generateTwoNumericStyle: function(param, unit) {
+		//Fixed value
+		if (typeof param == "string") {
+			return param;
+		}
+		switch (param.type) {
+			case 'list':
+				return this.generateListVariation(param);
+				break;
+			case 'generate':
+			default:
+				if (typeof param.x == "undefined" || typeof param.y == "undefined") {
+					throw ("generativeText Error - " + this.currentParameter + " without either x or y.");
+					return;
+				}
+
+				var strVal = "";
+				strVal += " " + this.generateNumericStyle(param.x, unit);
+				strVal += " " + this.generateNumericStyle(param.y, unit);
+				return strVal;
+				break;
+		}
+	},
+	generateThreeNumericStyle: function(param, unit) {
+		//Fixed value
+		if (typeof param == "string") {
+			return param;
+		}
+		switch (param.type) {
+			case 'list':
+				return this.generateListVariation(param);
+				break;
+			case 'generate':
+			default:
+				if (typeof param.x == "undefined" || typeof param.y == "undefined") {
+					throw ("generativeText Error - " + this.currentParameter + " without either x or y.");
+					return;
+				}
+
+				var strVal = "";
+				strVal += " " + this.generateNumericStyle(param.x, unit);
+				strVal += " " + this.generateNumericStyle(param.y, unit);
+				if(!!param.z) strVal += " " + this.generateNumericStyle(param.z, unit);
+				console.log(strVal);
+				return strVal;
+				break;
 		}
 	},
 	generateBoxShadowStyle: function(param) {
@@ -751,19 +816,26 @@ generativeText.prototype = {
 		if(typeof param == "string") {
 			return param;
 		}
-
-		if(typeof param.hShadow == "undefined" || typeof param.vShadow == "undefined" || typeof param.blur == "undefined" || typeof param.spread == "undefined" || typeof param.color == "undefined") {
-			throw ("generativeText Error - BoxShadow without either hShadow, vShadow, blur, spread or color.");
-			return;
+		switch(param.type) {
+			case 'list':
+				return this.generateListVariation(param);
+				break;
+			case 'generate':
+			default:
+				if (typeof param.hShadow == "undefined" || typeof param.vShadow == "undefined" || typeof param.blur == "undefined" || typeof param.spread == "undefined" || typeof param.color == "undefined") {
+					throw ("generativeText Error - boxShadow without either hShadow, vShadow, blur, spread or color.");
+					return;
+				}
+				var strVal = "";
+				if (!!param.inset && param.inset) strVal = "inset";
+				strVal += " " + this.generateNumericStyle(param.hShadow, 'px');
+				strVal += " " + this.generateNumericStyle(param.vShadow, 'px');
+				strVal += " " + this.generateNumericStyle(param.blur, 'px');
+				strVal += " " + this.generateNumericStyle(param.spread, 'px');
+				strVal += " " + this.generateColorStyle(param.color);
+				return strVal;
+			break;
 		}
-		var strVal = "";
-		if(!!param.inset && param.inset) strVal = "inset";
-		strVal += " " + this.generateNumericStyle(param.hShadow, 'px');
-		strVal += " " + this.generateNumericStyle(param.vShadow, 'px');
-		strVal += " " + this.generateNumericStyle(param.blur, 'px');
-		strVal += " " + this.generateNumericStyle(param.spread, 'px');
-		strVal += " " + this.generateColorStyle(param.color);
-		return strVal;
 	},
 	generateTextShadowStyle: function(param) {
 		//Fixed value
@@ -771,16 +843,24 @@ generativeText.prototype = {
 			return param;
 		}
 
-		if(typeof param.hShadow == "undefined" || typeof param.vShadow == "undefined" || typeof param.blurRadius == "undefined" || typeof param.color == "undefined") {
-			throw ("generativeText Error - TextShadow without either hShadow, vShadow, blurRadius or color.");
-			return;
+		switch(param.type) {
+			case 'list':
+				return this.generateListVariation(param);
+				break;
+			case 'generate':
+			default:
+				if (typeof param.hShadow == "undefined" || typeof param.vShadow == "undefined" || typeof param.blurRadius == "undefined" || typeof param.color == "undefined") {
+					throw ("generativeText Error - textShadow without either hShadow, vShadow, blurRadius or color.");
+					return;
+				}
+				var strVal = "";
+				strVal += " " + this.generateNumericStyle(param.hShadow, 'px');
+				strVal += " " + this.generateNumericStyle(param.vShadow, 'px');
+				strVal += " " + this.generateNumericStyle(param.blurRadius, 'px');
+				strVal += " " + this.generateColorStyle(param.color);
+				return strVal;
+				break;
 		}
-		var strVal = "";
-		strVal += " " + this.generateNumericStyle(param.hShadow, 'px');
-		strVal += " " + this.generateNumericStyle(param.vShadow, 'px');
-		strVal += " " + this.generateNumericStyle(param.blurRadius, 'px');
-		strVal += " " + this.generateColorStyle(param.color);
-		return strVal;
 	},
 	setBrowserStyle: function(elem, style, val) {
 		var old = elem.style[style];

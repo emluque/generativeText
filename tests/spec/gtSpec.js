@@ -1286,6 +1286,43 @@ describe("GenerativeText", function() {
       expect(worked).toBe(true);
     });
 
+    it("should work on twoNumeric rules", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        backgroundSize: {
+          x: "20%",
+          y: "30%",
+        }
+      };
+      var gt = new generativeText();
+
+      gt.generateStyle(params, elem);
+
+      var es = elem.style.boxShadow;
+      //different browsers return property as string differently
+      expect(elem.style['background-size']).toBe("20% 30%");
+    });
+
+    it("should work on threeNumeric rules", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        transformOrigin: {
+          x: "20%",
+          y: "30%",
+          z: "40px",
+        }
+      };
+      var gt = new generativeText();
+
+      gt.generateStyle(params, elem);
+
+      var es = elem.style.boxShadow;
+      //different browsers return property as string differently
+      expect(elem.style['transform-origin']).toBe("20% 30% 40px");
+    });
+
   });
 
   describe(".setBrowserStyle()", function() {
