@@ -151,17 +151,34 @@ generativeText.prototype = {
 		marginLeft: ["Numeric"],
 		marginRight: ["Numeric"],
 		marginTop: ["Numeric"],
+
 		maxHeight: ["Numeric"],
 		maxWidth: ["Numeric"],
 		minHeight: ["Numeric"],
 		minWidth: ["Numeric"],
+
+		mixBlendMode: ["List"], //UAYOR
+
 		opacity: ["Numeric",";","float"],
+
+		outline: ["List"], //USP
+		outlineColor: ["Color"],
+		outlineOffset: ["Numeric",'px'],
+		outlineStyle: ["List"],
+		outlineWidth: ["Numeric",'px'],
+
+		perspective: ["Numeric",'px'], //UAYOR
+		perspectiveOrigin: ["List"], //UAYOR
+
+
 		padding: ["Numeric"],
 		paddingBottom: ["Numeric"],
 		paddingLeft: ["Numeric"],
 		paddingRight: ["Numeric"],
 		paddingTop: ["Numeric"],
+
 		right: ["Numeric"],
+		
 		textAlign: ["List"],
 		textDecoration: ["List"],
 		textShadow: ["TextShadow"],
