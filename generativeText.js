@@ -617,6 +617,12 @@ generativeText.prototype = {
 
 			var styleName = p.replace(/([A-Z])/g, function(m){ return '-' + m.toLowerCase(); } );
 
+			//Fixed value
+			if(typeof params[ p ] == "string") {
+				el.style[styleName] = params[ p ];
+				continue;
+			}
+
 			switch( this.defs[ p ][0] ) {
 				case 'Numeric':
 					el.style[styleName] = this.generateNumericStyle(params[p], this.defs[p][1]);
@@ -777,7 +783,12 @@ generativeText.prototype = {
 	},
 	generateRGBHex: function(c) {
 		if(!!c.fixed) {
-			return c.fixed;
+			if(c.fixed.length == 2) {
+				return c.fixed;
+			} else {
+				throw ("generativeText Error - Color Parameter with incorrect fixed value: " + c.fixed );
+				return;
+			}
 		} else if(typeof c.min != 'undefined' && typeof c.max != 'undefined') {
 			var range = parseInt(c.max, 16) - parseInt(c.min, 16);
 			if(typeof c.steps != 'undefined' && c.steps == true) {

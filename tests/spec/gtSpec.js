@@ -891,6 +891,19 @@ describe("GenerativeText", function() {
       expect(exceptionThrown).toBe(true);
     });
 
+    it("should work with string (fixed) values", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        fontFamily: 'Helvetica',
+      };
+      var gt = new generativeText();
+
+      gt.generateStyle(params, elem);
+      expect(elem.style.fontFamily).toBe('Helvetica');
+    });
+
+
     it("should work on list rules", function () {
       var elem = document.createElement('span');
       elem.textContent = "A"
@@ -1428,6 +1441,20 @@ describe("GenerativeText", function() {
     it("should throw an exception if c.fixed or (c.min and c.max) are not set", function () {
       var gt = new generativeText();
       expect(gt.generateRGBHex).toThrow();
+    });
+
+    it("should throw an exception when c.fixed is not of length 2", function () {
+      var c = {};
+      c.fixed = "aaaa";
+      var gt = new generativeText();
+
+      var exceptionThrown = false;
+      try {
+        gt.generateRGBHex(c);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+      expect(exceptionThrown).toBe(true);
     });
 
     it("should return a fixed value when using c.fixed", function () {
