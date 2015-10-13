@@ -34,10 +34,6 @@ var generativeText = function(params, options) {
 
 generativeText.prototype = {
 	defs: {
-		alignContent: ["List"], //UAYOR
-		alignItems: ["List"], //UAYOR
-		alignSelf: ["List"], //UAYOR
-		all: ["List"], //UAYOR
 
 		animation: ["List"], //Exp
 		animationDirection: ["List"], //Exp
@@ -128,14 +124,28 @@ generativeText.prototype = {
 		filterOpacity: ["filter","%"],
 		filterSaturate: ["filter","%"],
 		filterSepia: ["filter","%"],
-		
+
+		float: ["List"], //UAYOR
+
+		font: ["List"], //USP
 		fontFamily: ["List"],
 		fontSize: ["Numeric"],
+		fontStretch: ["List"],
+		fontStyle: ["List"],
+		fontVariant: ["List"],
 		fontWeight: ["List"],
+
 		height: ["Numeric"],
+
 		left: ["Numeric"],
 		letterSpacing: ["Numeric"],
 		lineHeight: ["Numeric"],
+
+		listStyle: ["List"], //USP
+		listStyleImage: ["List"], //UAYOR
+		listStylePosition: ["List"], //UAYOR
+		listStyleType: ["List"], //UAYOR
+
 		margin: ["Numeric"],
 		marginBottom: ["Numeric"],
 		marginLeft: ["Numeric"],
@@ -583,7 +593,7 @@ generativeText.prototype = {
 					el.style[styleName] = this.generateColorStyle( params[p]);
 				break;
 				case 'List':
-					if(styleName == 'background-image' || styleName == 'border-image-source') {
+					if(styleName == 'background-image' || styleName == 'border-image-source' || styleName == 'list-style-image') {
 						el.style[styleName] = "url('" + this.generateListStyle( params[p] ) + "')";
 					} else {
 						el.style[styleName] = this.generateListStyle( params[p] );
