@@ -649,6 +649,7 @@ generativeText.prototype = {
 	},
 	generateStyle: function( params, el) {
 		for(var p in params) {
+			this.currentParameter = p;
 			//Check if definition exists
 			if(typeof this.defs[ p ] == 'undefined') {
 				throw ("generativeText Error - rule name is not supported: '" + p + "'");
@@ -819,7 +820,7 @@ generativeText.prototype = {
 			default:
 				var rgbHex = "";
 				if(typeof param.r == 'undefined' || typeof param.g == 'undefined' || typeof param.b == 'undefined'){
-					throw ("generativeText Error - Color without either r, g or b. You need to have them all, remember you can use fixed.");
+					throw ("generativeText Error - " + this.currentParameter + " - Color without either r, g or b. You need to have them all, remember you can use fixed.");
 					return;
 				}
 				rgbHex += this.generateRGBHex(param.r);
@@ -834,7 +835,7 @@ generativeText.prototype = {
 			if(c.fixed.length == 2) {
 				return c.fixed;
 			} else {
-				throw ("generativeText Error - Color Parameter with incorrect fixed value: " + c.fixed );
+				throw ("generativeText Error  - " + this.currentParameter + " -  Color Type with incorrect fixed value: " + c.fixed );
 				return;
 			}
 		} else if(typeof c.min != 'undefined' && typeof c.max != 'undefined') {
@@ -858,7 +859,7 @@ generativeText.prototype = {
 				return this.rgbCheck((parseInt(c.min, 16) + Math.floor((Math.random()*range)) ).toString(16));
 			}
 		} else {
-			throw ("generativeText Error - Color Parameter without either fixed or (min and max) value: (" + c.fixed + ", " + c.min + ", " + c.max + ")" );
+			throw ("generativeText Error  - " + this.currentParameter + " -  Color Type without either fixed or (min and max) value: (" + c.fixed + ", " + c.min + ", " + c.max + ")" );
 			return;
 		}
 	},
@@ -882,7 +883,7 @@ generativeText.prototype = {
 			case "generate":
 			default:
 				if(typeof param.min == 'undefined' || typeof param.max == 'undefined') {
-					throw ("generativeText Error - Numeric Parameter without min or max value: (" + param.min + ", " + param.max + ")" );
+					throw ("generativeText Error  - " + this.currentParameter + " -  Numeric Type without min or max value: (" + param.min + ", " + param.max + ")" );
 					return;
 				}
 
@@ -919,7 +920,7 @@ generativeText.prototype = {
 	},
 	generateListVariation: function(param) {
 		if(!param.values || !(param.values.constructor === Array) || (param.values.constructor === Array && param.values.length < 1)) {
-			throw ("generativeText Error - List Parameter without values.");
+			throw ("generativeText Error  - " + this.currentParameter + " -  List without values.");
 			return;
 		}
 

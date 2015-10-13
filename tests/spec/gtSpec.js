@@ -1000,6 +1000,20 @@ describe("GenerativeText", function() {
       expect(exceptionThrown).toBe(true);
     });
 
+
+    it("should set this.currentParameter", function () {
+      var elem = document.createElement('span');
+      elem.textContent = "A"
+      var params = {
+        fontFamily: {values: ['Helvetica']},
+      };
+      var gt = new generativeText();
+
+      gt.generateStyle(params, elem);
+      expect(gt.currentParameter).toBe('fontFamily');
+    });
+
+
     it("should work with string (fixed) values", function () {
       var elem = document.createElement('span');
       elem.textContent = "A"
