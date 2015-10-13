@@ -49,31 +49,67 @@ generativeText.prototype = {
 		animationPlayState: ["List"], //Exp
 		animationTimingFunction: ["List"], //Exp
 
+		appearance: ["List"], //UAYOR
 
+		backfaceVisibility: ["List"], //UAYOR
+
+		background: ["List"], //USP
+		backgroundAttachment: ["List"], //UAYOR
+		backgroundBlendMode: ["List"], //UAYOR
+		backgroundClip: ["List"], //UAYOR
+		backgroundOrigin: ["List"], //UAYOR
 		backgroundColor: ["Color"],
 		backgroundImage: ["List"],
+		backgroundPosition: ["List"], //MNTBC
+		backgroundRepeact: ["List"],
+		backgroundSize: ["List"], //MNTBC
+
+		border: ["List"], //USP
+		borderBottom: ["List"], //USP
 		borderBottomColor: ["Color"],
 		borderBottomLeftRadius: ["Numeric","%"],
 		borderBottomRightRadius: ["Numeric","%"],
 		borderBottomStyle: ["List"],
 		borderBottomWidth: ["Numeric"],
+		borderCollapse: ["List"], //UAYOR
 		borderColor: ["Color"],
+
+		borderImage: ["List"], //USP
+		borderImageOutset: ["List"], //UAYOR
+		borderImageRepeat: ["List"], //UAYOR
+		borderImageSlice: ["List"], //UAYOR
+		borderImageSource: ["List"], //UAYOR
+		borderImageWidth: ["Numeric", "px"], //UAYOR
+
+		borderLeft: ["List"], //USP
 		borderLeftColor: ["Color"],
 		borderLeftStyle: ["List"],
 		borderLeftWidth: ["Numeric"],
+
 		borderRadius: ["Numeric","%"],
+
+		borderRight: ["List"], //USP
 		borderRightColor: ["Color"],
 		borderRightStyle: ["List"],
 		borderRightWidth: ["Numeric"],
+
 		borderStyle: ["List"],
+
+		borderTop: ["List"], //USP
 		borderTopColor: ["Color"],
 		borderTopLeftRadius: ["Numeric","%"],
 		borderTopRightRadius: ["Numeric","%"],
 		borderTopStyle: ["List"],
 		borderTopWidth: ["Numeric"],
+
 		borderWidth: ["Numeric"],
+
 		bottom: ["Numeric"],
+
 		boxShadow: ["BoxShadow"],
+
+		boxSizing: ["List"], //UAYOR
+
 		clear: ["List"],
 		color: ["Color"],
 		filterBlur: ["filter","px"],
@@ -540,7 +576,7 @@ generativeText.prototype = {
 					el.style[styleName] = this.generateColorStyle( params[p]);
 				break;
 				case 'List':
-					if(styleName == 'background-image') {
+					if(styleName == 'background-image' || styleName == 'border-image-source') {
 						el.style[styleName] = "url('" + this.generateListStyle( params[p] ) + "')";
 					} else {
 						el.style[styleName] = this.generateListStyle( params[p] );
