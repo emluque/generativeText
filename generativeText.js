@@ -35,184 +35,184 @@ var generativeText = function(params, options) {
 generativeText.prototype = {
 	defs: {
 
-		animation: ["List"], //Exp
-		animationDirection: ["List"], //Exp
-		animationDuration: ["Numeric", "s"], //Exp
-		animationFillMode: ["List"], //Exp
-		animationIterationCount: ['Numeric'], //Exp
-		animationName: ["List"], //Exp
-		animationPlayState: ["List"], //Exp
-		animationTimingFunction: ["List"], //Exp
+		animation: { type: "List" }, //Exp
+		animationDirection: { type: "List" }, //Exp
+		animationDuration: { type: "Numeric", unit: "s" }, //Exp
+		animationFillMode: { type: "List" }, //Exp
+		animationIterationCount: { type: "Numeric" }, //Exp
+		animationName: { type: "List" }, //Exp
+		animationPlayState: { type: "List" }, //Exp
+		animationTimingFunction: { type: "List" }, //Exp
 
-		backfaceVisibility: ["List"], //UAYOR
+		backfaceVisibility: { type: "List" }, //UAYOR
 
-		background: ["List"], //USP
-		backgroundAttachment: ["List"], //UAYOR
-		backgroundBlendMode: ["List"], //UAYOR
-		backgroundClip: ["List"], //UAYOR
-		backgroundOrigin: ["List"], //UAYOR
-		backgroundColor: ["Color"],
-		backgroundImage: ["List"],
-		backgroundPosition: ["List"], //MNTBC
-		backgroundRepeact: ["List"],
-		backgroundSize: ["List"], //MNTBC
+		background: { type: "List" }, //USP
+		backgroundAttachment: { type: "List" }, //UAYOR
+		backgroundBlendMode: { type: "List" }, //UAYOR
+		backgroundClip: { type: "List" }, //UAYOR
+		backgroundOrigin: { type: "List" }, //UAYOR
+		backgroundColor: { type: "Color" },
+		backgroundImage: { type: "List" },
+		backgroundPosition: { type: "List" }, //MNTBC
+		backgroundRepeact: { type: "List" },
+		backgroundSize: { type: "List" }, //MNTBC
 
-		border: ["List"], //USP
-		borderBottom: ["List"], //USP
-		borderBottomColor: ["Color"],
-		borderBottomLeftRadius: ["Numeric","%"],
-		borderBottomRightRadius: ["Numeric","%"],
-		borderBottomStyle: ["List"],
-		borderBottomWidth: ["Numeric"],
-		borderCollapse: ["List"], //UAYOR
-		borderColor: ["Color"],
+		border: { type: "List" }, //USP
+		borderBottom: { type: "List" }, //USP
+		borderBottomColor: { type: "Color" },
+		borderBottomLeftRadius: { type: "Numeric", unit: "%" },
+		borderBottomRightRadius: { type: "Numeric", unit: "%" },
+		borderBottomStyle: { type: "List" },
+		borderBottomWidth: { type: "Numeric" },
+		borderCollapse: { type: "List" }, //UAYOR
+		borderColor: { type: "Color" },
 
-		borderImage: ["List"], //USP
-		borderImageOutset: ["List"], //UAYOR
-		borderImageRepeat: ["List"], //UAYOR
-		borderImageSlice: ["List"], //UAYOR
-		borderImageSource: ["List"], //UAYOR
-		borderImageWidth: ["Numeric", "px"], //UAYOR
+		borderImage: { type: "List" }, //USP
+		borderImageOutset: { type: "List" }, //UAYOR
+		borderImageRepeat: { type: "List" }, //UAYOR
+		borderImageSlice: { type: "List" }, //UAYOR
+		borderImageSource: { type: "List" }, //UAYOR
+		borderImageWidth: { type: "Numeric", unit: "px" }, //UAYOR
 
-		borderLeft: ["List"], //USP
-		borderLeftColor: ["Color"],
-		borderLeftStyle: ["List"],
-		borderLeftWidth: ["Numeric"],
+		borderLeft: { type: "List" }, //USP
+		borderLeftColor: { type: "Color" },
+		borderLeftStyle: { type: "List" },
+		borderLeftWidth: { type: "Numeric" },
 
-		borderRadius: ["Numeric","%"],
+		borderRadius: { type: "Numeric", unit: "%" },
 
-		borderRight: ["List"], //USP
-		borderRightColor: ["Color"],
-		borderRightStyle: ["List"],
-		borderRightWidth: ["Numeric"],
+		borderRight: { type: "List" }, //USP
+		borderRightColor: { type: "Color" },
+		borderRightStyle: { type: "List" },
+		borderRightWidth: { type: "Numeric" },
 
-		borderStyle: ["List"],
+		borderStyle: { type: "List" },
 
-		borderTop: ["List"], //USP
-		borderTopColor: ["Color"],
-		borderTopLeftRadius: ["Numeric","%"],
-		borderTopRightRadius: ["Numeric","%"],
-		borderTopStyle: ["List"],
-		borderTopWidth: ["Numeric"],
+		borderTop: { type: "List" }, //USP
+		borderTopColor: { type: "Color" },
+		borderTopLeftRadius: { type: "Numeric", unit: "%" },
+		borderTopRightRadius: { type: "Numeric", unit: "%" },
+		borderTopStyle: { type: "List" },
+		borderTopWidth: { type: "Numeric" },
 
-		borderWidth: ["Numeric"],
+		borderWidth: { type: "Numeric" },
 
-		bottom: ["Numeric"],
+		bottom: { type: "Numeric" },
 
-		borderDecorationBreak: ["List"], //UAYOR
+		borderDecorationBreak: { type: "List" }, //UAYOR
 
-		boxShadow: ["BoxShadow"],
+		boxShadow: { type: "BoxShadow" },
 
-		boxSizing: ["List"], //UAYOR
+		boxSizing: { type: "List" }, //UAYOR
 
-		clear: ["List"],
-		clipPath: ["List"], //UAYOR
+		clear: { type: "List" },
+		clipPath: { type: "List" }, //UAYOR
 
-		color: ["Color"],
-		columns: ["List"], //UAYOR
+		color: { type: "Color" },
+		columns: { type: "List" }, //UAYOR
 
-		cursor: ["List"], //UAYOR
-		display: ["List"], //UAYOR
+		cursor: { type: "List" }, //UAYOR
+		display: { type: "List" }, //UAYOR
 
-		filterBlur: ["filter","px"],
-		filterBrightness: ["filter","%"],
-		filterContrast: ["filter","%"],
-		filterDropShadow: ["filterDropShadow"],
-		filterGrayScale: ["filter","%"],
-		filterHueRotate: ["filter","deg"],
-		filterInvert: ["filter","%"],
-		filterOpacity: ["filter","%"],
-		filterSaturate: ["filter","%"],
-		filterSepia: ["filter","%"],
+		filterBlur: { type: "filter", unit: "px" },
+		filterBrightness: { type: "filter", unit: "%" },
+		filterContrast: { type: "filter", unit: "%" },
+		filterDropShadow: { type: "filterDropShadow" },
+		filterGrayScale: { type: "filter", unit: "%" },
+		filterHueRotate: { type: "filter", unit: "deg" },
+		filterInvert: { type: "filter", unit: "%" },
+		filterOpacity: { type: "filter", unit: "%" },
+		filterSaturate: { type: "filter", unit: "%" },
+		filterSepia: { type: "filter", unit: "%" },
 
-		float: ["List"], //UAYOR
+		float: { type: "List" }, //UAYOR
 
-		font: ["List"], //USP
-		fontFamily: ["List"],
-		fontSize: ["Numeric"],
-		fontStretch: ["List"],
-		fontStyle: ["List"],
-		fontVariant: ["List"],
-		fontWeight: ["List"],
+		font: { type: "List" }, //USP
+		fontFamily: { type: "List" },
+		fontSize: { type: "Numeric" },
+		fontStretch: { type: "List" },
+		fontStyle: { type: "List" },
+		fontVariant: { type: "List" },
+		fontWeight: { type: "List" },
 
-		height: ["Numeric"],
+		height: { type: "Numeric" },
 
-		left: ["Numeric"],
-		letterSpacing: ["Numeric"],
-		lineHeight: ["Numeric"],
+		left: { type: "Numeric" },
+		letterSpacing: { type: "Numeric" },
+		lineHeight: { type: "Numeric" },
 
-		listStyle: ["List"], //USP
-		listStyleImage: ["List"], //UAYOR
-		listStylePosition: ["List"], //UAYOR
-		listStyleType: ["List"], //UAYOR
+		listStyle: { type: "List" }, //USP
+		listStyleImage: { type: "List" }, //UAYOR
+		listStylePosition: { type: "List" }, //UAYOR
+		listStyleType: { type: "List" }, //UAYOR
 
-		margin: ["Numeric"],
-		marginBottom: ["Numeric"],
-		marginLeft: ["Numeric"],
-		marginRight: ["Numeric"],
-		marginTop: ["Numeric"],
+		margin: { type: "Numeric" },
+		marginBottom: { type: "Numeric" },
+		marginLeft: { type: "Numeric" },
+		marginRight: { type: "Numeric" },
+		marginTop: { type: "Numeric" },
 
-		maxHeight: ["Numeric"],
-		maxWidth: ["Numeric"],
-		minHeight: ["Numeric"],
-		minWidth: ["Numeric"],
+		maxHeight: { type: "Numeric" },
+		maxWidth: { type: "Numeric" },
+		minHeight: { type: "Numeric" },
+		minWidth: { type: "Numeric" },
 
-		mixBlendMode: ["List"], //UAYOR
+		mixBlendMode: { type: "List" }, //UAYOR
 
-		opacity: ["Numeric",";","float"],
+		opacity: { type: "Numeric", unit: "float" },
 
-		outline: ["List"], //USP
-		outlineColor: ["Color"],
-		outlineOffset: ["Numeric",'px'],
-		outlineStyle: ["List"],
-		outlineWidth: ["Numeric",'px'],
+		outline: { type: "List" }, //USP
+		outlineColor: { type: "Color" },
+		outlineOffset: { type: "Numeric", unit: "px" },
+		outlineStyle: { type: "List" },
+		outlineWidth: { type: "Numeric", unit: "px" },
 
-		perspective: ["Numeric",'px'], //UAYOR
-		perspectiveOrigin: ["List"], //UAYOR
-
-
-		padding: ["Numeric"],
-		paddingBottom: ["Numeric"],
-		paddingLeft: ["Numeric"],
-		paddingRight: ["Numeric"],
-		paddingTop: ["Numeric"],
-
-		right: ["Numeric"],
-
-		textAlign: ["List"],
-		textDecoration: ["List"],
-		textDecorationColor: ["Color"],
-		textDecorationLine: ["List"],
-		textDecorationStyle: ["List"],
-
-		textShadow: ["TextShadow"],
-		textTransform: ["List"],
-
-		top: ["Numeric"],
-
-		transformRotate: ["Transform","deg"],
-		transformRotateX: ["Transform","deg"],
-		transformRotateY: ["Transform","deg"],
-		transformRotateZ: ["Transform","deg"],
-		transformScaleX: ["Transform","float"],
-		transformScaleY: ["Transform","float"],
-		transformSkewX: ["Transform","deg"],
-		transformSkewY: ["Transform","deg"],
-		transformTranslateX: ["Transform","px"],
-		transformTranslateY: ["Transform","px"],
-		transformTranslateZ: ["Transform","px"],
-
-		transformOrigin: ["List"], //UAYOR
-
-		transition: ["List"], //UAYOR
+		perspective: { type: "Numeric", unit: "px" }, //UAYOR
+		perspectiveOrigin: { type: "List" }, //UAYOR
 
 
-		verticalAlign: ["List"],
-		visibility: ["List"],
+		padding: { type: "Numeric" },
+		paddingBottom: { type: "Numeric" },
+		paddingLeft: { type: "Numeric" },
+		paddingRight: { type: "Numeric" },
+		paddingTop: { type: "Numeric" },
 
-		width: ["Numeric"],
-		wordSpacing: ["Numeric"],
-		zIndex: ["Numeric"]
+		right: { type: "Numeric" },
+
+		textAlign: { type: "List" },
+		textDecoration: { type: "List" },
+		textDecorationColor: { type: "Color" },
+		textDecorationLine: { type: "List" },
+		textDecorationStyle: { type: "List" },
+
+		textShadow: { type: "TextShadow" },
+		textTransform: { type: "List" },
+
+		top: { type: "Numeric" },
+
+		transformRotate: { type: "Transform", unit: "deg" },
+		transformRotateX: { type: "Transform", unit: "deg" },
+		transformRotateY: { type: "Transform", unit: "deg" },
+		transformRotateZ: { type: "Transform", unit: "deg" },
+		transformScaleX: { type: "Transform", unit: "float" },
+		transformScaleY: { type: "Transform", unit: "float" },
+		transformSkewX: { type: "Transform", unit: "deg" },
+		transformSkewY: { type: "Transform", unit: "deg" },
+		transformTranslateX: { type: "Transform", unit: "px" },
+		transformTranslateY: { type: "Transform", unit: "px" },
+		transformTranslateZ: { type: "Transform", unit: "px" },
+
+		transformOrigin: { type: "List" }, //UAYOR
+
+		transition: { type: "List" }, //UAYOR
+
+
+		verticalAlign: { type: "List" },
+		visibility: { type: "List" },
+
+		width: { type: "Numeric" },
+		wordSpacing: { type: "Numeric" },
+		zIndex: { type: "Numeric"}
 	},
 	applyToElementById: function (id) {
 
@@ -657,9 +657,9 @@ generativeText.prototype = {
 
 			var styleName = p.replace(/([A-Z])/g, function(m){ return '-' + m.toLowerCase(); } );
 
-			switch( this.defs[ p ][0] ) {
+			switch( this.defs[ p].type ) {
 				case 'Numeric':
-					el.style[styleName] = this.generateNumericStyle(params[p], this.defs[p][1]);
+					el.style[styleName] = this.generateNumericStyle(params[p], this.defs[p].unit);
 				break;
 				case 'Color':
 					el.style[styleName] = this.generateColorStyle( params[p]);
@@ -673,13 +673,13 @@ generativeText.prototype = {
 				break;
 				case 'Transform':
 					var unit = "";
-					if( this.defs[p][1] == "deg") {
+					if( this.defs[p].unit == "deg") {
 						unit = "deg";
 					} else {
 						if(params[p].unit) {
 							unit = params[p].unit;
 						} else {
-							unit = this.defs[p][1];
+							unit = this.defs[p].unit;
 						}
 					}
 					var val = this.generateNumericStyle(params[p], unit);
@@ -720,13 +720,13 @@ generativeText.prototype = {
 					break;
 				case 'filter':
 					var unit = "";
-					if( this.defs[p][1] == "deg") {
+					if( this.defs[p].unit == "deg") {
 						unit = "deg";
 					} else {
 						if(params[p].unit) {
 							unit = params[p].unit;
 						} else {
-							unit = this.defs[p][1];
+							unit = this.defs[p].unit;
 						}
 					}
 					var val = this.generateNumericStyle(params[p], unit);
