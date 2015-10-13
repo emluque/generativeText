@@ -692,6 +692,30 @@ generativeText.prototype = {
 					this.setBrowserStyle(el, "-ms-transform", strVal);
 					this.setBrowserStyle(el, "-webkit-transform", strVal);
 				break;
+				case 'Filter':
+					var unit = "";
+					if( this.defs[p].unit == "deg") {
+						unit = "deg";
+					} else {
+						if(params[p].unit) {
+							unit = params[p].unit;
+						} else {
+							unit = this.defs[p].unit;
+						}
+					}
+					var val = this.generateNumericStyle(params[p], unit);
+					var filterName = p.replace("filter", "").toLowerCase();
+					if(filterName == 'huerotate') filterName = 'hue-rotate';
+
+					var strVal = filterName + "(" + val + ")";
+					this.setBrowserStyle(el, "filter", strVal);
+					this.setBrowserStyle(el, "-webkit-filter", strVal);
+					break;
+				case 'FilterDropShadow':
+					var strVal = "drop-shadow(" + this.generateTextShadowStyle(params[p]) + ")";
+					this.setBrowserStyle(el, "filter", strVal);
+					this.setBrowserStyle(el, "-webkit-filter", strVal);
+					break;
 				case 'BoxShadow':
 					var strVal = "";
 					if(params[p].constructor === Array) {
@@ -718,30 +742,6 @@ generativeText.prototype = {
 					this.setBrowserStyle(el, "-moz-text-shadow", strVal);
 					this.setBrowserStyle(el, "-webkit-text-shadow", strVal);
 					break;
-				case 'Filter':
-					var unit = "";
-					if( this.defs[p].unit == "deg") {
-						unit = "deg";
-					} else {
-						if(params[p].unit) {
-							unit = params[p].unit;
-						} else {
-							unit = this.defs[p].unit;
-						}
-					}
-					var val = this.generateNumericStyle(params[p], unit);
-					var filterName = p.replace("filter", "").toLowerCase();
-					if(filterName == 'huerotate') filterName = 'hue-rotate';
-
-					var strVal = filterName + "(" + val + ")";
-					this.setBrowserStyle(el, "filter", strVal);
-					this.setBrowserStyle(el, "-webkit-filter", strVal);
-					break;
-				case 'FilterDropShadow':
-					var strVal = "drop-shadow(" + this.generateTextShadowStyle(params[p]) + ")";
-					this.setBrowserStyle(el, "filter", strVal);
-					this.setBrowserStyle(el, "-webkit-filter", strVal);
-					break;
 				case 'TwoNumeric':
 					var unit;
 					if(params[p].unit) {
@@ -761,105 +761,6 @@ generativeText.prototype = {
 					el.style[styleName] = this.generateThreeNumericStyle( params[p], unit);
 					break;
 			}
-		}
-	},
-	generateTwoNumericStyle: function(param, unit) {
-		//Fixed value
-		if (typeof param == "string") {
-			return param;
-		}
-		switch (param.type) {
-			case 'list':
-				return this.generateListVariation(param);
-				break;
-			case 'generate':
-			default:
-				if (typeof param.x == "undefined" || typeof param.y == "undefined") {
-					throw ("generativeText Error - " + this.currentParameter + " without either x or y.");
-					return;
-				}
-
-				var strVal = "";
-				strVal += " " + this.generateNumericStyle(param.x, unit);
-				strVal += " " + this.generateNumericStyle(param.y, unit);
-				return strVal;
-				break;
-		}
-	},
-	generateThreeNumericStyle: function(param, unit) {
-		//Fixed value
-		if (typeof param == "string") {
-			return param;
-		}
-		switch (param.type) {
-			case 'list':
-				return this.generateListVariation(param);
-				break;
-			case 'generate':
-			default:
-				if (typeof param.x == "undefined" || typeof param.y == "undefined") {
-					throw ("generativeText Error - " + this.currentParameter + " without either x or y.");
-					return;
-				}
-
-				var strVal = "";
-				strVal += " " + this.generateNumericStyle(param.x, unit);
-				strVal += " " + this.generateNumericStyle(param.y, unit);
-				if(!!param.z) strVal += " " + this.generateNumericStyle(param.z, unit);
-				console.log(strVal);
-				return strVal;
-				break;
-		}
-	},
-	generateBoxShadowStyle: function(param) {
-		//Fixed value
-		if(typeof param == "string") {
-			return param;
-		}
-		switch(param.type) {
-			case 'list':
-				return this.generateListVariation(param);
-				break;
-			case 'generate':
-			default:
-				if (typeof param.hShadow == "undefined" || typeof param.vShadow == "undefined" || typeof param.blur == "undefined" || typeof param.spread == "undefined" || typeof param.color == "undefined") {
-					throw ("generativeText Error - boxShadow without either hShadow, vShadow, blur, spread or color.");
-					return;
-				}
-				var strVal = "";
-				if (!!param.inset && param.inset) strVal = "inset";
-				strVal += " " + this.generateNumericStyle(param.hShadow, 'px');
-				strVal += " " + this.generateNumericStyle(param.vShadow, 'px');
-				strVal += " " + this.generateNumericStyle(param.blur, 'px');
-				strVal += " " + this.generateNumericStyle(param.spread, 'px');
-				strVal += " " + this.generateColorStyle(param.color);
-				return strVal;
-			break;
-		}
-	},
-	generateTextShadowStyle: function(param) {
-		//Fixed value
-		if(typeof param == "string") {
-			return param;
-		}
-
-		switch(param.type) {
-			case 'list':
-				return this.generateListVariation(param);
-				break;
-			case 'generate':
-			default:
-				if (typeof param.hShadow == "undefined" || typeof param.vShadow == "undefined" || typeof param.blurRadius == "undefined" || typeof param.color == "undefined") {
-					throw ("generativeText Error - textShadow without either hShadow, vShadow, blurRadius or color.");
-					return;
-				}
-				var strVal = "";
-				strVal += " " + this.generateNumericStyle(param.hShadow, 'px');
-				strVal += " " + this.generateNumericStyle(param.vShadow, 'px');
-				strVal += " " + this.generateNumericStyle(param.blurRadius, 'px');
-				strVal += " " + this.generateColorStyle(param.color);
-				return strVal;
-				break;
 		}
 	},
 	setBrowserStyle: function(elem, style, val) {
@@ -1021,6 +922,105 @@ generativeText.prototype = {
 		} else {
 			var randomIndex = Math.floor((Math.random()*param.values.length));
 			return param.values[ randomIndex ] + param.unit;
+		}
+	},
+	generateBoxShadowStyle: function(param) {
+		//Fixed value
+		if(typeof param == "string") {
+			return param;
+		}
+		switch(param.type) {
+			case 'list':
+				return this.generateListVariation(param);
+				break;
+			case 'generate':
+			default:
+				if (typeof param.hShadow == "undefined" || typeof param.vShadow == "undefined" || typeof param.blur == "undefined" || typeof param.spread == "undefined" || typeof param.color == "undefined") {
+					throw ("generativeText Error - boxShadow without either hShadow, vShadow, blur, spread or color.");
+					return;
+				}
+				var strVal = "";
+				if (!!param.inset && param.inset) strVal = "inset";
+				strVal += " " + this.generateNumericStyle(param.hShadow, 'px');
+				strVal += " " + this.generateNumericStyle(param.vShadow, 'px');
+				strVal += " " + this.generateNumericStyle(param.blur, 'px');
+				strVal += " " + this.generateNumericStyle(param.spread, 'px');
+				strVal += " " + this.generateColorStyle(param.color);
+				return strVal;
+				break;
+		}
+	},
+	generateTextShadowStyle: function(param) {
+		//Fixed value
+		if(typeof param == "string") {
+			return param;
+		}
+
+		switch(param.type) {
+			case 'list':
+				return this.generateListVariation(param);
+				break;
+			case 'generate':
+			default:
+				if (typeof param.hShadow == "undefined" || typeof param.vShadow == "undefined" || typeof param.blurRadius == "undefined" || typeof param.color == "undefined") {
+					throw ("generativeText Error - textShadow without either hShadow, vShadow, blurRadius or color.");
+					return;
+				}
+				var strVal = "";
+				strVal += " " + this.generateNumericStyle(param.hShadow, 'px');
+				strVal += " " + this.generateNumericStyle(param.vShadow, 'px');
+				strVal += " " + this.generateNumericStyle(param.blurRadius, 'px');
+				strVal += " " + this.generateColorStyle(param.color);
+				return strVal;
+				break;
+		}
+	},
+	generateTwoNumericStyle: function(param, unit) {
+		//Fixed value
+		if (typeof param == "string") {
+			return param;
+		}
+		switch (param.type) {
+			case 'list':
+				return this.generateListVariation(param);
+				break;
+			case 'generate':
+			default:
+				if (typeof param.x == "undefined" || typeof param.y == "undefined") {
+					throw ("generativeText Error - " + this.currentParameter + " without either x or y.");
+					return;
+				}
+
+				var strVal = "";
+				strVal += " " + this.generateNumericStyle(param.x, unit);
+				strVal += " " + this.generateNumericStyle(param.y, unit);
+				return strVal;
+				break;
+		}
+	},
+	generateThreeNumericStyle: function(param, unit) {
+		//Fixed value
+		if (typeof param == "string") {
+			return param;
+		}
+		switch (param.type) {
+			case 'list':
+				return this.generateListVariation(param);
+				break;
+			case 'generate':
+			default:
+				if (typeof param.x == "undefined" || typeof param.y == "undefined") {
+					throw ("generativeText Error - " + this.currentParameter + " without either x or y.");
+					return;
+				}
+
+				var strVal = "";
+				strVal += " " + this.generateNumericStyle(param.x, unit);
+				strVal += " " + this.generateNumericStyle(param.y, unit);
+				if(!!param.z) strVal += " " + this.generateNumericStyle(param.z, unit);
+				console.log(strVal);
+				return strVal;
+				break;
 		}
 	},
 	applyPFunc: function(pObj, funcName) {
