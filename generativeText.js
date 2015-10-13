@@ -178,12 +178,18 @@ generativeText.prototype = {
 		paddingTop: ["Numeric"],
 
 		right: ["Numeric"],
-		
+
 		textAlign: ["List"],
 		textDecoration: ["List"],
+		textDecorationColor: ["Color"],
+		textDecorationLine: ["List"],
+		textDecorationStyle: ["List"],
+
 		textShadow: ["TextShadow"],
 		textTransform: ["List"],
+
 		top: ["Numeric"],
+
 		transformRotate: ["Transform","deg"],
 		transformRotateX: ["Transform","deg"],
 		transformRotateY: ["Transform","deg"],
@@ -195,9 +201,18 @@ generativeText.prototype = {
 		transformTranslateX: ["Transform","px"],
 		transformTranslateY: ["Transform","px"],
 		transformTranslateZ: ["Transform","px"],
+
+		transformOrigin: ["List"], //UAYOR
+
+		transition: ["List"], //UAYOR
+
+
 		verticalAlign: ["List"],
+		visibility: ["List"],
+
 		width: ["Numeric"],
-		wordSpacing: ["Numeric"]
+		wordSpacing: ["Numeric"],
+		zIndex: ["Numeric"]
 	},
 	applyToElementById: function (id) {
 
