@@ -1291,8 +1291,8 @@ describe("GenerativeText", function() {
       elem.textContent = "A"
       var params = {
         backgroundSize: {
-          x: "20%",
-          y: "30%",
+          x: {type: "fixed", value:"20%"},
+          y: {type: "fixed", value:"30%"},
         }
       };
       var gt = new generativeText();
@@ -1309,9 +1309,9 @@ describe("GenerativeText", function() {
       elem.textContent = "A"
       var params = {
         transformOrigin: {
-          x: "20%",
-          y: "30%",
-          z: "40px",
+          x: {type: "fixed", value:"20%"},
+          y: {type: "fixed", value:"30%"},
+          z: {type: "fixed", value:"40px"},
         }
       };
       var gt = new generativeText();

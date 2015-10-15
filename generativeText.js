@@ -213,6 +213,144 @@ generativeText.prototype = {
 		wordSpacing: { type: "Numeric" },
 		zIndex: { type: "Numeric"}
 	},
+	inferAndValidateParams: function() {
+		var errors = [];
+
+		for(var p in this.params){
+			switch(this.defs[p].type) {
+				case "List":
+					this.params[p] = this.paramTypeInferenceAndValidation(this.params[p], p, "List", errors);
+					break;
+				case "Numeric":
+				case "Filter":
+				case "Transform":
+					this.params[p] = this.paramTypeInferenceAndValidation(this.params[p], p, "Numeric", errors);
+					break;
+				case "Color":
+					this.params[p] = this.paramTypeInferenceAndValidation(this.params[p], p, "Color", errors);
+					break;
+				case "FilterDropShadow":
+				case "TextShadow":
+					this.params[p].hShadow = this.paramTypeInferenceAndValidation(this.params[p].hShadow, p + ".hShadow", "Numeric", errors);
+					this.params[p].vShadow = this.paramTypeInferenceAndValidation(this.params[p].vShadow, p + ".vShadow", "Numeric", errors);
+					this.params[p].blurRadius = this.paramTypeInferenceAndValidation(this.params[p].blurRadius, p + ".blurRadius", "Numeric", errors);
+					this.params[p].color = this.paramTypeInferenceAndValidation(this.params[p].hShadow, p + ".color", "Color", errors);
+					break;
+				case "BoxShadow":
+					this.params[p].hShadow = this.paramTypeInferenceAndValidation(this.params[p].hShadow, p + ".hShadow", "Numeric", errors);
+					this.params[p].vShadow = this.paramTypeInferenceAndValidation(this.params[p].vShadow, p + ".vShadow", "Numeric", errors);
+					this.params[p].blur = this.paramTypeInferenceAndValidation(this.params[p].vShadow, p + ".blur", "Numeric", errors);
+					this.params[p].spread = this.paramTypeInferenceAndValidation(this.params[p].vShadow, p + ".spread", "Numeric", errors);
+					this.params[p].color = this.paramTypeInferenceAndValidation(this.params[p].hShadow, p + ".color", "Color", errors);
+					break;
+				case "TwoNumeric":
+					this.params[p].x = this.paramTypeInferenceAndValidation(this.params[p].x, p + ".x", "Numeric", errors);
+					this.params[p].y = this.paramTypeInferenceAndValidation(this.params[p].y, p + ".y", "Numeric", errors);
+					break;
+				case "ThreeNumeric":
+					this.params[p].x = this.paramTypeInferenceAndValidation(this.params[p].x, p + ".x", "Numeric", errors);
+					this.params[p].y = this.paramTypeInferenceAndValidation(this.params[p].y, p + ".y", "Numeric", errors);
+					if(!!this.params[p].z) this.paramTypeInferenceAndValidation(this.params[p].z, p + ".z", "Numeric", errors);
+					break;
+			}
+		}
+		if(errors.length > 0) {
+			for(var i=0; i < errors.length; i++) {
+				console.log(errors[i]);
+			}
+			throw "generativeText params validation Error. For a description of the error look at the console log.";
+		}
+
+	},
+	paramTypeInferenceAndValidation: function(param, name, defType, errors) {
+		if(typeof param == "undefined") {
+			errors.push(name + " : not defined");
+			return param;
+		} else if(typeof param === "string") {
+			param = { value: param, type: "fixed"};
+			return param;
+		} else if(!!this.params[p].values) {
+			if(! param.values instanceof Array) {
+				errors.push(name + " : values not an Array.");
+			} else if( param.values.length == 0 ) {
+				errors.push(name + " : values has length 0.");
+			} else {
+				if(!!param.stepFunction) {
+					if(!param.stepFunction instanceof Function) {
+						errors.push(name + " : stepFunction is not a function.");
+					}
+					param.steps = true;
+				}
+				if(!param.steps) param.steps = false;
+				param = this.stepFunctionCheck(param);
+				param.type = "list";
+				return param;
+			}
+		} else {
+			if(! param instanceof Object) {
+				errors.push(name + " : not an object or fixed value.");
+				return param;
+			}
+			switch(defType) {
+				case "List":
+					errors.push(name + " : can only take Fixed or List values.");
+					return param;
+				case "Numeric":
+					if(typeof param.min == "undefined") {
+						errors.push(name + " : min not defined.");
+					}
+					if(typeof param.max == "undefined") {
+						errors.push(name + " : max not defined.");
+					}
+					param = this.stepFunctionCheck(param);
+					if(!param.steps) param.steps = false;
+					param.type = "numeric";
+					return param;
+				case "Color":
+					param.r = this.cTypeInferenceAndValidation(param.r, name + ".r" + errors);
+					param.g = this.cTypeInferenceAndValidation(param.g, name + ".g" + errors);
+					param.b = this.cTypeInferenceAndValidation(param.b, name + ".b" + errors);
+					param.type = "color";
+					return param;
+				break;
+			}
+		}
+	},
+	cTypeInferenceAndValidation: function(c, name, errors) {
+		if(typeof c == "undefined") {
+			errors.push(name + " : not defined");
+			return c;
+		} else if(typeof c === "string") {
+			c = {value: c, type: "fixed"};
+			return c;
+		} else {
+			if(!c instanceof Object) {
+				errors.push(name + " : not an object or fixed value.");
+				return c;
+			}
+			if(typeof c.min == "undefined") {
+				errors.push(name + " : min not defined.");
+			}
+			if(typeof c.max == "undefined") {
+				errors.push(name + " : max not defined.");
+			}
+			c = this.stepFunctionCheck(c);
+			if(!c.steps) c.steps = false;
+			c.type = "rgb";
+			return c;
+		}
+	},
+	stepFunctionCheck: function(param) {
+		if(!!param.stepFunction) {
+			if(!param.stepFunction instanceof Function) {
+				errors.push(name + " : stepFunction is not a function.");
+			}
+			param.steps = true;
+		}
+		return param;
+	},
+
+
 	applyToElementById: function (id) {
 
 		var elem = document.getElementById(id);
@@ -779,10 +917,6 @@ generativeText.prototype = {
 		elem.style[style] = old + ' ' + val.trim();
 	},
 	generateColorStyle: function(param) {
-		//Fixed value
-		if(typeof param == "string") {
-			return param;
-		}
 		var tr = this.generateColorVariation(param);
 		if(tr.charAt(0) === "#") return tr;
 		return "#" + tr;
@@ -790,6 +924,8 @@ generativeText.prototype = {
 	generateColorVariation: function(param) {
 		param.unit = "";
 		switch(param.type) {
+			case 'fixed':
+				return param.value;
 			case 'list':
 				return this.generateListVariation(param);
 				break;
@@ -845,11 +981,6 @@ generativeText.prototype = {
 		}
 	},
 	generateNumericStyle: function(param, unit) {
-		//Fixed value
-		if(typeof param == "string") {
-			return param;
-		}
-
 		if(!!unit) param.unit = unit;
 		return this.generateNumericVariation(param);
 	},
@@ -858,6 +989,8 @@ generativeText.prototype = {
 		if(typeof param.unit == 'undefined') param.unit = "px";
 
 		switch(param.type) {
+			case 'fixed':
+				return param.value;
 			case "list":
 				return this.generateListVariation(param);
 				break;
