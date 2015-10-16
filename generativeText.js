@@ -302,7 +302,8 @@ generativeText.prototype = {
 						case "compound":
 							this.params[p].x = this.paramTypeInferenceAndValidation(this.params[p].x, p + ".x", "Numeric", errors);
 							this.params[p].y = this.paramTypeInferenceAndValidation(this.params[p].y, p + ".y", "Numeric", errors);
-							if(!!this.params[p].z) this.paramTypeInferenceAndValidation(this.params[p].z, p + ".z", "Numeric", errors);
+							if(!!this.params[p].z) this.params[p].z = this.paramTypeInferenceAndValidation(this.params[p].z, p + ".z", "Numeric", errors);
+
 							break;
 						case "fixed":
 						case "list":
@@ -1211,21 +1212,13 @@ generativeText.prototype = {
 		return strVal;
 	},
 	generateTwoNumericStyle: function(param, unit) {
-		//Fixed value
-		if (typeof param == "string") {
-			return param;
-		}
-		switch (param.type) {
-			case 'list':
+		switch(param.type) {
+			case 'fixed':
+				return param.value;
+			case "list":
 				return this.generateListVariation(param);
 				break;
-			case 'generate':
-			default:
-				if (typeof param.x == "undefined" || typeof param.y == "undefined") {
-					throw ("generativeText Error - " + this.currentParameter + " without either x or y.");
-					return;
-				}
-
+			case "compound":
 				var strVal = "";
 				strVal += " " + this.generateNumericStyle(param.x, unit);
 				strVal += " " + this.generateNumericStyle(param.y, unit);
@@ -1234,21 +1227,13 @@ generativeText.prototype = {
 		}
 	},
 	generateThreeNumericStyle: function(param, unit) {
-		//Fixed value
-		if (typeof param == "string") {
-			return param;
-		}
-		switch (param.type) {
-			case 'list':
+		switch(param.type) {
+			case 'fixed':
+				return param.value;
+			case "list":
 				return this.generateListVariation(param);
 				break;
-			case 'generate':
-			default:
-				if (typeof param.x == "undefined" || typeof param.y == "undefined") {
-					throw ("generativeText Error - " + this.currentParameter + " without either x or y.");
-					return;
-				}
-
+			case "compound":
 				var strVal = "";
 				strVal += " " + this.generateNumericStyle(param.x, unit);
 				strVal += " " + this.generateNumericStyle(param.y, unit);

@@ -1805,17 +1805,19 @@ describe("GenerativeText", function() {
       elem.textContent = "A"
       var params = {
         backgroundSize: {
-          x: {type: "fixed", value:"20%"},
-          y: {type: "fixed", value:"30%"},
+          x: { min: 10, max: 10, steps: true, unit: "%" },
+          y: "30%",
         }
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.currentStep = 0;
+      gt.totalSteps = 1;
+      gt.generateStyle(gt.params, elem);
 
       var es = elem.style.boxShadow;
       //different browsers return property as string differently
-      expect(elem.style['background-size']).toBe("20% 30%");
+      expect(elem.style['background-size']).toBe("10% 30%");
     });
 
     it("should work on threeNumeric rules", function () {
@@ -1823,14 +1825,14 @@ describe("GenerativeText", function() {
       elem.textContent = "A"
       var params = {
         transformOrigin: {
-          x: {type: "fixed", value:"20%"},
-          y: {type: "fixed", value:"30%"},
-          z: {type: "fixed", value:"40px"},
+          x: "20%",
+          y: "30%",
+          z: "40px",
         }
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
 
       var es = elem.style.boxShadow;
       //different browsers return property as string differently
