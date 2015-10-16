@@ -20,6 +20,328 @@ describe("GenerativeText", function() {
 
   });
 
+  describe('.inferAndValidateParams()', function () {
+    it("should throw an exception if there are errors in the parameters definitions.", function () {
+      var params = { backgroundColor: {} };
+
+
+      var exceptionThrown = false;
+      try {
+        var gt = new generativeText(params);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+
+      expect(exceptionThrown).toEqual(true);
+
+    });
+  });
+
+  describe('.paramTypeInferenceAndValidation()', function () {
+
+    it("should add an error if param is undefined.", function () {
+      var errors = [];
+      var param;
+      var gt = new generativeText();
+      gt.paramTypeInferenceAndValidation(param, "test", "defType", errors);
+
+      expect(errors.length).toEqual(1);
+    });
+
+    it("should return parameter transformed to a fixed value type if c is a string.", function () {
+      var errors = [];
+      var param = "1px solid black";
+
+      var gt = new generativeText();
+      param = gt.paramTypeInferenceAndValidation(param, "test", "defType", errors);
+
+      expect(errors.length).toEqual(0);
+      expect(param.type).toEqual("fixed");
+      expect(param.value).toEqual("1px solid black");
+
+    });
+
+    it("should add an error if param.values is defined and it's not an array.", function () {
+      var errors = [];
+      var param = { values: "aaaaa" };
+      var gt = new generativeText();
+      gt.paramTypeInferenceAndValidation(param, "test", "defType", errors);
+
+      expect(errors.length).toEqual(1);
+    });
+
+    it("should add an error if param.values is defined and it's an array of size 0.", function () {
+      var errors = [];
+      var param = { values: "aaaaa" };
+      var gt = new generativeText();
+      gt.paramTypeInferenceAndValidation(param, "test", "defType", errors);
+
+      expect(errors.length).toEqual(1);
+    });
+
+    it("should return parameter transformed to a List value type if values is a valid array.", function () {
+      var errors = [];
+      var param = { values: [1,2,3] };
+
+      var gt = new generativeText();
+      param = gt.paramTypeInferenceAndValidation(param, "test", "defType", errors);
+
+      expect(errors.length).toEqual(0);
+      expect(param.type).toEqual("list");
+
+    });
+
+    it("should return parameter with steps set to false if steps is not defined and it is an infered list type.", function () {
+      var errors = [];
+      var param = { values: [1,2,3] };
+
+      var gt = new generativeText();
+      param = gt.paramTypeInferenceAndValidation(param, "test", "defType", errors);
+
+      expect(param.steps).toEqual(false);
+      expect(param.type).toEqual('list');
+
+    });
+
+    it("should add an error if param is not a string or an object.", function () {
+      var errors = [];
+      var param = 15;
+      var gt = new generativeText();
+      gt.paramTypeInferenceAndValidation(param, "test", "defType", errors);
+
+      expect(errors.length).toEqual(1);
+    });
+
+    it("should add an error if defType is 'List' and param is neither a string nor has values set.", function () {
+      var errors = [];
+      var param = {};
+      var gt = new generativeText();
+      gt.paramTypeInferenceAndValidation(param, "test", "List", errors);
+
+      expect(errors.length).toEqual(1);
+    });
+
+    it("should add an error if defType is 'Numeric' and para.min is not defined (when param is neither fixed or list).", function () {
+      var errors = [];
+      var param = { max: 5};
+      var gt = new generativeText();
+      gt.paramTypeInferenceAndValidation(param, "test", "Numeric", errors);
+
+      expect(errors.length).toEqual(1);
+    });
+
+    it("should add an error if defType is 'Numeric' and para.min is not a number (when param is neither fixed or list).", function () {
+      var errors = [];
+      var param = { max: 5, min: "12"};
+      var gt = new generativeText();
+      gt.paramTypeInferenceAndValidation(param, "test", "Numeric", errors);
+
+      expect(errors.length).toEqual(1);
+    });
+
+    it("should add an error if defType is 'Numeric' and para.max is not defined (when param is neither fixed or list).", function () {
+      var errors = [];
+      var param = { min: 5};
+      var gt = new generativeText();
+      gt.paramTypeInferenceAndValidation(param, "test", "Numeric", errors);
+
+      expect(errors.length).toEqual(1);
+    });
+
+    it("should add an error if defType is 'Numeric' and para.max is not a number (when param is neither fixed or list).", function () {
+      var errors = [];
+      var param = { min: 5, max: "12"};
+      var gt = new generativeText();
+      gt.paramTypeInferenceAndValidation(param, "test", "Numeric", errors);
+
+      expect(errors.length).toEqual(1);
+    });
+
+    it("should return parameter with param.type set to 'numeric' if defType is 'Numeric' (when param is neither fixed or list).", function () {
+      var errors = [];
+      var param = { min: 5, max: 12};
+      var gt = new generativeText();
+      gt.paramTypeInferenceAndValidation(param, "test", "Numeric", errors);
+
+      expect(errors.length).toEqual(0);
+      expect(param.type).toEqual("numeric");
+    });
+
+    it("should return parameter with steps set to false if steps is not defined and defType is 'Numeric' (when param is neither fixed or list).", function () {
+      var errors = [];
+      var param = { min: 5, max: 12};
+      var gt = new generativeText();
+      gt.paramTypeInferenceAndValidation(param, "test", "Numeric", errors);
+
+      expect(errors.length).toEqual(0);
+      expect(param.steps).toEqual(false);
+
+    });
+
+    it("should return parameter with param.type set to 'color' if defType is 'Color' (when param is neither fixed or list).", function () {
+      var errors = [];
+      var param = { r: "aa", g: "aa", b: "aa"};
+      var gt = new generativeText();
+      gt.paramTypeInferenceAndValidation(param, "test", "Color", errors);
+
+      expect(errors.length).toEqual(0);
+      expect(param.type).toEqual("color");
+    });
+
+  })
+
+  describe('.cTypeInferenceAndValidation()', function () {
+
+    it("should add an error if c is not defined.", function () {
+      var errors = [];
+      var c;
+
+      var gt = new generativeText();
+      gt.cTypeInferenceAndValidation(c, 'test', errors);
+
+      expect(errors.length).toEqual(1);
+
+    });
+
+    it("should return c parameter transformed to a fixed value type if c is a string.", function () {
+      var errors = [];
+      var c = "#aaaaaa";
+
+      var gt = new generativeText();
+      c = gt.cTypeInferenceAndValidation(c, 'test', errors);
+
+      expect(errors.length).toEqual(0);
+      expect(c.type).toEqual("fixed");
+      expect(c.value).toEqual("#aaaaaa");
+
+    });
+
+    it("should add an error if c is not a string or an object.", function () {
+      var errors = [];
+      var c = 1;
+
+      var gt = new generativeText();
+      c = gt.cTypeInferenceAndValidation(c, 'test', errors);
+
+      expect(errors.length).toEqual(1);
+    });
+
+    it("should add an error if c.min is not defined.", function () {
+      var errors = [];
+      var c = { max: "aa"};
+
+      var gt = new generativeText();
+      c = gt.cTypeInferenceAndValidation(c, 'test', errors);
+
+      expect(errors.length).toEqual(1);
+    });
+
+    it("should add an error if c.min is not a valid value.", function () {
+      var errors = [];
+      var c = { max: "aa", min: "aaa"};
+
+      var gt = new generativeText();
+      c = gt.cTypeInferenceAndValidation(c, 'test', errors);
+
+      expect(errors.length).toEqual(1);
+
+      var errors = [];
+      var c = { max: "aa", min: "aa"};
+
+      var gt = new generativeText();
+      c = gt.cTypeInferenceAndValidation(c, 'test', errors);
+
+      expect(errors.length).toEqual(0);
+
+    });
+
+    it("should add an error if c.max is not defined.", function () {
+      var errors = [];
+      var c = { min: "aa"};
+
+      var gt = new generativeText();
+      c = gt.cTypeInferenceAndValidation(c, 'test', errors);
+
+      expect(errors.length).toEqual(1);
+    });
+
+    it("should add an error if c.max is not a valid value.", function () {
+      var errors = [];
+      var c = { min: "aa", max: "aaa"};
+
+      var gt = new generativeText();
+      c = gt.cTypeInferenceAndValidation(c, 'test', errors);
+
+      expect(errors.length).toEqual(1);
+
+      var errors = [];
+      var c = { min: "aa", max: "aa"};
+
+      var gt = new generativeText();
+      c = gt.cTypeInferenceAndValidation(c, 'test', errors);
+
+      expect(errors.length).toEqual(0);
+
+    });
+
+    it("should return c parameter with min and mx transformed to int.", function () {
+      var errors = [];
+      var c = { min: "77", max: "fd" };
+
+      var gt = new generativeText();
+      c = gt.cTypeInferenceAndValidation(c, 'test', errors);
+
+      expect(c.min).toEqual(119);
+      expect(c.max).toEqual(253);
+
+    });
+
+    it("should return c parameter with steps set to false (if steps is undefined) and type to 'rgb'.", function () {
+      var errors = [];
+      var c = { min: "77", max: "fd" };
+
+      var gt = new generativeText();
+      c = gt.cTypeInferenceAndValidation(c, 'test', errors);
+
+      expect(c.steps).toEqual(false);
+      expect(c.type).toEqual('rgb');
+
+    });
+
+  });
+
+  describe('.stepFunctionCheck()', function () {
+
+    it("should add an error if stepFunction is not a function.", function () {
+      var errors = [];
+      var param = {};
+      param.stepFunction = "this is a string";
+
+      var gt = new generativeText();
+      gt.stepFunctionCheck(param, 'test', errors);
+
+      expect(errors.length).toEqual(1);
+
+      param.stepFunction = function() {};
+      gt.stepFunctionCheck(param, 'test', errors);
+      expect(errors.length).toEqual(1);
+
+    });
+
+    it("should set param.steps to true if an stepFunction exists.", function () {
+      var errors = [];
+      var param = {};
+      param.stepFunction = function() {};
+
+      var gt = new generativeText();
+      gt.stepFunctionCheck(param, 'test', errors);
+
+      expect(param.steps).toEqual(true);
+    });
+
+  });
+
+
   describe(".applyToElementById()", function () {
 
     var gt = new generativeText();
@@ -1945,6 +2267,5 @@ describe("GenerativeText", function() {
 
   });
 
-  console.log()
 
 });

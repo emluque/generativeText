@@ -30,6 +30,8 @@ var generativeText = function(params, options) {
 	this.currentStep = 0;
 	this.memory = [];
 
+	this.inferAndValidateParams();
+
 }
 
 generativeText.prototype = {
@@ -213,6 +215,8 @@ generativeText.prototype = {
 		wordSpacing: { type: "Numeric" },
 		zIndex: { type: "Numeric"}
 	},
+
+	/* Params Validation and Inference */
 	inferAndValidateParams: function() {
 		var errors = [];
 
@@ -258,7 +262,7 @@ generativeText.prototype = {
 			for(var i=0; i < errors.length; i++) {
 				console.log(errors[i]);
 			}
-			throw "generativeText params validation Error. For a description of the error look at the console log.";
+			throw "-- generativeText params validation Error. For a description of the error look at the console log. --";
 		}
 
 	},
@@ -269,25 +273,19 @@ generativeText.prototype = {
 		} else if(typeof param === "string") {
 			param = { value: param, type: "fixed"};
 			return param;
-		} else if(!!this.params[p].values) {
-			if(! param.values instanceof Array) {
+		} else if(!!param.values) {
+			if(! (param.values instanceof Array) ) {
 				errors.push(name + " : values not an Array.");
 			} else if( param.values.length == 0 ) {
 				errors.push(name + " : values has length 0.");
 			} else {
-				if(!!param.stepFunction) {
-					if(!param.stepFunction instanceof Function) {
-						errors.push(name + " : stepFunction is not a function.");
-					}
-					param.steps = true;
-				}
+				param = this.stepFunctionCheck(param, name, errors);
 				if(!param.steps) param.steps = false;
-				param = this.stepFunctionCheck(param);
 				param.type = "list";
 				return param;
 			}
 		} else {
-			if(! param instanceof Object) {
+			if(! (param instanceof Object) ) {
 				errors.push(name + " : not an object or fixed value.");
 				return param;
 			}
@@ -297,19 +295,23 @@ generativeText.prototype = {
 					return param;
 				case "Numeric":
 					if(typeof param.min == "undefined") {
-						errors.push(name + " : min not defined.");
+						errors.push(name + ".min not defined.");
+					} else if( ! (typeof param.min == "number") ) {
+						errors.push(name + ".min is not a number.");
 					}
 					if(typeof param.max == "undefined") {
-						errors.push(name + " : max not defined.");
+						errors.push(name + ".max not defined.");
+					} else if( ! (typeof param.max == "number") ) {
+						errors.push(name + ".max is not a number.");
 					}
-					param = this.stepFunctionCheck(param);
+					param = this.stepFunctionCheck(param, name, errors);
 					if(!param.steps) param.steps = false;
 					param.type = "numeric";
 					return param;
 				case "Color":
-					param.r = this.cTypeInferenceAndValidation(param.r, name + ".r" + errors);
-					param.g = this.cTypeInferenceAndValidation(param.g, name + ".g" + errors);
-					param.b = this.cTypeInferenceAndValidation(param.b, name + ".b" + errors);
+					param.r = this.cTypeInferenceAndValidation(param.r, name + ".r", errors);
+					param.g = this.cTypeInferenceAndValidation(param.g, name + ".g", errors);
+					param.b = this.cTypeInferenceAndValidation(param.b, name + ".b", errors);
 					param.type = "color";
 					return param;
 				break;
@@ -318,37 +320,50 @@ generativeText.prototype = {
 	},
 	cTypeInferenceAndValidation: function(c, name, errors) {
 		if(typeof c == "undefined") {
-			errors.push(name + " : not defined");
+			errors.push(name + " : is not defined.");
 			return c;
 		} else if(typeof c === "string") {
 			c = {value: c, type: "fixed"};
 			return c;
 		} else {
-			if(!c instanceof Object) {
-				errors.push(name + " : not an object or fixed value.");
+			if(! (c instanceof Object) ) {
+				errors.push(name + " : is not an object or fixed value.");
 				return c;
 			}
 			if(typeof c.min == "undefined") {
 				errors.push(name + " : min not defined.");
+			} else {
+				if(/^[0-9a-f]{2}$/.test(c.min)) {
+					c.min = parseInt(c.min, 16);
+				} else {
+					errors.push(name + ".min not a valid value (00-ff).");
+				}
 			}
 			if(typeof c.max == "undefined") {
 				errors.push(name + " : max not defined.");
+			} else {
+				if(/^[0-9a-f]{2}$/.test(c.max)) {
+					c.max = parseInt(c.max, 16);
+				} else {
+					errors.push(name + ".max not a valid value (00-ff).");
+				}
 			}
-			c = this.stepFunctionCheck(c);
+			c = this.stepFunctionCheck(c, name, errors);
 			if(!c.steps) c.steps = false;
 			c.type = "rgb";
 			return c;
 		}
 	},
-	stepFunctionCheck: function(param) {
+	stepFunctionCheck: function(param, name, errors) {
 		if(!!param.stepFunction) {
-			if(!param.stepFunction instanceof Function) {
+			if( !(param.stepFunction instanceof Function) ) {
 				errors.push(name + " : stepFunction is not a function.");
 			}
 			param.steps = true;
 		}
 		return param;
 	},
+	/* //Params Validation and Inference */
 
 
 	applyToElementById: function (id) {
@@ -1151,7 +1166,6 @@ generativeText.prototype = {
 				strVal += " " + this.generateNumericStyle(param.x, unit);
 				strVal += " " + this.generateNumericStyle(param.y, unit);
 				if(!!param.z) strVal += " " + this.generateNumericStyle(param.z, unit);
-				console.log(strVal);
 				return strVal;
 				break;
 		}
