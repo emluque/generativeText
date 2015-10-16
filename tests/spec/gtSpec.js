@@ -91,15 +91,39 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return parameter with steps set to false if steps is not defined and it is an infered list type.", function () {
+    it("should return parameter with listType set to 'sequential' if steps is set to true and it is an infered list type.", function () {
+      var errors = [];
+      var param = { values: [1,2,3], steps: true };
+
+      var gt = new generativeText();
+      param = gt.paramTypeInferenceAndValidation(param, "test", "defType", errors);
+
+      expect(param.type).toEqual('list');
+      expect(param.listType).toEqual('sequential');
+
+    });
+
+    it("should return parameter with listType set to 'function' if stepFunction exists and it is an infered list type.", function () {
+      var errors = [];
+      var param = { values: [1,2,3], stepFunction: function() {} };
+
+      var gt = new generativeText();
+      param = gt.paramTypeInferenceAndValidation(param, "test", "defType", errors);
+
+      expect(param.type).toEqual('list');
+      expect(param.listType).toEqual('function');
+
+    });
+
+    it("should return parameter with listType set to 'random' if no steps or stepFunction and it is an infered list type.", function () {
       var errors = [];
       var param = { values: [1,2,3] };
 
       var gt = new generativeText();
       param = gt.paramTypeInferenceAndValidation(param, "test", "defType", errors);
 
-      expect(param.steps).toEqual(false);
       expect(param.type).toEqual('list');
+      expect(param.listType).toEqual('random');
 
     });
 
@@ -167,14 +191,36 @@ describe("GenerativeText", function() {
       expect(param.type).toEqual("numeric");
     });
 
-    it("should return parameter with steps set to false if steps is not defined and defType is 'Numeric' (when param is neither fixed or list).", function () {
+    it("should return parameter with numericType set to 'sequential' if steps is true, there is no stepFunction and defType is 'Numeric' (when param is neither fixed or list).", function () {
+      var errors = [];
+      var param = { min: 5, max: 12, steps: true};
+      var gt = new generativeText();
+      gt.paramTypeInferenceAndValidation(param, "test", "Numeric", errors);
+
+      expect(errors.length).toEqual(0);
+      expect(param.numericType).toEqual("sequential");
+
+    });
+
+    it("should return parameter with numericType set to 'function' if there is an stepFunction and defType is 'Numeric' (when param is neither fixed or list).", function () {
+      var errors = [];
+      var param = { min: 5, max: 12, stepFunction: function(){} };
+      var gt = new generativeText();
+      gt.paramTypeInferenceAndValidation(param, "test", "Numeric", errors);
+
+      expect(errors.length).toEqual(0);
+      expect(param.numericType).toEqual("function");
+
+    });
+
+    it("should return parameter with numericType set to 'random' if steps and stepFunction are not set and defType is 'Numeric' (when param is neither fixed or list).", function () {
       var errors = [];
       var param = { min: 5, max: 12};
       var gt = new generativeText();
       gt.paramTypeInferenceAndValidation(param, "test", "Numeric", errors);
 
       expect(errors.length).toEqual(0);
-      expect(param.steps).toEqual(false);
+      expect(param.numericType).toEqual("random");
 
     });
 
@@ -296,17 +342,42 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return c parameter with steps set to false (if steps is undefined) and type to 'rgb'.", function () {
+    it("should return c parameter with steps set rgbType to 'random' if steps or stepFunction are not set.", function () {
       var errors = [];
       var c = { min: "77", max: "fd" };
 
       var gt = new generativeText();
       c = gt.cTypeInferenceAndValidation(c, 'test', errors);
 
-      expect(c.steps).toEqual(false);
       expect(c.type).toEqual('rgb');
+      expect(c.rgbType).toEqual('random');
 
     });
+
+    it("should return c parameter with rgbType set to 'sequential' if there is an stepfunction.", function () {
+      var errors = [];
+      var c = { min: "77", max: "fd", steps: true };
+
+      var gt = new generativeText();
+      c = gt.cTypeInferenceAndValidation(c, 'test', errors);
+
+      expect(c.type).toEqual('rgb');
+      expect(c.rgbType).toEqual('sequential');
+
+    });
+
+    it("should return c parameter with rgbTtype set to 'function' if stepfunction is defined.", function () {
+      var errors = [];
+      var c = { min: "77", max: "fd", stepFunction: function(){} };
+
+      var gt = new generativeText();
+      c = gt.cTypeInferenceAndValidation(c, 'test', errors);
+
+      expect(c.type).toEqual('rgb');
+      expect(c.rgbType).toEqual('function');
+
+    });
+
 
   });
 
@@ -326,17 +397,6 @@ describe("GenerativeText", function() {
       gt.stepFunctionCheck(param, 'test', errors);
       expect(errors.length).toEqual(1);
 
-    });
-
-    it("should set param.steps to true if an stepFunction exists.", function () {
-      var errors = [];
-      var param = {};
-      param.stepFunction = function() {};
-
-      var gt = new generativeText();
-      gt.stepFunctionCheck(param, 'test', errors);
-
-      expect(param.steps).toEqual(true);
     });
 
   });
@@ -406,7 +466,7 @@ describe("GenerativeText", function() {
     });
 
     it("should style DOM elements sequentially", function () {
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       gt.applyToElementsSequentially(ps);
       expect(ps[0].style.fontSize).toBe("1em");
       expect(ps[1].style.fontSize).toBe("2em");
@@ -613,7 +673,7 @@ describe("GenerativeText", function() {
     it("should style characters sequentially", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'style'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "12345";
       gt.applyToText(elem);
@@ -628,7 +688,7 @@ describe("GenerativeText", function() {
     it("should lay characters sequentially from ltr when opts.direction is 'ltr'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'style', direction: 'ltr'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "12345";
       gt.applyToText(elem);
@@ -643,7 +703,7 @@ describe("GenerativeText", function() {
     it("should lay characters sequentially from rtl when opts.direction is 'rtl'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'style', direction: 'rtl'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "12345";
       gt.applyToText(elem);
@@ -658,7 +718,7 @@ describe("GenerativeText", function() {
     it("should style spaces when textSpaces is set to 'style'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'style'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "1 3";
       gt.applyToText(elem);
@@ -671,7 +731,7 @@ describe("GenerativeText", function() {
     it("should not style spaces when textSpaces is set to 'nostyle'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'nostyle'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "1 3";
       gt.applyToText(elem);
@@ -684,7 +744,7 @@ describe("GenerativeText", function() {
     it("should not style spaces, skip count on applying of style when textSpaces is set to 'nostyleorcount'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'nostyleorcount'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "1 3";
       gt.applyToText(elem);
@@ -697,7 +757,7 @@ describe("GenerativeText", function() {
     it("should remove spaces when textSpaces is set to 'remove'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'remove'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "1 3";
       gt.applyToText(elem);
@@ -720,7 +780,7 @@ describe("GenerativeText", function() {
         },
         memory: true,
       };
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "1 3";
       gt.applyToText(elem);
@@ -739,7 +799,7 @@ describe("GenerativeText", function() {
         },
         memory: true,
       };
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "13";
       gt.applyToText(elem);
@@ -758,7 +818,7 @@ describe("GenerativeText", function() {
         },
         memory: true,
       };
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "012345678";
       gt.applyToText(elem);
@@ -819,7 +879,7 @@ describe("GenerativeText", function() {
     it("should style characters sequentially", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'style'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "123 56";
       gt.applyToWrapped(elem);
@@ -835,7 +895,7 @@ describe("GenerativeText", function() {
     it("should lay characters sequentially from ltr when opts.direction is 'ltr'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'style', direction: 'ltr'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "123 45";
       gt.applyToWrapped(elem);
@@ -851,7 +911,7 @@ describe("GenerativeText", function() {
     it("should lay characters sequentially from rtl when opts.direction is 'rtl'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'style', direction: 'rtl'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "123 45";
       gt.applyToWrapped(elem);
@@ -868,7 +928,7 @@ describe("GenerativeText", function() {
     it("should style spaces when textSpaces is set to 'style'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'style'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "1 312 31";
       gt.applyToWrapped(elem);
@@ -880,7 +940,7 @@ describe("GenerativeText", function() {
     it("should not style spaces when textSpaces is set to 'nostyle'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'nostyle'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "1 3";
       gt.applyToWrapped(elem);
@@ -893,7 +953,7 @@ describe("GenerativeText", function() {
     it("should not style spaces, skip count on applying of style when textSpaces is set to 'nostyleorcount'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'nostyleorcount'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "1 3";
       gt.applyToWrapped(elem);
@@ -906,7 +966,7 @@ describe("GenerativeText", function() {
     it("should remove spaces when textSpaces is set to 'remove'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'remove'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "1 3";
       gt.applyToWrapped(elem);
@@ -929,7 +989,7 @@ describe("GenerativeText", function() {
         },
         memory: true,
       };
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "1 3";
       gt.applyToWrapped(elem);
@@ -948,7 +1008,7 @@ describe("GenerativeText", function() {
         },
         memory: true,
       };
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "13";
       gt.applyToWrapped(elem);
@@ -967,7 +1027,7 @@ describe("GenerativeText", function() {
         },
         memory: true,
       };
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "012345678";
       gt.applyToWrapped(elem);
@@ -1048,7 +1108,7 @@ describe("GenerativeText", function() {
     it("should style words sequentially", function () {
       var gt = new generativeText();
       gt.opts = {};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "one two three four five";
       gt.applyToWords(elem);
@@ -1063,7 +1123,7 @@ describe("GenerativeText", function() {
     it("should lay words sequentially from ltr when opts.direction is 'ltr'", function () {
       var gt = new generativeText();
       gt.opts = { direction: 'ltr' };
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "one two three four five";
       gt.applyToWords(elem);
@@ -1076,7 +1136,7 @@ describe("GenerativeText", function() {
     it("should lay words sequentially from rtl when opts.direction is 'rtl'", function () {
       var gt = new generativeText();
       gt.opts = { direction: 'rtl' };
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "one two three four five";
       gt.applyToWords(elem);
@@ -1090,7 +1150,7 @@ describe("GenerativeText", function() {
     it("should transform to '&nbsp' entity and style spaces when using textSpaces = 'style'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'style'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "one two three four five";
       gt.applyToWords(elem);
@@ -1114,7 +1174,7 @@ describe("GenerativeText", function() {
     it("should transform to '&nbsp' entity but not style spaces when using textSpaces = 'nostyle'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'nostyle'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "one two three four five";
       gt.applyToWords(elem);
@@ -1138,7 +1198,7 @@ describe("GenerativeText", function() {
     it("should transform to '&nbsp' entity but not style spaces or count when using textSpaces = 'nostyleorcount'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'nostyleorcount'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "one two three four five";
       gt.applyToWords(elem);
@@ -1162,7 +1222,7 @@ describe("GenerativeText", function() {
     it("should remove spaces when using textSpaces = 'nostyleorcount'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'remove'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "one two three four five";
       gt.applyToWords(elem);
@@ -1173,7 +1233,7 @@ describe("GenerativeText", function() {
     it("should remove spaces and add '&nbsp' entities at the beginning and end of even elements, while not adding a '&nbsp' entitiy at the beggining or the end of the sequence, when using textSpaces = 'even'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'even'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "one two three four";
       gt.applyToWords(elem);
@@ -1187,7 +1247,7 @@ describe("GenerativeText", function() {
     it("should remove spaces and add '&nbsp' entities at the beginning and end of odd elements, while not adding a '&nbsp' entitiy at the beggining or the end of the sequence, when using textSpaces = 'odd'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'odd'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "one two three ";
       gt.applyToWords(elem);
@@ -1200,7 +1260,7 @@ describe("GenerativeText", function() {
     it("should remove spaces and add '&nbsp' entities at the beginning and end of all elements, while not adding a '&nbsp' entitiy at the beggining or the end of the sequence, when using textSpaces = 'all'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'all'};
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "one two three ";
       gt.applyToWords(elem);
@@ -1223,7 +1283,7 @@ describe("GenerativeText", function() {
         },
         memory: true,
       };
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "1 3";
       gt.applyToWords(elem);
@@ -1242,7 +1302,7 @@ describe("GenerativeText", function() {
         },
         memory: true,
       };
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "13";
       gt.applyToWords(elem);
@@ -1261,7 +1321,7 @@ describe("GenerativeText", function() {
         },
         memory: true,
       };
-      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", steps: true}};
+      gt.params = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "00 11 222 3 4444";
       gt.applyToWords(elem);
@@ -1323,7 +1383,7 @@ describe("GenerativeText", function() {
     });
 
 
-    it("should set this.currentParameter", function () {
+    it("should set this.current Parameter", function () {
       var elem = document.createElement('span');
       elem.textContent = "A"
       var params = {
@@ -1335,6 +1395,11 @@ describe("GenerativeText", function() {
       expect(gt.currentParameter).toBe('fontFamily');
     });
 
+    /*
+      It became necessary when refactoring for type inference to rewrite all this tests,
+      to reflect the fact that params get changed when type inference and validation is done.
+      So we are using the generated parameters when testing this function.
+     */
 
     it("should work with string (fixed) values", function () {
       var elem = document.createElement('span');
@@ -1342,9 +1407,9 @@ describe("GenerativeText", function() {
       var params = {
         fontFamily: 'Helvetica',
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
       expect(elem.style.fontFamily).toBe('Helvetica');
     });
 
@@ -1355,9 +1420,9 @@ describe("GenerativeText", function() {
       var params = {
         fontFamily: {values: ['Helvetica']},
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
       expect(elem.style.fontFamily).toBe('Helvetica');
     });
 
@@ -1365,11 +1430,11 @@ describe("GenerativeText", function() {
       var elem = document.createElement('span');
       elem.textContent = "A"
       var params = {
-        fontSize: {values: ['1.4'], unit: 'em', type: 'list'},
+        fontSize: {values: ['1.4'], unit: 'em'},
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
       expect(elem.style.fontSize).toBe('1.4em');
     });
 
@@ -1377,11 +1442,11 @@ describe("GenerativeText", function() {
       var elem = document.createElement('span');
       elem.textContent = "A"
       var params = {
-        color: {values: ['aaaaaa'], type: 'list'},
+        color: {values: ['aaaaaa']},
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
       expect(elem.style.color).toBe('rgb(170, 170, 170)');
     });
 
@@ -1389,11 +1454,11 @@ describe("GenerativeText", function() {
       var elem = document.createElement('span');
       elem.textContent = "A"
       var params = {
-        transformRotateX: {values: ['30'], type: 'list'},
+        transformRotateX: {values: ['30']},
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
       expect(elem.style.transform).toBe('rotateX(30deg)');
     });
 
@@ -1401,11 +1466,11 @@ describe("GenerativeText", function() {
       var elem = document.createElement('span');
       elem.textContent = "A"
       var params = {
-        transformTranslateX: {values: ['30'], type: 'list'},
+        transformTranslateX: {values: ['30']},
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
       expect(elem.style.transform).toBe('translateX(30px)');
     });
 
@@ -1413,11 +1478,11 @@ describe("GenerativeText", function() {
       var elem = document.createElement('span');
       elem.textContent = "A"
       var params = {
-        transformTranslateX: {values: ['45'], unit: "em", type: 'list'},
+        transformTranslateX: {values: ['45'], unit: "em"},
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
       expect(elem.style.transform).toBe('translateX(45em)');
     });
 
@@ -1425,12 +1490,12 @@ describe("GenerativeText", function() {
       var elem = document.createElement('span');
       elem.textContent = "A"
       var params = {
-        transformRotateX: {values: ['30'], type: 'list'},
-        transformSkewX:  {values: ['30'], type: 'list'},
+        transformRotateX: {values: ['30']},
+        transformSkewX:  {values: ['30']},
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
       expect(elem.style.transform).toBe('rotateX(30deg) skewX(30deg)');
     });
 
@@ -1439,12 +1504,12 @@ describe("GenerativeText", function() {
       elem.textContent = "A"
       var params = {
         fontFamily: {values: ['Helvetica']},
-        fontSize: {values: ['1.4'], unit: 'em', type: 'list'},
-        color: {values: ['aaaaaa'], type: 'list'},
+        fontSize: {values: ['1.4'], unit: 'em'},
+        color: {values: ['aaaaaa']},
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
       expect(elem.style.fontFamily).toBe('Helvetica');
       expect(elem.style.fontSize).toBe('1.4em');
       expect(elem.style.color).toBe('rgb(170, 170, 170)');
@@ -1455,16 +1520,17 @@ describe("GenerativeText", function() {
       elem.textContent = "A"
       var params = {
         boxShadow: {
-          hShadow: { type: "list", values: ["1"]},
-          vShadow: { type: "list", values: ["1"]},
-          blur: { type: "list", values: ["1"]},
-          spread: { type: "list", values: ["1"]},
-          color: { type: "list", values: ["#000000"] }
+          hShadow: { values: ["1"]},
+          vShadow: { values: ["1"]},
+          blur: { values: ["1"]},
+          spread: { values: ["1"]},
+          color: { values: ["#000000"] }
         }
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
+      console.log(gt.params);
 
       var es = elem.style.boxShadow;
       //different browsers return property as string differently
@@ -1478,24 +1544,24 @@ describe("GenerativeText", function() {
       var params = {
         boxShadow: [
           {
-            hShadow: { type: "list", values: ["1"]},
-            vShadow: { type: "list", values: ["1"]},
-            blur: { type: "list", values: ["1"]},
-            spread: { type: "list", values: ["1"]},
-            color: { type: "list", values: ["#000000"] }
+            hShadow: { values: ["1"]},
+            vShadow: { values: ["1"]},
+            blur: { values: ["1"]},
+            spread: { values: ["1"]},
+            color: { values: ["#000000"] }
           },
           {
-            hShadow: { type: "list", values: ["2"]},
-            vShadow: { type: "list", values: ["2"]},
-            blur: { type: "list", values: ["2"]},
-            spread: { type: "list", values: ["2"]},
-            color: { type: "list", values: ["#ffffff"] }
+            hShadow: { values: ["2"]},
+            vShadow: { values: ["2"]},
+            blur: { values: ["2"]},
+            spread: { values: ["2"]},
+            color: { values: ["#ffffff"] }
           }
         ]
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
       var es = elem.style.boxShadow;
       //different browsers return property as string differently
       var test = (es === 'rgb(0, 0, 0) 1px 1px 1px 1px, rgb(255, 255, 255) 2px 2px 2px 2px' || es === '1px 1px 1px 1px rgb(0, 0, 0), 2px 2px 2px 2px rgb(255, 255, 255)');
@@ -1507,15 +1573,15 @@ describe("GenerativeText", function() {
       elem.textContent = "A"
       var params = {
         textShadow: {
-          hShadow: { type: "list", values: ["1"]},
-          vShadow: { type: "list", values: ["1"]},
-          blurRadius: { type: "list", values: ["1"]},
-          color: { type: "list", values: ["#000000"]},
+          hShadow: { values: ["1"]},
+          vShadow: { values: ["1"]},
+          blurRadius: { values: ["1"]},
+          color: { values: ["#000000"]},
         }
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
       var es = elem.style.textShadow;
       //different browsers return property as string differently
       var test = (es === 'rgb(0, 0, 0) 1px 1px 1px' || es === '1px 1px 1px rgb(0, 0, 0)');
@@ -1528,22 +1594,22 @@ describe("GenerativeText", function() {
       var params = {
         textShadow: [
           {
-            hShadow: {type: "list", values: ["1"]},
-            vShadow: {type: "list", values: ["1"]},
-            blurRadius: {type: "list", values: ["1"]},
-            color: {type: "list", values: ["#000000"]},
+            hShadow: {values: ["1"]},
+            vShadow: {values: ["1"]},
+            blurRadius: {values: ["1"]},
+            color: {values: ["#000000"]},
           },
           {
-            hShadow: { type: "list", values: ["2"]},
-            vShadow: { type: "list", values: ["2"]},
-            blurRadius: { type: "list", values: ["2"]},
-            color: { type: "list", values: ["#ffffff"]},
+            hShadow: { values: ["2"]},
+            vShadow: { values: ["2"]},
+            blurRadius: {values: ["2"]},
+            color: { values: ["#ffffff"]},
           }
         ]
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
       var es = elem.style.textShadow;
       //different browsers return property as string differently
       var test = (es === 'rgb(0, 0, 0) 1px 1px 1px, rgb(255, 255, 255) 2px 2px 2px' || es === '1px 1px 1px rgb(0, 0, 0), 2px 2px 2px rgb(255, 255, 255)');
@@ -1554,11 +1620,11 @@ describe("GenerativeText", function() {
       var elem = document.createElement('span');
       elem.textContent = "A"
       var params = {
-        filterHueRotate: {values: ['30'], type: 'list'},
+        filterHueRotate: {values: ['30']},
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
       var worked = false;
       //Firefox
       if(elem.style['filter'] == 'hue-rotate(30deg)') worked = true;
@@ -1571,13 +1637,13 @@ describe("GenerativeText", function() {
       var elem = document.createElement('span');
       elem.textContent = "A"
       var params = {
-        filterHueRotate: {values: ['30'], type: 'list'},
-        filterGrayScale: {values: ['30'], type: 'list'},
-        filterBlur: {values: ['30'], type: 'list'},
+        filterHueRotate: {values: ['30']},
+        filterGrayScale: {values: ['30']},
+        filterBlur: {values: ['30']},
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
       var worked = false;
       //Firefox
       if(elem.style['filter'] == 'hue-rotate(30deg) grayscale(30%) blur(30px)') worked = true;
@@ -1591,15 +1657,15 @@ describe("GenerativeText", function() {
       elem.textContent = "A"
       var params = {
         filterDropShadow: {
-          hShadow: {type: "list", values: ["1"]},
-          vShadow: {type: "list", values: ["1"]},
-          blurRadius: {type: "list", values: ["1"]},
-          color: {type: "list", values: ["#000000"]},
+          hShadow: {values: ["1"]},
+          vShadow: {values: ["1"]},
+          blurRadius: {values: ["1"]},
+          color: {values: ["#000000"]},
         },
       };
-      var gt = new generativeText();
+      var gt = new generativeText(params);
 
-      gt.generateStyle(params, elem);
+      gt.generateStyle(gt.params, elem);
       var worked = false;
       //Firefox
       if(elem.style['filter'] == 'drop-shadow(1px 1px 1px rgb(0, 0, 0))') worked = true;
@@ -1686,6 +1752,8 @@ describe("GenerativeText", function() {
     it("should add the unit (argument to the function) when the param does not have it", function () {
       var param = {};
       param.values = [6];
+      param.type = 'list';
+      param.listType = 'random';
       var gt = new generativeText();
       expect(gt.generateListStyle(param, 'px')).toBe('6px');
     });
@@ -1700,18 +1768,19 @@ describe("GenerativeText", function() {
     });
 
 
-    it("should return a random value within param.values when not using steps", function () {
+    it("should return a random value within param.values when listType = 'random'", function () {
       var param = {};
       param.values = [0, 1, 2, 3, 4];
+      param.listType = 'random';
       var gt = new generativeText();
       expect(gt.generateListVariation(param)).toBeLessThan(5);
       expect(gt.generateListVariation(param)).toBeGreaterThan(-1);
     });
 
-    it("should return a value based on the currentStep when using steps", function () {
+    it("should return a value based on the currentStep when listType = 'sequential'", function () {
       var param = {};
       param.values = [0, 1, 2, 3, 4];
-      param.steps = true;
+      param.listType = 'sequential';
       var gt = new generativeText();
       gt.currentStep = 2;
       expect(gt.generateListVariation(param)).toBe('2');
@@ -1721,10 +1790,10 @@ describe("GenerativeText", function() {
       expect(gt.generateListVariation(param)).toBe('4');
     });
 
-    it("should return the value in the key returned by the stepFunction when using stepFunction", function () {
+    it("should return the value in the key returned by the stepFunction when listType = 'function'", function () {
       var param = {};
       param.values = [0, 1, 2, 3, 4];
-      param.steps = true;
+      param.listType = 'function';
       param.stepFunction = function () {
         return 3;
       };
@@ -1732,10 +1801,10 @@ describe("GenerativeText", function() {
       expect(gt.generateListVariation(param)).toBe('3');
     });
 
-    it("should provide stepFunction with access to currentStep, totalSteps and valuesLength", function () {
+    it("should provide stepFunction with access to currentStep, totalSteps when listType = 'function'", function () {
       var param = {};
       param.values = [0, 1, 2, 3, 4];
-      param.steps = true;
+      param.listType = 'function';
       param.stepFunction = function () {
         return this.currentStep + 1;
       };
@@ -1762,45 +1831,40 @@ describe("GenerativeText", function() {
       var param = {};
       param.values = [6];
       param.type = "list";
+      param.listType = "random";
       var gt = new generativeText();
       expect(gt.generateNumericStyle(param, 'px')).toBe('6px');
     });
+
+    it("should return a fixed value when param.type = 'fixed'", function () {
+      var param = {};
+      param.type = "fixed"
+      param.value = "6px";
+      var gt = new generativeText();
+      expect(gt.generateNumericStyle(param, 'px')).toBe('6px');
+    });
+
   });
 
   describe(".generateNumericVariation()", function () {
 
-    it("should throw an exception if param.min or param.max is not set", function () {
-
-      var gt = new generativeText();
-      expect(gt.generateNumericVariation).toThrow();
-    });
-
-    it("should behave like a list variation when type is list", function () {
-      var param = {};
-      param.values = [1];
-      param.type = "list";
-      var gt = new generativeText();
-      expect(gt.generateNumericVariation(param)).toBe('1px');
-    });
-
-
-    var param = {};
-    it("should return a random value within param.values when not using steps", function () {
+    it("should return a random value within range of param.min and param.max when numericType = 'random'", function () {
       var param = {};
       param.min = 0;
       param.max = 5;
       param.unit = "";
+      param.numericType = "random";
       var gt = new generativeText();
       expect(gt.generateNumericVariation(param)).toBeLessThan(6);
       expect(gt.generateNumericVariation(param)).toBeGreaterThan(-1);
     });
 
-    it("should return a value based on the currentStep when using steps", function () {
+    it("should return a value based on the currentStep when numericType = 'sequential'", function () {
       var param = {};
       param.min = 0;
       param.max = 5;
       param.unit = "";
-      param.steps = true;
+      param.numericType = "sequential";
       var gt = new generativeText();
       gt.totalSteps = 5;
       gt.currentStep = 0;
@@ -1812,12 +1876,12 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return the value in the key returned by the stepFunction when using stepFunction", function () {
+    it("should return the value in the key returned by the stepFunction when numericType = 'function'", function () {
       var param = {};
       param.min = 0;
       param.max = 5;
       param.unit = "";
-      param.steps = true;
+      param.numericType = "function";
       param.stepFunction = function () {
         return 3;
       };
@@ -1825,12 +1889,12 @@ describe("GenerativeText", function() {
       expect(gt.generateNumericVariation(param)).toBe('3');
     });
 
-    it("should provide stepFunction with access to currentStep, totalSteps, range, min and max", function () {
+    it("should provide stepFunction with access to currentStep, totalSteps, range, min and max when numericType = 'function'", function () {
       var param = {};
       param.min = 0;
       param.max = 5;
       param.unit = "";
-      param.steps = true;
+      param.numericType = "function";
       param.stepFunction = function () {
         return this.currentStep + 1;
       };
@@ -1864,54 +1928,39 @@ describe("GenerativeText", function() {
 
   describe(".generateColorStyle()", function () {
     it("should prefix the color value with a '#'", function () {
-      var param = {};
-      param.r = {fixed: 'aa'};
-      param.g = {fixed: 'bb'};
-      param.b = {fixed: 'cc'};
       var gt = new generativeText();
 
+      var param = {};
+      param = { type:"fixed", value:"aabbcc" };
       expect(gt.generateColorStyle(param)).toBe('#aabbcc');
     });
 
     it("should not prefix the color value with a '#' if it already has that prefix", function () {
-      var param = {values: ['#aaaaaa'], type: 'list'};
+      var param = {values: ['#aaaaaa'], type: 'list', listType: "random"};
       var gt = new generativeText();
 
       expect(gt.generateColorStyle(param)).toBe('#aaaaaa');
     });
 
+    it("should return a fixed value when param.type = 'fixed'", function () {
+      var c = {};
+      c.type = "fixed"
+      c.value = "#aaff77";
+      var gt = new generativeText();
+      expect(gt.generateRGBHex(c)).toBe('#aaff77');
+    });
+
+
   });
 
   describe(".generateColorVariation()", function () {
 
-    it("should behave like a list variation when type is list", function () {
-      var param = {};
-      param.values = ["787878"];
-      param.type = "list";
-      var gt = new generativeText();
-      expect(gt.generateColorVariation(param)).toBe('787878');
-    });
 
-    it("should throw an exception when it's not type list and either r,g or b are not set", function () {
+    it("should agregate r,g and b", function () {
       var param = {};
-      param.r = {fixed: '00'};
-      param.g = {fixed: '00'};
-      var gt = new generativeText();
-
-      var exceptionThrown = false;
-      try {
-        gt.generateColorVariation(param);
-      } catch (e) {
-        exceptionThrown = true;
-      }
-      expect(exceptionThrown).toBe(true);
-    });
-
-    it("should agregate r,g and b if it's not type list and", function () {
-      var param = {};
-      param.r = {fixed: 'aa'};
-      param.g = {fixed: 'bb'};
-      param.b = {fixed: 'cc'};
+      param.r = { type:"fixed", value:'aa' };
+      param.g = {type:"fixed", value:'bb' };
+      param.b = {type:"fixed", value:'cc' };
       var gt = new generativeText();
 
       expect(gt.generateColorVariation(param)).toBe('aabbcc');
@@ -1920,37 +1969,21 @@ describe("GenerativeText", function() {
   });
 
   describe(".generateRGBHex()", function () {
-    it("should throw an exception if c.fixed or (c.min and c.max) are not set", function () {
-      var gt = new generativeText();
-      expect(gt.generateRGBHex).toThrow();
-    });
 
-    it("should throw an exception when c.fixed is not of length 2", function () {
+    it("should return a fixed value when c.type = 'fixed'", function () {
       var c = {};
-      c.fixed = "aaaa";
-      var gt = new generativeText();
-
-      var exceptionThrown = false;
-      try {
-        gt.generateRGBHex(c);
-      } catch (e) {
-        exceptionThrown = true;
-      }
-      expect(exceptionThrown).toBe(true);
-    });
-
-    it("should return a fixed value when using c.fixed", function () {
-      var c = {};
-      c.fixed = "aa";
+      c.type = "fixed"
+      c.value = "aa";
       var gt = new generativeText();
       expect(gt.generateRGBHex(c)).toBe('aa');
     });
 
-    it("should return a random value within range of c.min and c.max when not using steps", function () {
+    it("should return a random value within range of c.min and c.max when c.type = 'rgb' and c.rgbType = 'random'", function () {
       var c = {};
-      c.fixed = null;
-      c.min = "aa";
-      c.max = "cc";
+      c.type = "rgb";
+      c.rgbType = "random";
+      c.min = 170; //aa
+      c.max = 204; //cc
       var gt = new generativeText();
       var testGreater = gt.generateRGBHex(c) >= "aa";
       expect(testGreater).toBe(true);
@@ -1958,12 +1991,12 @@ describe("GenerativeText", function() {
       expect(testSmaller).toBe(true);
     });
 
-    it("should return a value based on the currentStep when using steps", function () {
+    it("should return a value based on the currentStep when c.type = 'rgb' and c.rgbType = 'sequential'", function () {
       var c = {};
-      c.fixed = null;
-      c.min = "00";
-      c.max = "10";
-      c.steps = true;
+      c.type = "rgb";
+      c.rgbType = "sequential";
+      c.min = 0;
+      c.max = 16;
       var gt = new generativeText();
       gt.totalSteps = 15;
       gt.currentStep = 0;
@@ -1975,11 +2008,12 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return the value returned by the stepFunction in Hexa when using stepFunction", function () {
+    it("should return the value returned by the stepFunction in Hexa when when c.type = 'rgb' and c.rgbType = 'function'", function () {
       var c = {};
-      c.fixed = null;
-      c.min = "aa";
-      c.max = "cc";
+      c.type = "rgb";
+      c.rgbType = "function";
+      c.min = 1;
+      c.max = 17;
       c.steps = true;
       c.stepFunction = function () {
         return 16;
@@ -1988,11 +2022,12 @@ describe("GenerativeText", function() {
       expect(gt.generateRGBHex(c)).toBe('10');
     });
 
-    it("should provide stepFunction with access to currentStep, totalSteps, range, min and max", function () {
+    it("should provide stepFunction with access to currentStep, totalSteps, range, min and max when c.type = 'rgb' and c.rgbType = 'function'", function () {
       var c = {};
-      c.fixed = null;
-      c.min = '00';
-      c.max = '80';
+      c.type = "rgb";
+      c.rgbType = "function";
+      c.min = 1;
+      c.max = 17;
       c.steps = true;
       c.stepFunction = function () {
         return this.currentStep;
@@ -2010,124 +2045,23 @@ describe("GenerativeText", function() {
       c.stepFunction = function () {
         return this.range;
       };
-      expect(gt.generateRGBHex(c)).toBe('80');
+      expect(gt.generateRGBHex(c)).toBe('10');
 
       c.stepFunction = function () {
         return this.min;
       };
-      expect(gt.generateRGBHex(c)).toBe('00');
+      expect(gt.generateRGBHex(c)).toBe('01');
 
       c.stepFunction = function () {
         return this.max;
       };
-      expect(gt.generateRGBHex(c)).toBe('80');
+      expect(gt.generateRGBHex(c)).toBe('11');
     });
 
   });
 
   describe(".generateBoxShadowStyle()", function () {
 
-    it("should throw an exception if some of the required parameters are not set", function () {
-      var gt = new generativeText();
-
-      var param = 	{
-        hShadow: { min: 0, max: 5, steps: true},
-        vShadow: { min: 0, max: 5, steps: true},
-        blur: { type: "list", values: ["1"]},
-        spread: { type: "list", values: ["1"]},
-        color: { type: "list", values: ["#666666"] }
-      };
-
-      var exceptionThrown = false;
-      try {
-        gt.generateBoxShadowStyle(param);
-      } catch (e) {
-        exceptionThrown = true;
-      }
-
-      expect(exceptionThrown).toBe(false);
-
-      var param = 	{
-        vShadow: { min: 0, max: 5, steps: true},
-        blur: { type: "list", values: ["1"]},
-        spread: { type: "list", values: ["1"]},
-        color: { type: "list", values: ["#666666"] }
-      };
-
-      var exceptionThrown = false;
-      try {
-        gt.generateBoxShadowStyle(param);
-      } catch (e) {
-        exceptionThrown = true;
-      }
-
-      expect(exceptionThrown).toBe(true);
-
-      var param = 	{
-        hShadow: { min: 0, max: 5, steps: true},
-        blur: { type: "list", values: ["1"]},
-        spread: { type: "list", values: ["1"]},
-        color: { type: "list", values: ["#666666"] }
-      };
-
-      var exceptionThrown = false;
-      try {
-        gt.generateBoxShadowStyle(param);
-      } catch (e) {
-        exceptionThrown = true;
-      }
-
-      expect(exceptionThrown).toBe(true);
-
-      var param = 	{
-        hShadow: { min: 0, max: 5, steps: true},
-        vShadow: { min: 0, max: 5, steps: true},
-        spread: { type: "list", values: ["1"]},
-        color: { type: "list", values: ["#666666"] }
-      };
-
-      var exceptionThrown = false;
-      try {
-        gt.generateBoxShadowStyle(param);
-      } catch (e) {
-        exceptionThrown = true;
-      }
-
-      expect(exceptionThrown).toBe(true);
-
-      var param = 	{
-        hShadow: { min: 0, max: 5, steps: true},
-        vShadow: { min: 0, max: 5, steps: true},
-        blur: { type: "list", values: ["1"]},
-        color: { type: "list", values: ["#666666"] }
-      };
-
-      var exceptionThrown = false;
-      try {
-        gt.generateBoxShadowStyle(param);
-      } catch (e) {
-        exceptionThrown = true;
-      }
-
-      expect(exceptionThrown).toBe(true);
-
-      var param = 	{
-        hShadow: { min: 0, max: 5, steps: true},
-        vShadow: { min: 0, max: 5, steps: true},
-        blur: { type: "list", values: ["1"]},
-        spread: { type: "list", values: ["1"]},
-      };
-
-      var exceptionThrown = false;
-      try {
-        gt.generateBoxShadowStyle(param);
-      } catch (e) {
-        exceptionThrown = true;
-      }
-
-      expect(exceptionThrown).toBe(true);
-
-    });
   });
 
   describe(".generateTextShadowStyle()", function () {
