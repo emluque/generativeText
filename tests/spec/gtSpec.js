@@ -48,7 +48,7 @@ describe("GenerativeText", function() {
       expect(errors.length).toEqual(1);
     });
 
-    it("should return parameter transformed to a fixed value type if c is a string.", function () {
+    it("should return parameter transformed to a fixed value type if param is a string.", function () {
       var errors = [];
       var param = "1px solid black";
 
@@ -234,7 +234,134 @@ describe("GenerativeText", function() {
       expect(param.type).toEqual("color");
     });
 
-  })
+  });
+
+  describe('.compoundParamTypeInferenceAndValidation()', function () {
+
+    it("should add an error if param is undefined.", function () {
+      var errors = [];
+      var param;
+      var gt = new generativeText();
+      gt.compoundParamTypeInferenceAndValidation(param, "test", true, errors);
+
+      expect(errors.length).toEqual(1);
+    });
+
+    it("should return parameter transformed to a fixed value type if param is a string.", function () {
+      var errors = [];
+      var param = "1px solid black";
+
+      var gt = new generativeText();
+      param = gt.compoundParamTypeInferenceAndValidation(param, "test", true, errors);
+
+      expect(errors.length).toEqual(0);
+      expect(param.type).toEqual("fixed");
+      expect(param.value).toEqual("1px solid black");
+
+    });
+
+    it("should add an error if param.values is defined and it's not an array.", function () {
+      var errors = [];
+      var param = { values: "aaaaa" };
+      var gt = new generativeText();
+      param = gt.compoundParamTypeInferenceAndValidation(param, "test", true, errors);
+
+      expect(errors.length).toEqual(1);
+    });
+
+    it("should add an error if param.values is defined and it's an array of size 0.", function () {
+      var errors = [];
+      var param = { values: "aaaaa" };
+      var gt = new generativeText();
+      param = gt.compoundParamTypeInferenceAndValidation(param, "test", true, errors);
+
+      expect(errors.length).toEqual(1);
+    });
+
+    it("should return parameter transformed to a List value type if values is a valid array.", function () {
+      var errors = [];
+      var param = { values: [1,2,3] };
+
+      var gt = new generativeText();
+      param = gt.compoundParamTypeInferenceAndValidation(param, "test", true, errors);
+
+      expect(errors.length).toEqual(0);
+      expect(param.type).toEqual("list");
+
+    });
+
+    it("should return parameter with listType set to 'sequential' if steps is set to true and it is an infered list type.", function () {
+      var errors = [];
+      var param = { values: [1,2,3], steps: true };
+
+      var gt = new generativeText();
+      param = gt.compoundParamTypeInferenceAndValidation(param, "test", true, errors);
+
+      expect(param.type).toEqual('list');
+      expect(param.listType).toEqual('sequential');
+
+    });
+
+    it("should return parameter with listType set to 'function' if stepFunction exists and it is an infered list type.", function () {
+      var errors = [];
+      var param = { values: [1,2,3], stepFunction: function() {} };
+
+      var gt = new generativeText();
+      param = gt.compoundParamTypeInferenceAndValidation(param, "test", true, errors);
+
+      expect(param.type).toEqual('list');
+      expect(param.listType).toEqual('function');
+
+    });
+
+    it("should return parameter with listType set to 'random' if no steps or stepFunction and it is an infered list type.", function () {
+      var errors = [];
+      var param = { values: [1,2,3] };
+
+      var gt = new generativeText();
+      param = gt.compoundParamTypeInferenceAndValidation(param, "test", true, errors);
+
+      expect(param.type).toEqual('list');
+      expect(param.listType).toEqual('random');
+
+    });
+
+    it("should return parameter with type set to 'array' if it is an array an allowsArray is set to true.", function () {
+      var errors = [];
+      var param = [1,2,3];
+
+      var gt = new generativeText();
+      param = gt.compoundParamTypeInferenceAndValidation(param, "test", true, errors);
+
+      expect(param.type).toEqual('array');
+
+    });
+
+    it("should add an error if param is an array an allowsArray is set to false.", function () {
+      var errors = [];
+      var param = [1,2,3];
+
+      var gt = new generativeText();
+      param = gt.compoundParamTypeInferenceAndValidation(param, "test", false, errors);
+
+      expect(errors.length).toEqual(1);
+
+    });
+
+    it("should return parameter with type set to 'compound' if it is an object.", function () {
+      var errors = [];
+      var param = { a: {}, b: {} };
+
+      var gt = new generativeText();
+      param = gt.compoundParamTypeInferenceAndValidation(param, "test", "defType", errors);
+
+      expect(param.type).toEqual('compound');
+
+    });
+
+  });
+
+
 
   describe('.cTypeInferenceAndValidation()', function () {
 
@@ -1530,7 +1657,6 @@ describe("GenerativeText", function() {
       var gt = new generativeText(params);
 
       gt.generateStyle(gt.params, elem);
-      console.log(gt.params);
 
       var es = elem.style.boxShadow;
       //different browsers return property as string differently
@@ -2062,90 +2188,26 @@ describe("GenerativeText", function() {
 
   describe(".generateBoxShadowStyle()", function () {
 
+    it("should return a fixed value when param.type = 'fixed'", function () {
+      var c = {};
+      c.type = "fixed"
+      c.value = "1px 1px 1px 1px #aaaaaa";
+      var gt = new generativeText();
+      expect(gt.generateBoxShadowStyle(c)).toBe('1px 1px 1px 1px #aaaaaa');
+    });
+
   });
 
   describe(".generateTextShadowStyle()", function () {
 
-    it("should throw an exception if some of the required parameters are not set", function () {
+    it("should return a fixed value when param.type = 'fixed'", function () {
+      var c = {};
+      c.type = "fixed"
+      c.value = "1px 1px 1px 1px #aaaaaa";
       var gt = new generativeText();
-
-      var param = 	{
-        hShadow: { type: "list", values: ["3"]},
-        vShadow: { type: "list", values: ["3"]},
-        blurRadius: { min: 0, max: 10, steps: true},
-        color: { type: "generate", r: { min: "00", max: "ff", steps: true}, g: { fixed: "88"}, b: {fixed: "88"} }
-      };
-
-      var exceptionThrown = false;
-      try {
-        gt.generateTextShadowStyle(param);
-      } catch (e) {
-        exceptionThrown = true;
-      }
-
-      expect(exceptionThrown).toBe(false);
-
-      var param = 	{
-        vShadow: { type: "list", values: ["3"]},
-        blurRadius: { min: 0, max: 10, steps: true},
-        color: { type: "generate", r: { min: "00", max: "ff", steps: true}, g: { fixed: "88"}, b: {fixed: "88"} }
-      };
-
-      var exceptionThrown = false;
-      try {
-        gt.generateTextShadowStyle(param);
-      } catch (e) {
-        exceptionThrown = true;
-      }
-
-      expect(exceptionThrown).toBe(true);
-
-      var param = 	{
-        hShadow: { type: "list", values: ["3"]},
-        blurRadius: { min: 0, max: 10, steps: true},
-        color: { type: "generate", r: { min: "00", max: "ff", steps: true}, g: { fixed: "88"}, b: {fixed: "88"} }
-      };
-
-      var exceptionThrown = false;
-      try {
-        gt.generateTextShadowStyle(param);
-      } catch (e) {
-        exceptionThrown = true;
-      }
-
-      expect(exceptionThrown).toBe(true);
-
-      var param = 	{
-        hShadow: { type: "list", values: ["3"]},
-        vShadow: { type: "list", values: ["3"]},
-        color: { type: "generate", r: { min: "00", max: "ff", steps: true}, g: { fixed: "88"}, b: {fixed: "88"} }
-      };
-
-      var exceptionThrown = false;
-      try {
-        gt.generateTextShadowStyle(param);
-      } catch (e) {
-        exceptionThrown = true;
-      }
-
-      expect(exceptionThrown).toBe(true);
-
-      var param = 	{
-        hShadow: { type: "list", values: ["3"]},
-        vShadow: { type: "list", values: ["3"]},
-        blurRadius: { min: 0, max: 10, steps: true},
-      };
-
-      var exceptionThrown = false;
-      try {
-        gt.generateTextShadowStyle(param);
-      } catch (e) {
-        exceptionThrown = true;
-      }
-
-      expect(exceptionThrown).toBe(true);
-
+      expect(gt.generateTextShadowStyle(c)).toBe('1px 1px 1px 1px #aaaaaa');
     });
+
   });
 
   describe(".roundUnit()", function () {

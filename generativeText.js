@@ -985,28 +985,13 @@ generativeText.prototype = {
 					this.setBrowserStyle(el, "-webkit-filter", strVal);
 					break;
 				case 'BoxShadow':
-					var strVal = "";
-					if(params[p].constructor === Array) {
-						for(var i=0; i<params[p].length; i++) {
-							strVal += (i==0? "":", ") + this.generateBoxShadowStyle(params[p][i]);
-						}
-					} else {
-						strVal += this.generateBoxShadowStyle(params[p]);
-					}
-					console.log(strVal);
+					var strVal = this.generateBoxShadowStyle(params[p]);
 					this.setBrowserStyle(el, "box-shadow", strVal);
 					this.setBrowserStyle(el, "-moz-box-shadow", strVal);
 					this.setBrowserStyle(el, "-webkit-box-shadow", strVal);
 					break;
 				case 'TextShadow':
-					var strVal = "";
-					if(params[p].constructor === Array) {
-						for(var i=0; i<params[p].length; i++) {
-							strVal += (i==0? "":", ") + this.generateTextShadowStyle(params[p][i]);
-						}
-					} else {
-						strVal += this.generateTextShadowStyle(params[p]);
-					}
+					var strVal = this.generateTextShadowStyle(params[p]);
 					this.setBrowserStyle(el, "text-shadow", strVal);
 					this.setBrowserStyle(el, "-moz-text-shadow", strVal);
 					this.setBrowserStyle(el, "-webkit-text-shadow", strVal);
@@ -1170,55 +1155,60 @@ generativeText.prototype = {
 		}
 	},
 	generateBoxShadowStyle: function(param) {
-		//Fixed value
-		if(typeof param == "string") {
-			return param;
-		}
 		switch(param.type) {
-			case 'list':
+			case 'fixed':
+				return param.value;
+			case "list":
 				return this.generateListVariation(param);
 				break;
-			case 'generate':
-			default:
-				if (typeof param.hShadow == "undefined" || typeof param.vShadow == "undefined" || typeof param.blur == "undefined" || typeof param.spread == "undefined" || typeof param.color == "undefined") {
-					throw ("generativeText Error - boxShadow without either hShadow, vShadow, blur, spread or color.");
-					return;
-				}
+			case "array":
 				var strVal = "";
-				if (!!param.inset && param.inset) strVal = "inset";
-				strVal += " " + this.generateNumericStyle(param.hShadow, 'px');
-				strVal += " " + this.generateNumericStyle(param.vShadow, 'px');
-				strVal += " " + this.generateNumericStyle(param.blur, 'px');
-				strVal += " " + this.generateNumericStyle(param.spread, 'px');
-				strVal += " " + this.generateColorStyle(param.color);
+				for(var i=0; i<param.length; i++) {
+					strVal += (i==0? "":", ") + this.generateBoxShadowVariation(param[i]);
+				}
 				return strVal;
+				break;
+			case "compound":
+				return this.generateBoxShadowVariation(param);
 				break;
 		}
 	},
+	generateBoxShadowVariation: function(param) {
+		var strVal = "";
+		if (!!param.inset && param.inset) strVal = "inset";
+		strVal += " " + this.generateNumericStyle(param.hShadow, 'px');
+		strVal += " " + this.generateNumericStyle(param.vShadow, 'px');
+		strVal += " " + this.generateNumericStyle(param.blur, 'px');
+		strVal += " " + this.generateNumericStyle(param.spread, 'px');
+		strVal += " " + this.generateColorStyle(param.color);
+		return strVal;
+	},
 	generateTextShadowStyle: function(param) {
-		//Fixed value
-		if(typeof param == "string") {
-			return param;
-		}
-
 		switch(param.type) {
-			case 'list':
+			case 'fixed':
+				return param.value;
+			case "list":
 				return this.generateListVariation(param);
 				break;
-			case 'generate':
-			default:
-				if (typeof param.hShadow == "undefined" || typeof param.vShadow == "undefined" || typeof param.blurRadius == "undefined" || typeof param.color == "undefined") {
-					throw ("generativeText Error - textShadow without either hShadow, vShadow, blurRadius or color.");
-					return;
-				}
+			case "array":
 				var strVal = "";
-				strVal += " " + this.generateNumericStyle(param.hShadow, 'px');
-				strVal += " " + this.generateNumericStyle(param.vShadow, 'px');
-				strVal += " " + this.generateNumericStyle(param.blurRadius, 'px');
-				strVal += " " + this.generateColorStyle(param.color);
+				for(var i=0; i<param.length; i++) {
+					strVal += (i==0? "":", ") + this.generateTextShadowVariation(param[i]);
+				}
 				return strVal;
 				break;
+			case "compound":
+				return this.generateTextShadowVariation(param);
+				break;
 		}
+	},
+	generateTextShadowVariation: function(param) {
+		var strVal = "";
+		strVal += " " + this.generateNumericStyle(param.hShadow, 'px');
+		strVal += " " + this.generateNumericStyle(param.vShadow, 'px');
+		strVal += " " + this.generateNumericStyle(param.blurRadius, 'px');
+		strVal += " " + this.generateColorStyle(param.color);
+		return strVal;
 	},
 	generateTwoNumericStyle: function(param, unit) {
 		//Fixed value
