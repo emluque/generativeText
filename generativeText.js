@@ -263,16 +263,16 @@ generativeText.prototype = {
 						case "compound":
 							this.params[p].hShadow = this.paramTypeInferenceAndValidation(this.params[p].hShadow, p + ".hShadow", "Numeric", errors);
 							this.params[p].vShadow = this.paramTypeInferenceAndValidation(this.params[p].vShadow, p + ".vShadow", "Numeric", errors);
-							this.params[p].blur = this.paramTypeInferenceAndValidation(this.params[p].vShadow, p + ".blur", "Numeric", errors);
-							this.params[p].spread = this.paramTypeInferenceAndValidation(this.params[p].vShadow, p + ".spread", "Numeric", errors);
+							this.params[p].blur = this.paramTypeInferenceAndValidation(this.params[p].blur, p + ".blur", "Numeric", errors);
+							this.params[p].spread = this.paramTypeInferenceAndValidation(this.params[p].spread, p + ".spread", "Numeric", errors);
 							this.params[p].color = this.paramTypeInferenceAndValidation(this.params[p].color, p + ".color", "Color", errors);
 							break;
 						case "array":
 							for(var j=0; j<this.params[p].length; j++) {
 								this.params[p][j].hShadow = this.paramTypeInferenceAndValidation(this.params[p][j].hShadow, p + ".hShadow", "Numeric", errors);
 								this.params[p][j].vShadow = this.paramTypeInferenceAndValidation(this.params[p][j].vShadow, p + ".vShadow", "Numeric", errors);
-								this.params[p][j].blur = this.paramTypeInferenceAndValidation(this.params[p][j].vShadow, p + ".blur", "Numeric", errors);
-								this.params[p][j].spread = this.paramTypeInferenceAndValidation(this.params[p][j].vShadow, p + ".spread", "Numeric", errors);
+								this.params[p][j].blur = this.paramTypeInferenceAndValidation(this.params[p][j].blur, p + ".blur", "Numeric", errors);
+								this.params[p][j].spread = this.paramTypeInferenceAndValidation(this.params[p][j].spread, p + ".spread", "Numeric", errors);
 								this.params[p][j].color = this.paramTypeInferenceAndValidation(this.params[p][j].color, p + ".color", "Color", errors);
 							}
 							break;
@@ -569,6 +569,7 @@ generativeText.prototype = {
 		}
 	},
 	getElementText: function(elem) {
+		//For browser compatibility
 		var text;
 
 		if(!!elem.textContent) {
