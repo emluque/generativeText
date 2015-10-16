@@ -1,23 +1,23 @@
 /* Copyright (c) 2014 Emiliano Martínez Luque - http://www.metonymie.com
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ */
 
 "use strict";
 
@@ -382,7 +382,7 @@ generativeText.prototype = {
 					param.b = this.cTypeInferenceAndValidation(param.b, name + ".b", errors);
 					param.type = "color";
 					return param;
-				break;
+					break;
 			}
 		}
 	},
@@ -502,15 +502,15 @@ generativeText.prototype = {
 		}
 
 		for(var i=0; i < elems.length; i++) {
-            this.applyToElement(elems[i]);
+			this.applyToElement(elems[i]);
 		}
 	},
-    applyToElement: function(elem) {
-        this.currentStep = 0;
-        this.memory = [];
+	applyToElement: function(elem) {
+		this.currentStep = 0;
+		this.memory = [];
 
 		//Set opts.applyTo default
-        if(!this.opts) this.opts = {};
+		if(!this.opts) this.opts = {};
 		if(!this.opts.applyTo) this.opts.applyTo = "text";
 
 		switch(this.opts.applyTo) {
@@ -527,7 +527,7 @@ generativeText.prototype = {
 		}
 		//Clean up Unused References
 		this.freepObj();
-    },
+	},
 	applyToElementsSequentially: function(elems) {
 
 		this.currentStep = 0;
@@ -585,10 +585,10 @@ generativeText.prototype = {
 		elem.appendChild( ne );
 	},
 	cleanUp: function() {
-			this.freepObj();
-			if(this.opts.memory == true) {
-				delete this.memory;
-			}
+		this.freepObj();
+		if(this.opts.memory == true) {
+			delete this.memory;
+		}
 	},
 	freepObj: function() {
 		//Clean up references that were used temporarily
@@ -670,24 +670,24 @@ generativeText.prototype = {
 					case 'style':
 						this.generateStyle( this.params, newElement );
 						this.appendTextElement(elem, newElement);
-					break;
+						break;
 					case 'nostyle':
 						this.appendTextElement(elem, newElement);
-					break;
+						break;
 					case 'nostyleorcount':
 						this.appendTextElement(elem, newElement);
 						this.currentStep--;
-					break;
+						break;
 					case 'remove':
 						this.currentStep--;
-					break;
-				}				
+						break;
+				}
 			} else {
 				newElement.innerHTML = t;
 				this.generateStyle( this.params, newElement );
 				this.appendTextElement(elem, newElement);
 			}
-			
+
 			//Post Function
 			if(!!this.opts && !!this.opts.pObj && !!this.opts.pObj.posFunc && this.opts.pObj.posFunc instanceof Function) {
 				this.applyPFunc(this.opts.pObj, 'posFunc');
@@ -850,7 +850,7 @@ generativeText.prototype = {
 						this.generateStyle( this.params, spaceElement);
 						this.appendTextElement(elem, spaceElement);
 					}
-				break;
+					break;
 				case 'nostyle':
 					newElement.innerHTML = words[i];
 					this.generateStyle( this.params, newElement );
@@ -862,7 +862,7 @@ generativeText.prototype = {
 						spaceElement.innerHTML = '&nbsp;';
 						this.appendTextElement(elem, spaceElement);
 					}
-				break;
+					break;
 				case 'nostyleorcount':
 					newElement.innerHTML = words[i];
 					this.appendTextElement(elem, newElement);
@@ -873,12 +873,12 @@ generativeText.prototype = {
 						spaceElement.innerHTML = '&nbsp;';
 						this.appendTextElement(elem, spaceElement);
 					}
-				break;
+					break;
 				case 'remove':
 					newElement.innerHTML = words[i];
 					this.generateStyle( this.params, newElement );
 					this.appendTextElement(elem, newElement);
-				break;
+					break;
 				case 'even':
 					if( (i % 2) != 0) {
 						newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
@@ -888,22 +888,22 @@ generativeText.prototype = {
 						this.generateStyle( this.params, newElement);
 					}
 					this.appendTextElement(elem, newElement);
-				break;
-                case 'odd':
-                    if( (i % 2) == 0) {
-                        newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
-                        this.generateStyle( this.params, newElement);
-                    } else {
-                        newElement.innerHTML = words[i];
-                        this.generateStyle( this.params, newElement);
-                    }
-                    this.appendTextElement(elem, newElement);
-                    break;
-                case 'all':
-                    newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
-                    this.generateStyle( this.params, newElement);
-                    this.appendTextElement(elem, newElement);
-                    break;
+					break;
+				case 'odd':
+					if( (i % 2) == 0) {
+						newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
+						this.generateStyle( this.params, newElement);
+					} else {
+						newElement.innerHTML = words[i];
+						this.generateStyle( this.params, newElement);
+					}
+					this.appendTextElement(elem, newElement);
+					break;
+				case 'all':
+					newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
+					this.generateStyle( this.params, newElement);
+					this.appendTextElement(elem, newElement);
+					break;
 			}
 
 			//Post Function
@@ -930,17 +930,17 @@ generativeText.prototype = {
 			switch( this.defs[ p].type ) {
 				case 'Numeric':
 					el.style[styleName] = this.generateNumericStyle(params[p], this.defs[p].unit);
-				break;
+					break;
 				case 'Color':
 					el.style[styleName] = this.generateColorStyle( params[p]);
-				break;
+					break;
 				case 'List':
 					if(styleName == 'background-image' || styleName == 'border-image-source' || styleName == 'list-style-image') {
 						el.style[styleName] = "url('" + this.generateListStyle( params[p] ) + "')";
 					} else {
 						el.style[styleName] = this.generateListStyle( params[p] );
 					}
-				break;
+					break;
 				case 'Transform':
 					var unit = "";
 					if( this.defs[p].unit == "deg") {
@@ -961,7 +961,7 @@ generativeText.prototype = {
 					this.setBrowserStyle(el, "transform", strVal);
 					this.setBrowserStyle(el, "-ms-transform", strVal);
 					this.setBrowserStyle(el, "-webkit-transform", strVal);
-				break;
+					break;
 				case 'Filter':
 					var unit = "";
 					if( this.defs[p].unit == "deg") {
@@ -1251,17 +1251,17 @@ generativeText.prototype = {
 	roundUnit: function(val, unit) {
 		switch(unit) {
 			case "float":
-			//treat as float but with no unit
+				//treat as float but with no unit
 				return this.removeTrailingZeros(val.toFixed(2));
 			case "em":
 			case "%":
 			case "s":
 				return this.removeTrailingZeros(val.toFixed(2)) + unit;
-			break;
+				break;
 			case "px":
 			default:
 				return Math.round(val) + unit;
-			break;
+				break;
 		}
 	},
 	removeTrailingZeros: function(val) {
