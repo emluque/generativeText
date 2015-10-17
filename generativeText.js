@@ -336,11 +336,11 @@ generativeText.prototype = {
 				errors.push(name + " : values has length 0.");
 			} else {
 				param = this.stepFunctionCheck(param, name, errors);
-				if(param.steps) {
-					param.listType = "sequential";
-				} else if(!!param.stepFunction ) {
+                 if(!!param.stepFunction ) {
 					param.listType = "function";
-				} else {
+				} else if(param.steps) {
+                     param.listType = "sequential";
+                 } else {
 					param.listType = "random";
 				}
 				param.type = "list";
@@ -400,11 +400,11 @@ generativeText.prototype = {
 				errors.push(name + " : values has length 0.");
 			} else {
 				param = this.stepFunctionCheck(param, name, errors);
-				if (param.steps) {
-					param.listType = "sequential";
-				} else if (!!param.stepFunction) {
+				if (!!param.stepFunction) {
 					param.listType = "function";
-				} else {
+				} else if (param.steps) {
+                    param.listType = "sequential";
+                } else {
 					param.listType = "random";
 				}
 				param.type = "list";
@@ -459,11 +459,11 @@ generativeText.prototype = {
 				}
 			}
 			c = this.stepFunctionCheck(c, name, errors);
-			if(c.steps) {
-				c.rgbType = "sequential";
-			} else if(!!c.stepFunction) {
+			if(!!c.stepFunction) {
 				c.rgbType = "function";
-			} else {
+			} else if(c.steps) {
+                c.rgbType = "sequential";
+            } else {
 				c.rgbType = "random"
 			}
 			c.type = "rgb";
