@@ -1094,6 +1094,7 @@ generativeText.prototype = {
 		switch(param.type) {
 			case 'fixed':
 				return param.value;
+                break;
 			case "list":
 				return this.generateListVariation(param);
 				break;
@@ -1131,6 +1132,7 @@ generativeText.prototype = {
 		switch(param.type) {
 			case 'fixed':
 				return param.value;
+                break;
 			case "list":
 				return this.generateListVariation(param);
 				break;
@@ -1160,6 +1162,7 @@ generativeText.prototype = {
 		switch(param.type) {
 			case 'fixed':
 				return param.value;
+                break;
 			case "list":
 				return this.generateListVariation(param);
 				break;
@@ -1189,6 +1192,7 @@ generativeText.prototype = {
 		switch(param.type) {
 			case 'fixed':
 				return param.value;
+                break;
 			case "list":
 				return this.generateListVariation(param);
 				break;
@@ -1216,6 +1220,7 @@ generativeText.prototype = {
 		switch(param.type) {
 			case 'fixed':
 				return param.value;
+                break;
 			case "list":
 				return this.generateListVariation(param);
 				break;
@@ -1231,6 +1236,7 @@ generativeText.prototype = {
 		switch(param.type) {
 			case 'fixed':
 				return param.value;
+                break;
 			case "list":
 				return this.generateListVariation(param);
 				break;
@@ -1253,6 +1259,7 @@ generativeText.prototype = {
 			case "float":
 				//treat as float but with no unit
 				return this.removeTrailingZeros(val.toFixed(2));
+                break;
 			case "em":
 			case "%":
 			case "s":
