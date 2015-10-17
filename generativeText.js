@@ -462,8 +462,8 @@ generativeText.prototype = {
 			if(!!c.stepFunction) {
 				c.rgbType = "function";
 			} else if(c.steps) {
-                c.rgbType = "sequential";
-            } else {
+				c.rgbType = "sequential";
+			} else {
 				c.rgbType = "random"
 			}
 			c.type = "rgb";
