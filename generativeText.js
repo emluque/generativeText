@@ -336,11 +336,11 @@ generativeText.prototype = {
 				errors.push(name + " : values has length 0.");
 			} else {
 				param = this.stepFunctionCheck(param, name, errors);
-                 if(!!param.stepFunction ) {
+				if(!!param.stepFunction ) {
 					param.listType = "function";
 				} else if(param.steps) {
-                     param.listType = "sequential";
-                 } else {
+					param.listType = "sequential";
+				} else {
 					param.listType = "random";
 				}
 				param.type = "list";
@@ -403,8 +403,8 @@ generativeText.prototype = {
 				if (!!param.stepFunction) {
 					param.listType = "function";
 				} else if (param.steps) {
-                    param.listType = "sequential";
-                } else {
+					param.listType = "sequential";
+				} else {
 					param.listType = "random";
 				}
 				param.type = "list";
