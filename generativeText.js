@@ -220,94 +220,94 @@ generativeText.prototype = {
 	inferAndValidateRules: function() {
 		var errors = [];
 
-		for(var p in this.rules){
-			switch(this.defs[p].type) {
+		for(var r in this.rules){
+			switch(this.defs[r].type) {
 				case "List":
-					this.rules[p] = this.ruleTypeInferenceAndValidation(this.rules[p], p, "List", errors);
+					this.rules[r] = this.ruleTypeInferenceAndValidation(this.rules[r], r, "List", errors);
 					break;
 				case "Numeric":
 				case "Filter":
 				case "Transform":
-					this.rules[p] = this.ruleTypeInferenceAndValidation(this.rules[p], p, "Numeric", errors);
+					this.rules[r] = this.ruleTypeInferenceAndValidation(this.rules[r], r, "Numeric", errors);
 					break;
 				case "Color":
-					this.rules[p] = this.ruleTypeInferenceAndValidation(this.rules[p], p, "Color", errors);
+					this.rules[r] = this.ruleTypeInferenceAndValidation(this.rules[r], r, "Color", errors);
 					break;
 				case "FilterDropShadow":
 				case "TextShadow":
-					var rule = this.compoundRuleTypeInferenceAndValidation(this.rules[p], p, true, errors);
+					var rule = this.compoundRuleTypeInferenceAndValidation(this.rules[r], r, true, errors);
 					switch (rule.type) {
 						case "compound":
-							this.rules[p].hShadow = this.ruleTypeInferenceAndValidation(this.rules[p].hShadow, p + ".hShadow", "Numeric", errors);
-							this.rules[p].vShadow = this.ruleTypeInferenceAndValidation(this.rules[p].vShadow, p + ".vShadow", "Numeric", errors);
-							this.rules[p].blurRadius = this.ruleTypeInferenceAndValidation(this.rules[p].blurRadius, p + ".blurRadius", "Numeric", errors);
-							this.rules[p].color = this.ruleTypeInferenceAndValidation(this.rules[p].color, p + ".color", "Color", errors);
+							this.rules[r].hShadow = this.ruleTypeInferenceAndValidation(this.rules[r].hShadow, r + ".hShadow", "Numeric", errors);
+							this.rules[r].vShadow = this.ruleTypeInferenceAndValidation(this.rules[r].vShadow, r + ".vShadow", "Numeric", errors);
+							this.rules[r].blurRadius = this.ruleTypeInferenceAndValidation(this.rules[r].blurRadius, r + ".blurRadius", "Numeric", errors);
+							this.rules[r].color = this.ruleTypeInferenceAndValidation(this.rules[r].color, r + ".color", "Color", errors);
 							break;
 						case "array":
-							for (var j = 0; j < this.rules[p].length; j++) {
-								this.rules[p][j].hShadow = this.ruleTypeInferenceAndValidation(this.rules[p][j].hShadow, p + ".hShadow", "Numeric", errors);
-								this.rules[p][j].vShadow = this.ruleTypeInferenceAndValidation(this.rules[p][j].vShadow, p + ".vShadow", "Numeric", errors);
-								this.rules[p][j].blurRadius = this.ruleTypeInferenceAndValidation(this.rules[p][j].blurRadius, p + ".blurRadius", "Numeric", errors);
-								this.rules[p][j].color = this.ruleTypeInferenceAndValidation(this.rules[p][j].color, p + ".color", "Color", errors);
+							for (var j = 0; j < this.rules[r].length; j++) {
+								this.rules[r][j].hShadow = this.ruleTypeInferenceAndValidation(this.rules[r][j].hShadow, r + ".hShadow", "Numeric", errors);
+								this.rules[r][j].vShadow = this.ruleTypeInferenceAndValidation(this.rules[r][j].vShadow, r + ".vShadow", "Numeric", errors);
+								this.rules[r][j].blurRadius = this.ruleTypeInferenceAndValidation(this.rules[r][j].blurRadius, r + ".blurRadius", "Numeric", errors);
+								this.rules[r][j].color = this.ruleTypeInferenceAndValidation(this.rules[r][j].color, r + ".color", "Color", errors);
 							}
 							break;
 						case "fixed":
 						case "list":
-							this.rules[p] = rule;
+							this.rules[r] = rule;
 							break;
 					}
 					break;
 				case "BoxShadow":
-					var rule = this.compoundRuleTypeInferenceAndValidation(this.rules[p], p, true, errors);
+					var rule = this.compoundRuleTypeInferenceAndValidation(this.rules[r], r, true, errors);
 					switch (rule.type) {
 						case "compound":
-							this.rules[p].hShadow = this.ruleTypeInferenceAndValidation(this.rules[p].hShadow, p + ".hShadow", "Numeric", errors);
-							this.rules[p].vShadow = this.ruleTypeInferenceAndValidation(this.rules[p].vShadow, p + ".vShadow", "Numeric", errors);
-							this.rules[p].blur = this.ruleTypeInferenceAndValidation(this.rules[p].blur, p + ".blur", "Numeric", errors);
-							this.rules[p].spread = this.ruleTypeInferenceAndValidation(this.rules[p].spread, p + ".spread", "Numeric", errors);
-							this.rules[p].color = this.ruleTypeInferenceAndValidation(this.rules[p].color, p + ".color", "Color", errors);
+							this.rules[r].hShadow = this.ruleTypeInferenceAndValidation(this.rules[r].hShadow, r + ".hShadow", "Numeric", errors);
+							this.rules[r].vShadow = this.ruleTypeInferenceAndValidation(this.rules[r].vShadow, r + ".vShadow", "Numeric", errors);
+							this.rules[r].blur = this.ruleTypeInferenceAndValidation(this.rules[r].blur, r + ".blur", "Numeric", errors);
+							this.rules[r].spread = this.ruleTypeInferenceAndValidation(this.rules[r].spread, r + ".spread", "Numeric", errors);
+							this.rules[r].color = this.ruleTypeInferenceAndValidation(this.rules[r].color, r + ".color", "Color", errors);
 							break;
 						case "array":
-							for(var j=0; j<this.rules[p].length; j++) {
-								this.rules[p][j].hShadow = this.ruleTypeInferenceAndValidation(this.rules[p][j].hShadow, p + ".hShadow", "Numeric", errors);
-								this.rules[p][j].vShadow = this.ruleTypeInferenceAndValidation(this.rules[p][j].vShadow, p + ".vShadow", "Numeric", errors);
-								this.rules[p][j].blur = this.ruleTypeInferenceAndValidation(this.rules[p][j].blur, p + ".blur", "Numeric", errors);
-								this.rules[p][j].spread = this.ruleTypeInferenceAndValidation(this.rules[p][j].spread, p + ".spread", "Numeric", errors);
-								this.rules[p][j].color = this.ruleTypeInferenceAndValidation(this.rules[p][j].color, p + ".color", "Color", errors);
+							for(var j=0; j<this.rules[r].length; j++) {
+								this.rules[r][j].hShadow = this.ruleTypeInferenceAndValidation(this.rules[r][j].hShadow, r + ".hShadow", "Numeric", errors);
+								this.rules[r][j].vShadow = this.ruleTypeInferenceAndValidation(this.rules[r][j].vShadow, r + ".vShadow", "Numeric", errors);
+								this.rules[r][j].blur = this.ruleTypeInferenceAndValidation(this.rules[r][j].blur, r + ".blur", "Numeric", errors);
+								this.rules[r][j].spread = this.ruleTypeInferenceAndValidation(this.rules[r][j].spread, r + ".spread", "Numeric", errors);
+								this.rules[r][j].color = this.ruleTypeInferenceAndValidation(this.rules[r][j].color, r + ".color", "Color", errors);
 							}
 							break;
 						case "fixed":
 						case "list":
-							this.rules[p] = rule;
+							this.rules[r] = rule;
 							break;
 					}
 					break;
 					break;
 				case "TwoNumeric":
-					var rule = this.compoundRuleTypeInferenceAndValidation(this.rules[p], p, false, errors);
+					var rule = this.compoundRuleTypeInferenceAndValidation(this.rules[r], r, false, errors);
 					switch (rule.type) {
 						case "compound":
-							this.rules[p].x = this.ruleTypeInferenceAndValidation(this.rules[p].x, p + ".x", "Numeric", errors);
-							this.rules[p].y = this.ruleTypeInferenceAndValidation(this.rules[p].y, p + ".y", "Numeric", errors);
+							this.rules[r].x = this.ruleTypeInferenceAndValidation(this.rules[r].x, r + ".x", "Numeric", errors);
+							this.rules[r].y = this.ruleTypeInferenceAndValidation(this.rules[r].y, r + ".y", "Numeric", errors);
 							break;
 						case "fixed":
 						case "list":
-							this.rules[p] = rule;
+							this.rules[r] = rule;
 							break;
 					}
 					break;
 				case "ThreeNumeric":
-					var rule = this.compoundRuleTypeInferenceAndValidation(this.rules[p], p, false, errors);
+					var rule = this.compoundRuleTypeInferenceAndValidation(this.rules[r], r, false, errors);
 					switch (rule.type) {
 						case "compound":
-							this.rules[p].x = this.ruleTypeInferenceAndValidation(this.rules[p].x, p + ".x", "Numeric", errors);
-							this.rules[p].y = this.ruleTypeInferenceAndValidation(this.rules[p].y, p + ".y", "Numeric", errors);
-							if(!!this.rules[p].z) this.rules[p].z = this.ruleTypeInferenceAndValidation(this.rules[p].z, p + ".z", "Numeric", errors);
+							this.rules[r].x = this.ruleTypeInferenceAndValidation(this.rules[r].x, r + ".x", "Numeric", errors);
+							this.rules[r].y = this.ruleTypeInferenceAndValidation(this.rules[r].y, r + ".y", "Numeric", errors);
+							if(!!this.rules[r].z) this.rules[r].z = this.ruleTypeInferenceAndValidation(this.rules[r].z, r + ".z", "Numeric", errors);
 
 							break;
 						case "fixed":
 						case "list":
-							this.rules[p] = rule;
+							this.rules[r] = rule;
 							break;
 					}
 					break;
@@ -917,44 +917,44 @@ generativeText.prototype = {
 
 	},
 	generateStyle: function( rules, el) {
-		for(var p in rules) {
-			this.currentRuleeter = p;
+		for(var r in rules) {
+			this.currentRuleeter = r;
 			//Check if definition exists
-			if(typeof this.defs[ p ] == 'undefined') {
-				throw ("generativeText Error - rule name is not supported: '" + p + "'");
+			if(typeof this.defs[ r ] == 'undefined') {
+				throw ("generativeText Error - rule name is not supported: '" + r + "'");
 				return;
 			}
 
-			var styleName = p.replace(/([A-Z])/g, function(m){ return '-' + m.toLowerCase(); } );
+			var styleName = r.replace(/([A-Z])/g, function(m){ return '-' + m.toLowerCase(); } );
 
-			switch( this.defs[ p].type ) {
+			switch( this.defs[ r ].type ) {
 				case 'Numeric':
-					el.style[styleName] = this.generateNumericStyle(rules[p], this.defs[p].unit);
+					el.style[styleName] = this.generateNumericStyle(rules[r], this.defs[r].unit);
 					break;
 				case 'Color':
-					el.style[styleName] = this.generateColorStyle( rules[p]);
+					el.style[styleName] = this.generateColorStyle( rules[r]);
 					break;
 				case 'List':
 					if(styleName == 'background-image' || styleName == 'border-image-source' || styleName == 'list-style-image') {
-						el.style[styleName] = "url('" + this.generateListStyle( rules[p] ) + "')";
+						el.style[styleName] = "url('" + this.generateListStyle( rules[r] ) + "')";
 					} else {
-						el.style[styleName] = this.generateListStyle( rules[p] );
+						el.style[styleName] = this.generateListStyle( rules[r] );
 					}
 					break;
 				case 'Transform':
 					var unit = "";
-					if( this.defs[p].unit == "deg") {
+					if( this.defs[r].unit == "deg") {
 						unit = "deg";
 					} else {
-						if(rules[p].unit) {
-							unit = rules[p].unit;
+						if(rules[r].unit) {
+							unit = rules[r].unit;
 						} else {
-							unit = this.defs[p].unit;
+							unit = this.defs[r].unit;
 						}
 					}
-					var val = this.generateNumericStyle(rules[p], unit);
+					var val = this.generateNumericStyle(rules[r], unit);
 
-					var transformName = p.replace("transform", "");
+					var transformName = r.replace("transform", "");
 					var transformName = transformName.charAt(0).toLowerCase() + transformName.slice(1);
 
 					var strVal = transformName + "(" + val + ")";
@@ -964,17 +964,17 @@ generativeText.prototype = {
 					break;
 				case 'Filter':
 					var unit = "";
-					if( this.defs[p].unit == "deg") {
+					if( this.defs[r].unit == "deg") {
 						unit = "deg";
 					} else {
-						if(rules[p].unit) {
-							unit = rules[p].unit;
+						if(rules[r].unit) {
+							unit = rules[r].unit;
 						} else {
-							unit = this.defs[p].unit;
+							unit = this.defs[r].unit;
 						}
 					}
-					var val = this.generateNumericStyle(rules[p], unit);
-					var filterName = p.replace("filter", "").toLowerCase();
+					var val = this.generateNumericStyle(rules[r], unit);
+					var filterName = r.replace("filter", "").toLowerCase();
 					if(filterName == 'huerotate') filterName = 'hue-rotate';
 
 					var strVal = filterName + "(" + val + ")";
@@ -982,39 +982,39 @@ generativeText.prototype = {
 					this.setBrowserStyle(el, "-webkit-filter", strVal);
 					break;
 				case 'FilterDropShadow':
-					var strVal = "drop-shadow(" + this.generateTextShadowStyle(rules[p]) + ")";
+					var strVal = "drop-shadow(" + this.generateTextShadowStyle(rules[r]) + ")";
 					this.setBrowserStyle(el, "filter", strVal);
 					this.setBrowserStyle(el, "-webkit-filter", strVal);
 					break;
 				case 'BoxShadow':
-					var strVal = this.generateBoxShadowStyle(rules[p]);
+					var strVal = this.generateBoxShadowStyle(rules[r]);
 					this.setBrowserStyle(el, "box-shadow", strVal);
 					this.setBrowserStyle(el, "-moz-box-shadow", strVal);
 					this.setBrowserStyle(el, "-webkit-box-shadow", strVal);
 					break;
 				case 'TextShadow':
-					var strVal = this.generateTextShadowStyle(rules[p]);
+					var strVal = this.generateTextShadowStyle(rules[r]);
 					this.setBrowserStyle(el, "text-shadow", strVal);
 					this.setBrowserStyle(el, "-moz-text-shadow", strVal);
 					this.setBrowserStyle(el, "-webkit-text-shadow", strVal);
 					break;
 				case 'TwoNumeric':
 					var unit;
-					if(rules[p].unit) {
-						unit = rules[p].unit;
+					if(rules[r].unit) {
+						unit = rules[r].unit;
 					} else {
-						unit = this.defs[p].unit;
+						unit = this.defs[r].unit;
 					}
-					el.style[styleName] = this.generateTwoNumericStyle( rules[p], unit);
+					el.style[styleName] = this.generateTwoNumericStyle( rules[r], unit);
 					break;
 				case 'ThreeNumeric':
 					var unit;
-					if(rules[p].unit) {
-						unit = rules[p].unit;
+					if(rules[r].unit) {
+						unit = rules[r].unit;
 					} else {
-						unit = this.defs[p].unit;
+						unit = this.defs[r].unit;
 					}
-					el.style[styleName] = this.generateThreeNumericStyle( rules[p], unit);
+					el.style[styleName] = this.generateThreeNumericStyle( rules[r], unit);
 					break;
 			}
 		}
