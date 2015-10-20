@@ -1889,13 +1889,6 @@ describe("GenerativeText", function() {
 
   describe(".generateListVariation()", function () {
 
-    it("should throw an exception if rule.values is not an array", function () {
-
-      var gt = new generativeText();
-      expect(gt.generateListVariation).toThrow();
-    });
-
-
     it("should return a random value within rule.values when listType = 'random'", function () {
       var rule = {};
       rule.values = [0, 1, 2, 3, 4];
