@@ -21,16 +21,16 @@
 
 "use strict";
 
-var generativeText = function(params, options) {
+var generativeText = function(rules, options) {
 	//initialize
-	this.params = params;
+	this.rules = rules;
 	this.opts = options;
 
 	this.totalSteps = 0;
 	this.currentStep = 0;
 	this.memory = [];
 
-	this.inferAndValidateParams();
+	this.inferAndValidateRules();
 
 }
 
@@ -216,98 +216,98 @@ generativeText.prototype = {
 		zIndex: { type: "Numeric"}
 	},
 
-	/* Params Validation and Inference */
-	inferAndValidateParams: function() {
+	/* Rules Validation and Inference */
+	inferAndValidateRules: function() {
 		var errors = [];
 
-		for(var p in this.params){
+		for(var p in this.rules){
 			switch(this.defs[p].type) {
 				case "List":
-					this.params[p] = this.paramTypeInferenceAndValidation(this.params[p], p, "List", errors);
+					this.rules[p] = this.ruleTypeInferenceAndValidation(this.rules[p], p, "List", errors);
 					break;
 				case "Numeric":
 				case "Filter":
 				case "Transform":
-					this.params[p] = this.paramTypeInferenceAndValidation(this.params[p], p, "Numeric", errors);
+					this.rules[p] = this.ruleTypeInferenceAndValidation(this.rules[p], p, "Numeric", errors);
 					break;
 				case "Color":
-					this.params[p] = this.paramTypeInferenceAndValidation(this.params[p], p, "Color", errors);
+					this.rules[p] = this.ruleTypeInferenceAndValidation(this.rules[p], p, "Color", errors);
 					break;
 				case "FilterDropShadow":
 				case "TextShadow":
-					var param = this.compoundParamTypeInferenceAndValidation(this.params[p], p, true, errors);
-					switch (param.type) {
+					var rule = this.compoundRuleTypeInferenceAndValidation(this.rules[p], p, true, errors);
+					switch (rule.type) {
 						case "compound":
-							this.params[p].hShadow = this.paramTypeInferenceAndValidation(this.params[p].hShadow, p + ".hShadow", "Numeric", errors);
-							this.params[p].vShadow = this.paramTypeInferenceAndValidation(this.params[p].vShadow, p + ".vShadow", "Numeric", errors);
-							this.params[p].blurRadius = this.paramTypeInferenceAndValidation(this.params[p].blurRadius, p + ".blurRadius", "Numeric", errors);
-							this.params[p].color = this.paramTypeInferenceAndValidation(this.params[p].color, p + ".color", "Color", errors);
+							this.rules[p].hShadow = this.ruleTypeInferenceAndValidation(this.rules[p].hShadow, p + ".hShadow", "Numeric", errors);
+							this.rules[p].vShadow = this.ruleTypeInferenceAndValidation(this.rules[p].vShadow, p + ".vShadow", "Numeric", errors);
+							this.rules[p].blurRadius = this.ruleTypeInferenceAndValidation(this.rules[p].blurRadius, p + ".blurRadius", "Numeric", errors);
+							this.rules[p].color = this.ruleTypeInferenceAndValidation(this.rules[p].color, p + ".color", "Color", errors);
 							break;
 						case "array":
-							for (var j = 0; j < this.params[p].length; j++) {
-								this.params[p][j].hShadow = this.paramTypeInferenceAndValidation(this.params[p][j].hShadow, p + ".hShadow", "Numeric", errors);
-								this.params[p][j].vShadow = this.paramTypeInferenceAndValidation(this.params[p][j].vShadow, p + ".vShadow", "Numeric", errors);
-								this.params[p][j].blurRadius = this.paramTypeInferenceAndValidation(this.params[p][j].blurRadius, p + ".blurRadius", "Numeric", errors);
-								this.params[p][j].color = this.paramTypeInferenceAndValidation(this.params[p][j].color, p + ".color", "Color", errors);
+							for (var j = 0; j < this.rules[p].length; j++) {
+								this.rules[p][j].hShadow = this.ruleTypeInferenceAndValidation(this.rules[p][j].hShadow, p + ".hShadow", "Numeric", errors);
+								this.rules[p][j].vShadow = this.ruleTypeInferenceAndValidation(this.rules[p][j].vShadow, p + ".vShadow", "Numeric", errors);
+								this.rules[p][j].blurRadius = this.ruleTypeInferenceAndValidation(this.rules[p][j].blurRadius, p + ".blurRadius", "Numeric", errors);
+								this.rules[p][j].color = this.ruleTypeInferenceAndValidation(this.rules[p][j].color, p + ".color", "Color", errors);
 							}
 							break;
 						case "fixed":
 						case "list":
-							this.params[p] = param;
+							this.rules[p] = rule;
 							break;
 					}
 					break;
 				case "BoxShadow":
-					var param = this.compoundParamTypeInferenceAndValidation(this.params[p], p, true, errors);
-					switch (param.type) {
+					var rule = this.compoundRuleTypeInferenceAndValidation(this.rules[p], p, true, errors);
+					switch (rule.type) {
 						case "compound":
-							this.params[p].hShadow = this.paramTypeInferenceAndValidation(this.params[p].hShadow, p + ".hShadow", "Numeric", errors);
-							this.params[p].vShadow = this.paramTypeInferenceAndValidation(this.params[p].vShadow, p + ".vShadow", "Numeric", errors);
-							this.params[p].blur = this.paramTypeInferenceAndValidation(this.params[p].blur, p + ".blur", "Numeric", errors);
-							this.params[p].spread = this.paramTypeInferenceAndValidation(this.params[p].spread, p + ".spread", "Numeric", errors);
-							this.params[p].color = this.paramTypeInferenceAndValidation(this.params[p].color, p + ".color", "Color", errors);
+							this.rules[p].hShadow = this.ruleTypeInferenceAndValidation(this.rules[p].hShadow, p + ".hShadow", "Numeric", errors);
+							this.rules[p].vShadow = this.ruleTypeInferenceAndValidation(this.rules[p].vShadow, p + ".vShadow", "Numeric", errors);
+							this.rules[p].blur = this.ruleTypeInferenceAndValidation(this.rules[p].blur, p + ".blur", "Numeric", errors);
+							this.rules[p].spread = this.ruleTypeInferenceAndValidation(this.rules[p].spread, p + ".spread", "Numeric", errors);
+							this.rules[p].color = this.ruleTypeInferenceAndValidation(this.rules[p].color, p + ".color", "Color", errors);
 							break;
 						case "array":
-							for(var j=0; j<this.params[p].length; j++) {
-								this.params[p][j].hShadow = this.paramTypeInferenceAndValidation(this.params[p][j].hShadow, p + ".hShadow", "Numeric", errors);
-								this.params[p][j].vShadow = this.paramTypeInferenceAndValidation(this.params[p][j].vShadow, p + ".vShadow", "Numeric", errors);
-								this.params[p][j].blur = this.paramTypeInferenceAndValidation(this.params[p][j].blur, p + ".blur", "Numeric", errors);
-								this.params[p][j].spread = this.paramTypeInferenceAndValidation(this.params[p][j].spread, p + ".spread", "Numeric", errors);
-								this.params[p][j].color = this.paramTypeInferenceAndValidation(this.params[p][j].color, p + ".color", "Color", errors);
+							for(var j=0; j<this.rules[p].length; j++) {
+								this.rules[p][j].hShadow = this.ruleTypeInferenceAndValidation(this.rules[p][j].hShadow, p + ".hShadow", "Numeric", errors);
+								this.rules[p][j].vShadow = this.ruleTypeInferenceAndValidation(this.rules[p][j].vShadow, p + ".vShadow", "Numeric", errors);
+								this.rules[p][j].blur = this.ruleTypeInferenceAndValidation(this.rules[p][j].blur, p + ".blur", "Numeric", errors);
+								this.rules[p][j].spread = this.ruleTypeInferenceAndValidation(this.rules[p][j].spread, p + ".spread", "Numeric", errors);
+								this.rules[p][j].color = this.ruleTypeInferenceAndValidation(this.rules[p][j].color, p + ".color", "Color", errors);
 							}
 							break;
 						case "fixed":
 						case "list":
-							this.params[p] = param;
+							this.rules[p] = rule;
 							break;
 					}
 					break;
 					break;
 				case "TwoNumeric":
-					var param = this.compoundParamTypeInferenceAndValidation(this.params[p], p, false, errors);
-					switch (param.type) {
+					var rule = this.compoundRuleTypeInferenceAndValidation(this.rules[p], p, false, errors);
+					switch (rule.type) {
 						case "compound":
-							this.params[p].x = this.paramTypeInferenceAndValidation(this.params[p].x, p + ".x", "Numeric", errors);
-							this.params[p].y = this.paramTypeInferenceAndValidation(this.params[p].y, p + ".y", "Numeric", errors);
+							this.rules[p].x = this.ruleTypeInferenceAndValidation(this.rules[p].x, p + ".x", "Numeric", errors);
+							this.rules[p].y = this.ruleTypeInferenceAndValidation(this.rules[p].y, p + ".y", "Numeric", errors);
 							break;
 						case "fixed":
 						case "list":
-							this.params[p] = param;
+							this.rules[p] = rule;
 							break;
 					}
 					break;
 				case "ThreeNumeric":
-					var param = this.compoundParamTypeInferenceAndValidation(this.params[p], p, false, errors);
-					switch (param.type) {
+					var rule = this.compoundRuleTypeInferenceAndValidation(this.rules[p], p, false, errors);
+					switch (rule.type) {
 						case "compound":
-							this.params[p].x = this.paramTypeInferenceAndValidation(this.params[p].x, p + ".x", "Numeric", errors);
-							this.params[p].y = this.paramTypeInferenceAndValidation(this.params[p].y, p + ".y", "Numeric", errors);
-							if(!!this.params[p].z) this.params[p].z = this.paramTypeInferenceAndValidation(this.params[p].z, p + ".z", "Numeric", errors);
+							this.rules[p].x = this.ruleTypeInferenceAndValidation(this.rules[p].x, p + ".x", "Numeric", errors);
+							this.rules[p].y = this.ruleTypeInferenceAndValidation(this.rules[p].y, p + ".y", "Numeric", errors);
+							if(!!this.rules[p].z) this.rules[p].z = this.ruleTypeInferenceAndValidation(this.rules[p].z, p + ".z", "Numeric", errors);
 
 							break;
 						case "fixed":
 						case "list":
-							this.params[p] = param;
+							this.rules[p] = rule;
 							break;
 					}
 					break;
@@ -318,114 +318,114 @@ generativeText.prototype = {
 			for(var i=0; i < errors.length; i++) {
 				console.log(errors[i]);
 			}
-			throw "-- generativeText params validation Error. For a description of the error look at the console log. --";
+			throw "-- generativeText rules validation Error. For a description of the error look at the console log. --";
 		}
 
 	},
-	paramTypeInferenceAndValidation: function(param, name, defType, errors) {
-		if(typeof param == "undefined") {
+	ruleTypeInferenceAndValidation: function(rule, name, defType, errors) {
+		if(typeof rule == "undefined") {
 			errors.push(name + " : not defined");
-			return param;
-		} else if(typeof param === "string") {
-			param = { value: param, type: "fixed"};
-			return param;
-		} else if(!!param.values) {
-			if(! (param.values instanceof Array) ) {
+			return rule;
+		} else if(typeof rule === "string") {
+			rule = { value: rule, type: "fixed"};
+			return rule;
+		} else if(!!rule.values) {
+			if(! (rule.values instanceof Array) ) {
 				errors.push(name + " : values not an Array.");
-			} else if( param.values.length == 0 ) {
+			} else if( rule.values.length == 0 ) {
 				errors.push(name + " : values has length 0.");
 			} else {
-				param = this.stepFunctionCheck(param, name, errors);
-				if(!!param.stepFunction ) {
-					param.listType = "function";
-				} else if(param.steps) {
-					param.listType = "sequential";
+				rule = this.stepFunctionCheck(rule, name, errors);
+				if(!!rule.stepFunction ) {
+					rule.listType = "function";
+				} else if(rule.steps) {
+					rule.listType = "sequential";
 				} else {
-					param.listType = "random";
+					rule.listType = "random";
 				}
-				param.type = "list";
-				return param;
+				rule.type = "list";
+				return rule;
 			}
 		} else {
-			if(! (param instanceof Object) ) {
+			if(! (rule instanceof Object) ) {
 				errors.push(name + " : not an object, list or fixed value.");
-				return param;
+				return rule;
 			}
 			switch(defType) {
 				case "List":
 					errors.push(name + " : can only take Fixed or List values.");
-					return param;
+					return rule;
 				case "Numeric":
-					if(typeof param.min == "undefined") {
+					if(typeof rule.min == "undefined") {
 						errors.push(name + ".min not defined.");
-					} else if( ! (typeof param.min == "number") ) {
+					} else if( ! (typeof rule.min == "number") ) {
 						errors.push(name + ".min is not a number.");
 					}
-					if(typeof param.max == "undefined") {
+					if(typeof rule.max == "undefined") {
 						errors.push(name + ".max not defined.");
-					} else if( ! (typeof param.max == "number") ) {
+					} else if( ! (typeof rule.max == "number") ) {
 						errors.push(name + ".max is not a number.");
 					}
-					param = this.stepFunctionCheck(param, name, errors);
-					if(param.steps) {
-						param.numericType = "sequential";
-					} else if(!!param.stepFunction ) {
-						param.numericType = "function";
+					rule = this.stepFunctionCheck(rule, name, errors);
+					if(rule.steps) {
+						rule.numericType = "sequential";
+					} else if(!!rule.stepFunction ) {
+						rule.numericType = "function";
 					} else {
-						param.numericType = "random";
+						rule.numericType = "random";
 					}
-					param.type = "numeric";
-					return param;
+					rule.type = "numeric";
+					return rule;
 				case "Color":
-					param.r = this.cTypeInferenceAndValidation(param.r, name + ".r", errors);
-					param.g = this.cTypeInferenceAndValidation(param.g, name + ".g", errors);
-					param.b = this.cTypeInferenceAndValidation(param.b, name + ".b", errors);
-					param.type = "color";
-					return param;
+					rule.r = this.cTypeInferenceAndValidation(rule.r, name + ".r", errors);
+					rule.g = this.cTypeInferenceAndValidation(rule.g, name + ".g", errors);
+					rule.b = this.cTypeInferenceAndValidation(rule.b, name + ".b", errors);
+					rule.type = "color";
+					return rule;
 					break;
 			}
 		}
 	},
-	compoundParamTypeInferenceAndValidation: function(param, name, allowsArray, errors) {
-		if (typeof param == "undefined") {
+	compoundRuleTypeInferenceAndValidation: function(rule, name, allowsArray, errors) {
+		if (typeof rule == "undefined") {
 			errors.push(name + " : not defined");
-			return param;
-		} else if (typeof param === "string") {
-			param = {value: param, type: "fixed"};
-			return param;
-		} else if (!!param.values) {
-			if (!(param.values instanceof Array)) {
+			return rule;
+		} else if (typeof rule === "string") {
+			rule = {value: rule, type: "fixed"};
+			return rule;
+		} else if (!!rule.values) {
+			if (!(rule.values instanceof Array)) {
 				errors.push(name + " : values not an Array.");
-			} else if (param.values.length == 0) {
+			} else if (rule.values.length == 0) {
 				errors.push(name + " : values has length 0.");
 			} else {
-				param = this.stepFunctionCheck(param, name, errors);
-				if (!!param.stepFunction) {
-					param.listType = "function";
-				} else if (param.steps) {
-					param.listType = "sequential";
+				rule = this.stepFunctionCheck(rule, name, errors);
+				if (!!rule.stepFunction) {
+					rule.listType = "function";
+				} else if (rule.steps) {
+					rule.listType = "sequential";
 				} else {
-					param.listType = "random";
+					rule.listType = "random";
 				}
-				param.type = "list";
-				return param;
+				rule.type = "list";
+				return rule;
 			}
 		} else {
-			if (param instanceof Array) {
+			if (rule instanceof Array) {
 				if(allowsArray) {
-					param.type = "array";
-					return param;
+					rule.type = "array";
+					return rule;
 				} else {
 					errors.push(name + " : cannot be an array.");
-					return param;
+					return rule;
 				}
 			}
-			if (!(param instanceof Object)) {
+			if (!(rule instanceof Object)) {
 				errors.push(name + " : not an object, list or fixed value.");
-				return param;
+				return rule;
 			}
-			param.type = "compound";
-			return param;
+			rule.type = "compound";
+			return rule;
 		}
 	},
 	cTypeInferenceAndValidation: function(c, name, errors) {
@@ -471,15 +471,15 @@ generativeText.prototype = {
 		}
 	},
 
-	stepFunctionCheck: function(param, name, errors) {
-		if(!!param.stepFunction) {
-			if( !(param.stepFunction instanceof Function) ) {
+	stepFunctionCheck: function(rule, name, errors) {
+		if(!!rule.stepFunction) {
+			if( !(rule.stepFunction instanceof Function) ) {
 				errors.push(name + " : stepFunction is not a function.");
 			}
 		}
-		return param;
+		return rule;
 	},
-	/* //Params Validation and Inference */
+	/* //Rules Validation and Inference */
 
 
 	applyToElementById: function (id) {
@@ -556,7 +556,7 @@ generativeText.prototype = {
 				this.applyPFunc(this.opts.pObj, 'preFunc');
 			}
 
-			this.generateStyle( this.params, elem );
+			this.generateStyle( this.rules, elem );
 
 			if(!!this.opts && !!this.opts.memory) this.memory.push( elem );
 
@@ -668,7 +668,7 @@ generativeText.prototype = {
 
 				switch(this.opts.textSpaces) {
 					case 'style':
-						this.generateStyle( this.params, newElement );
+						this.generateStyle( this.rules, newElement );
 						this.appendTextElement(elem, newElement);
 						break;
 					case 'nostyle':
@@ -684,7 +684,7 @@ generativeText.prototype = {
 				}
 			} else {
 				newElement.innerHTML = t;
-				this.generateStyle( this.params, newElement );
+				this.generateStyle( this.rules, newElement );
 				this.appendTextElement(elem, newElement);
 			}
 
@@ -753,7 +753,7 @@ generativeText.prototype = {
 
 				switch(this.opts.textSpaces) {
 					case 'style':
-						this.generateStyle( this.params, newElement );
+						this.generateStyle( this.rules, newElement );
 						this.appendTextElement(elem, newElement);
 						break;
 					case 'nostyle':
@@ -769,7 +769,7 @@ generativeText.prototype = {
 				}
 			} else {
 				newElement.innerHTML = t;
-				this.generateStyle( this.params, newElement );
+				this.generateStyle( this.rules, newElement );
 				this.appendTextElement(wrapper, newElement);
 			}
 
@@ -840,20 +840,20 @@ generativeText.prototype = {
 			switch(this.opts.textSpaces) {
 				case 'style':
 					newElement.innerHTML = words[i];
-					this.generateStyle( this.params, newElement );
+					this.generateStyle( this.rules, newElement );
 					this.appendTextElement(elem, newElement, this.opts);
 
 					if(i!=(length-1)) {
 						this.currentStep++;
 						var spaceElement = document.createElement('span');
 						spaceElement.innerHTML = '&nbsp;';
-						this.generateStyle( this.params, spaceElement);
+						this.generateStyle( this.rules, spaceElement);
 						this.appendTextElement(elem, spaceElement);
 					}
 					break;
 				case 'nostyle':
 					newElement.innerHTML = words[i];
-					this.generateStyle( this.params, newElement );
+					this.generateStyle( this.rules, newElement );
 					this.appendTextElement(elem, newElement);
 
 					if(i!=(length-1)) {
@@ -866,7 +866,7 @@ generativeText.prototype = {
 				case 'nostyleorcount':
 					newElement.innerHTML = words[i];
 					this.appendTextElement(elem, newElement);
-					this.generateStyle( this.params, newElement );
+					this.generateStyle( this.rules, newElement );
 
 					if(i!=(length-1)) {
 						var spaceElement = document.createElement('span');
@@ -876,32 +876,32 @@ generativeText.prototype = {
 					break;
 				case 'remove':
 					newElement.innerHTML = words[i];
-					this.generateStyle( this.params, newElement );
+					this.generateStyle( this.rules, newElement );
 					this.appendTextElement(elem, newElement);
 					break;
 				case 'even':
 					if( (i % 2) != 0) {
 						newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
-						this.generateStyle( this.params, newElement);
+						this.generateStyle( this.rules, newElement);
 					} else {
 						newElement.innerHTML = words[i];
-						this.generateStyle( this.params, newElement);
+						this.generateStyle( this.rules, newElement);
 					}
 					this.appendTextElement(elem, newElement);
 					break;
 				case 'odd':
 					if( (i % 2) == 0) {
 						newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
-						this.generateStyle( this.params, newElement);
+						this.generateStyle( this.rules, newElement);
 					} else {
 						newElement.innerHTML = words[i];
-						this.generateStyle( this.params, newElement);
+						this.generateStyle( this.rules, newElement);
 					}
 					this.appendTextElement(elem, newElement);
 					break;
 				case 'all':
 					newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
-					this.generateStyle( this.params, newElement);
+					this.generateStyle( this.rules, newElement);
 					this.appendTextElement(elem, newElement);
 					break;
 			}
@@ -916,9 +916,9 @@ generativeText.prototype = {
 		}
 
 	},
-	generateStyle: function( params, el) {
-		for(var p in params) {
-			this.currentParameter = p;
+	generateStyle: function( rules, el) {
+		for(var p in rules) {
+			this.currentRuleeter = p;
 			//Check if definition exists
 			if(typeof this.defs[ p ] == 'undefined') {
 				throw ("generativeText Error - rule name is not supported: '" + p + "'");
@@ -929,16 +929,16 @@ generativeText.prototype = {
 
 			switch( this.defs[ p].type ) {
 				case 'Numeric':
-					el.style[styleName] = this.generateNumericStyle(params[p], this.defs[p].unit);
+					el.style[styleName] = this.generateNumericStyle(rules[p], this.defs[p].unit);
 					break;
 				case 'Color':
-					el.style[styleName] = this.generateColorStyle( params[p]);
+					el.style[styleName] = this.generateColorStyle( rules[p]);
 					break;
 				case 'List':
 					if(styleName == 'background-image' || styleName == 'border-image-source' || styleName == 'list-style-image') {
-						el.style[styleName] = "url('" + this.generateListStyle( params[p] ) + "')";
+						el.style[styleName] = "url('" + this.generateListStyle( rules[p] ) + "')";
 					} else {
-						el.style[styleName] = this.generateListStyle( params[p] );
+						el.style[styleName] = this.generateListStyle( rules[p] );
 					}
 					break;
 				case 'Transform':
@@ -946,13 +946,13 @@ generativeText.prototype = {
 					if( this.defs[p].unit == "deg") {
 						unit = "deg";
 					} else {
-						if(params[p].unit) {
-							unit = params[p].unit;
+						if(rules[p].unit) {
+							unit = rules[p].unit;
 						} else {
 							unit = this.defs[p].unit;
 						}
 					}
-					var val = this.generateNumericStyle(params[p], unit);
+					var val = this.generateNumericStyle(rules[p], unit);
 
 					var transformName = p.replace("transform", "");
 					var transformName = transformName.charAt(0).toLowerCase() + transformName.slice(1);
@@ -967,13 +967,13 @@ generativeText.prototype = {
 					if( this.defs[p].unit == "deg") {
 						unit = "deg";
 					} else {
-						if(params[p].unit) {
-							unit = params[p].unit;
+						if(rules[p].unit) {
+							unit = rules[p].unit;
 						} else {
 							unit = this.defs[p].unit;
 						}
 					}
-					var val = this.generateNumericStyle(params[p], unit);
+					var val = this.generateNumericStyle(rules[p], unit);
 					var filterName = p.replace("filter", "").toLowerCase();
 					if(filterName == 'huerotate') filterName = 'hue-rotate';
 
@@ -982,39 +982,39 @@ generativeText.prototype = {
 					this.setBrowserStyle(el, "-webkit-filter", strVal);
 					break;
 				case 'FilterDropShadow':
-					var strVal = "drop-shadow(" + this.generateTextShadowStyle(params[p]) + ")";
+					var strVal = "drop-shadow(" + this.generateTextShadowStyle(rules[p]) + ")";
 					this.setBrowserStyle(el, "filter", strVal);
 					this.setBrowserStyle(el, "-webkit-filter", strVal);
 					break;
 				case 'BoxShadow':
-					var strVal = this.generateBoxShadowStyle(params[p]);
+					var strVal = this.generateBoxShadowStyle(rules[p]);
 					this.setBrowserStyle(el, "box-shadow", strVal);
 					this.setBrowserStyle(el, "-moz-box-shadow", strVal);
 					this.setBrowserStyle(el, "-webkit-box-shadow", strVal);
 					break;
 				case 'TextShadow':
-					var strVal = this.generateTextShadowStyle(params[p]);
+					var strVal = this.generateTextShadowStyle(rules[p]);
 					this.setBrowserStyle(el, "text-shadow", strVal);
 					this.setBrowserStyle(el, "-moz-text-shadow", strVal);
 					this.setBrowserStyle(el, "-webkit-text-shadow", strVal);
 					break;
 				case 'TwoNumeric':
 					var unit;
-					if(params[p].unit) {
-						unit = params[p].unit;
+					if(rules[p].unit) {
+						unit = rules[p].unit;
 					} else {
 						unit = this.defs[p].unit;
 					}
-					el.style[styleName] = this.generateTwoNumericStyle( params[p], unit);
+					el.style[styleName] = this.generateTwoNumericStyle( rules[p], unit);
 					break;
 				case 'ThreeNumeric':
 					var unit;
-					if(params[p].unit) {
-						unit = params[p].unit;
+					if(rules[p].unit) {
+						unit = rules[p].unit;
 					} else {
 						unit = this.defs[p].unit;
 					}
-					el.style[styleName] = this.generateThreeNumericStyle( params[p], unit);
+					el.style[styleName] = this.generateThreeNumericStyle( rules[p], unit);
 					break;
 			}
 		}
@@ -1034,27 +1034,27 @@ generativeText.prototype = {
 		//does not exist on transform list
 		elem.style[style] = old + ' ' + val.trim();
 	},
-	generateColorStyle: function(param) {
+	generateColorStyle: function(rule) {
 		var tr = "";
-		switch(param.type) {
+		switch(rule.type) {
 			case 'fixed':
-				tr = param.value;
+				tr = rule.value;
 				break;
 			case 'list':
-				tr = this.generateListVariation(param);
+				tr = this.generateListVariation(rule);
 				break;
 			case 'color':
-				tr = this.generateColorVariation(param);
+				tr = this.generateColorVariation(rule);
 				break
 		}
 		if(tr.charAt(0) === "#") return tr;
 		return "#" + tr;
 	},
-	generateColorVariation: function(param) {
+	generateColorVariation: function(rule) {
 		var rgbHex = "";
-		rgbHex += this.generateRGBHex(param.r);
-		rgbHex += this.generateRGBHex(param.g);
-		rgbHex += this.generateRGBHex(param.b);
+		rgbHex += this.generateRGBHex(rule.r);
+		rgbHex += this.generateRGBHex(rule.g);
+		rgbHex += this.generateRGBHex(rule.b);
 		return rgbHex;
 	},
 	generateRGBHex: function(c) {
@@ -1089,162 +1089,162 @@ generativeText.prototype = {
 				break;
 		}
 	},
-	generateNumericStyle: function(param, unit) {
-		if(!!unit) param.unit = unit;
-		switch(param.type) {
+	generateNumericStyle: function(rule, unit) {
+		if(!!unit) rule.unit = unit;
+		switch(rule.type) {
 			case 'fixed':
-				return param.value;
+				return rule.value;
                 break;
 			case "list":
-				return this.generateListVariation(param);
+				return this.generateListVariation(rule);
 				break;
 			case "numeric":
-				return this.generateNumericVariation(param);
+				return this.generateNumericVariation(rule);
 				break;
 		}
 	},
-	generateNumericVariation: function( param ) {
+	generateNumericVariation: function( rule ) {
 		//Pixels is default unit
-		if(typeof param.unit == 'undefined') param.unit = "px";
+		if(typeof rule.unit == 'undefined') rule.unit = "px";
 
-		var range = param.max - param.min;
-		switch(param.numericType) {
+		var range = rule.max - rule.min;
+		switch(rule.numericType) {
 			case "random":
-				return this.roundUnit( ((Math.random()*range) + param.min), param.unit);
+				return this.roundUnit( ((Math.random()*range) + rule.min), rule.unit);
 				break;
 			case "sequential":
-				return this.roundUnit( (param.min + (( range/this.totalSteps)*this.currentStep)), param.unit );
+				return this.roundUnit( (rule.min + (( range/this.totalSteps)*this.currentStep)), rule.unit );
 				break;
 			case "function":
 				var stepFuncObj = {};
 				stepFuncObj.totalSteps = this.totalSteps;
 				stepFuncObj.currentStep = this.currentStep;
 				stepFuncObj.range = range;
-				stepFuncObj.min = param.min;
-				stepFuncObj.max = param.max;
+				stepFuncObj.min = rule.min;
+				stepFuncObj.max = rule.max;
 
-				return this.roundUnit( param.stepFunction.apply(stepFuncObj), param.unit );
+				return this.roundUnit( rule.stepFunction.apply(stepFuncObj), rule.unit );
 				break;
 		}
 	},
-	generateListStyle: function(param, unit) {
-		if(!!unit) param.unit = unit;
-		switch(param.type) {
+	generateListStyle: function(rule, unit) {
+		if(!!unit) rule.unit = unit;
+		switch(rule.type) {
 			case 'fixed':
-				return param.value;
+				return rule.value;
                 break;
 			case "list":
-				return this.generateListVariation(param);
+				return this.generateListVariation(rule);
 				break;
 		}
 	},
-	generateListVariation: function(param) {
-		if(typeof param.unit === 'undefined') param.unit = "";
-		switch(param.listType) {
+	generateListVariation: function(rule) {
+		if(typeof rule.unit === 'undefined') rule.unit = "";
+		switch(rule.listType) {
 			case "random":
-				var randomIndex = Math.floor((Math.random() * param.values.length));
-				return param.values[randomIndex] + param.unit;
+				var randomIndex = Math.floor((Math.random() * rule.values.length));
+				return rule.values[randomIndex] + rule.unit;
 				break;
 			case "sequential":
-				return param.values[this.currentStep % param.values.length] + param.unit;
+				return rule.values[this.currentStep % rule.values.length] + rule.unit;
 				break;
 			case "function":
 				var stepFuncObj = {};
 				stepFuncObj.totalSteps = this.totalSteps;
 				stepFuncObj.currentStep = this.currentStep;
-				stepFuncObj.valuesLength = param.values.length;
+				stepFuncObj.valuesLength = rule.values.length;
 
-				return param.values[Math.floor(param.stepFunction.apply(stepFuncObj))] + param.unit;
+				return rule.values[Math.floor(rule.stepFunction.apply(stepFuncObj))] + rule.unit;
 				break;
 		}
 	},
-	generateBoxShadowStyle: function(param) {
-		switch(param.type) {
+	generateBoxShadowStyle: function(rule) {
+		switch(rule.type) {
 			case 'fixed':
-				return param.value;
+				return rule.value;
                 break;
 			case "list":
-				return this.generateListVariation(param);
+				return this.generateListVariation(rule);
 				break;
 			case "array":
 				var strVal = "";
-				for(var i=0; i<param.length; i++) {
-					strVal += (i==0? "":", ") + this.generateBoxShadowVariation(param[i]);
+				for(var i=0; i<rule.length; i++) {
+					strVal += (i==0? "":", ") + this.generateBoxShadowVariation(rule[i]);
 				}
 				return strVal;
 				break;
 			case "compound":
-				return this.generateBoxShadowVariation(param);
+				return this.generateBoxShadowVariation(rule);
 				break;
 		}
 	},
-	generateBoxShadowVariation: function(param) {
+	generateBoxShadowVariation: function(rule) {
 		var strVal = "";
-		if (!!param.inset && param.inset) strVal = "inset";
-		strVal += " " + this.generateNumericStyle(param.hShadow, 'px');
-		strVal += " " + this.generateNumericStyle(param.vShadow, 'px');
-		strVal += " " + this.generateNumericStyle(param.blur, 'px');
-		strVal += " " + this.generateNumericStyle(param.spread, 'px');
-		strVal += " " + this.generateColorStyle(param.color);
+		if (!!rule.inset && rule.inset) strVal = "inset";
+		strVal += " " + this.generateNumericStyle(rule.hShadow, 'px');
+		strVal += " " + this.generateNumericStyle(rule.vShadow, 'px');
+		strVal += " " + this.generateNumericStyle(rule.blur, 'px');
+		strVal += " " + this.generateNumericStyle(rule.spread, 'px');
+		strVal += " " + this.generateColorStyle(rule.color);
 		return strVal;
 	},
-	generateTextShadowStyle: function(param) {
-		switch(param.type) {
+	generateTextShadowStyle: function(rule) {
+		switch(rule.type) {
 			case 'fixed':
-				return param.value;
+				return rule.value;
                 break;
 			case "list":
-				return this.generateListVariation(param);
+				return this.generateListVariation(rule);
 				break;
 			case "array":
 				var strVal = "";
-				for(var i=0; i<param.length; i++) {
-					strVal += (i==0? "":", ") + this.generateTextShadowVariation(param[i]);
+				for(var i=0; i<rule.length; i++) {
+					strVal += (i==0? "":", ") + this.generateTextShadowVariation(rule[i]);
 				}
 				return strVal;
 				break;
 			case "compound":
-				return this.generateTextShadowVariation(param);
+				return this.generateTextShadowVariation(rule);
 				break;
 		}
 	},
-	generateTextShadowVariation: function(param) {
+	generateTextShadowVariation: function(rule) {
 		var strVal = "";
-		strVal += " " + this.generateNumericStyle(param.hShadow, 'px');
-		strVal += " " + this.generateNumericStyle(param.vShadow, 'px');
-		strVal += " " + this.generateNumericStyle(param.blurRadius, 'px');
-		strVal += " " + this.generateColorStyle(param.color);
+		strVal += " " + this.generateNumericStyle(rule.hShadow, 'px');
+		strVal += " " + this.generateNumericStyle(rule.vShadow, 'px');
+		strVal += " " + this.generateNumericStyle(rule.blurRadius, 'px');
+		strVal += " " + this.generateColorStyle(rule.color);
 		return strVal;
 	},
-	generateTwoNumericStyle: function(param, unit) {
-		switch(param.type) {
+	generateTwoNumericStyle: function(rule, unit) {
+		switch(rule.type) {
 			case 'fixed':
-				return param.value;
+				return rule.value;
                 break;
 			case "list":
-				return this.generateListVariation(param);
+				return this.generateListVariation(rule);
 				break;
 			case "compound":
 				var strVal = "";
-				strVal += " " + this.generateNumericStyle(param.x, unit);
-				strVal += " " + this.generateNumericStyle(param.y, unit);
+				strVal += " " + this.generateNumericStyle(rule.x, unit);
+				strVal += " " + this.generateNumericStyle(rule.y, unit);
 				return strVal;
 				break;
 		}
 	},
-	generateThreeNumericStyle: function(param, unit) {
-		switch(param.type) {
+	generateThreeNumericStyle: function(rule, unit) {
+		switch(rule.type) {
 			case 'fixed':
-				return param.value;
+				return rule.value;
                 break;
 			case "list":
-				return this.generateListVariation(param);
+				return this.generateListVariation(rule);
 				break;
 			case "compound":
 				var strVal = "";
-				strVal += " " + this.generateNumericStyle(param.x, unit);
-				strVal += " " + this.generateNumericStyle(param.y, unit);
-				if(!!param.z) strVal += " " + this.generateNumericStyle(param.z, unit);
+				strVal += " " + this.generateNumericStyle(rule.x, unit);
+				strVal += " " + this.generateNumericStyle(rule.y, unit);
+				if(!!rule.z) strVal += " " + this.generateNumericStyle(rule.z, unit);
 				return strVal;
 				break;
 		}
