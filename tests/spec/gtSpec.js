@@ -48,7 +48,7 @@ describe("GenerativeText", function() {
       expect(errors.length).toEqual(1);
     });
 
-    it("should return ruleeter transformed to a fixed value type if rule is a string.", function () {
+    it("should return rule transformed to a fixed value type if rule is a string.", function () {
       var errors = [];
       var rule = "1px solid black";
 
@@ -79,7 +79,7 @@ describe("GenerativeText", function() {
       expect(errors.length).toEqual(1);
     });
 
-    it("should return ruleeter transformed to a List value type if values is a valid array.", function () {
+    it("should return rule transformed to a List value type if values is a valid array.", function () {
       var errors = [];
       var rule = { values: [1,2,3] };
 
@@ -91,7 +91,7 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return ruleeter with listType set to 'sequential' if steps is set to true and it is an infered list type.", function () {
+    it("should return rule with listType set to 'sequential' if steps is set to true and it is an infered list type.", function () {
       var errors = [];
       var rule = { values: [1,2,3], steps: true };
 
@@ -103,7 +103,7 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return ruleeter with listType set to 'function' if stepFunction exists and it is an infered list type.", function () {
+    it("should return rule with listType set to 'function' if stepFunction exists and it is an infered list type.", function () {
       var errors = [];
       var rule = { values: [1,2,3], stepFunction: function() {} };
 
@@ -115,7 +115,7 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return ruleeter with listType set to 'random' if no steps or stepFunction and it is an infered list type.", function () {
+    it("should return rule with listType set to 'random' if no steps or stepFunction and it is an infered list type.", function () {
       var errors = [];
       var rule = { values: [1,2,3] };
 
@@ -181,7 +181,7 @@ describe("GenerativeText", function() {
       expect(errors.length).toEqual(1);
     });
 
-    it("should return ruleeter with rule.type set to 'numeric' if defType is 'Numeric' (when rule is neither fixed or list).", function () {
+    it("should return rule with rule.type set to 'numeric' if defType is 'Numeric' (when rule is neither fixed or list).", function () {
       var errors = [];
       var rule = { min: 5, max: 12};
       var gt = new generativeText();
@@ -191,7 +191,7 @@ describe("GenerativeText", function() {
       expect(rule.type).toEqual("numeric");
     });
 
-    it("should return ruleeter with numericType set to 'sequential' if steps is true, there is no stepFunction and defType is 'Numeric' (when rule is neither fixed or list).", function () {
+    it("should return rule with numericType set to 'sequential' if steps is true, there is no stepFunction and defType is 'Numeric' (when rule is neither fixed or list).", function () {
       var errors = [];
       var rule = { min: 5, max: 12, steps: true};
       var gt = new generativeText();
@@ -202,7 +202,7 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return ruleeter with numericType set to 'function' if there is an stepFunction and defType is 'Numeric' (when rule is neither fixed or list).", function () {
+    it("should return rule with numericType set to 'function' if there is an stepFunction and defType is 'Numeric' (when rule is neither fixed or list).", function () {
       var errors = [];
       var rule = { min: 5, max: 12, stepFunction: function(){} };
       var gt = new generativeText();
@@ -213,7 +213,7 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return ruleeter with numericType set to 'random' if steps and stepFunction are not set and defType is 'Numeric' (when rule is neither fixed or list).", function () {
+    it("should return rule with numericType set to 'random' if steps and stepFunction are not set and defType is 'Numeric' (when rule is neither fixed or list).", function () {
       var errors = [];
       var rule = { min: 5, max: 12};
       var gt = new generativeText();
@@ -224,7 +224,7 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return ruleeter with rule.type set to 'color' if defType is 'Color' (when rule is neither fixed or list).", function () {
+    it("should return rule with rule.type set to 'color' if defType is 'Color' (when rule is neither fixed or list).", function () {
       var errors = [];
       var rule = { r: "aa", g: "aa", b: "aa"};
       var gt = new generativeText();
@@ -247,7 +247,7 @@ describe("GenerativeText", function() {
       expect(errors.length).toEqual(1);
     });
 
-    it("should return ruleeter transformed to a fixed value type if rule is a string.", function () {
+    it("should return rule transformed to a fixed value type if rule is a string.", function () {
       var errors = [];
       var rule = "1px solid black";
 
@@ -278,7 +278,7 @@ describe("GenerativeText", function() {
       expect(errors.length).toEqual(1);
     });
 
-    it("should return ruleeter transformed to a List value type if values is a valid array.", function () {
+    it("should return rule transformed to a List value type if values is a valid array.", function () {
       var errors = [];
       var rule = { values: [1,2,3] };
 
@@ -290,7 +290,7 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return ruleeter with listType set to 'sequential' if steps is set to true and it is an infered list type.", function () {
+    it("should return rule with listType set to 'sequential' if steps is set to true and it is an infered list type.", function () {
       var errors = [];
       var rule = { values: [1,2,3], steps: true };
 
@@ -302,7 +302,7 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return ruleeter with listType set to 'function' if stepFunction exists and it is an infered list type.", function () {
+    it("should return rule with listType set to 'function' if stepFunction exists and it is an infered list type.", function () {
       var errors = [];
       var rule = { values: [1,2,3], stepFunction: function() {} };
 
@@ -314,7 +314,7 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return ruleeter with listType set to 'random' if no steps or stepFunction and it is an infered list type.", function () {
+    it("should return rule with listType set to 'random' if no steps or stepFunction and it is an infered list type.", function () {
       var errors = [];
       var rule = { values: [1,2,3] };
 
@@ -326,7 +326,7 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return ruleeter with type set to 'array' if it is an array an allowsArray is set to true.", function () {
+    it("should return rule with type set to 'array' if it is an array an allowsArray is set to true.", function () {
       var errors = [];
       var rule = [1,2,3];
 
@@ -348,7 +348,7 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return ruleeter with type set to 'compound' if it is an object.", function () {
+    it("should return rule with type set to 'compound' if it is an object.", function () {
       var errors = [];
       var rule = { a: {}, b: {} };
 
@@ -376,7 +376,7 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return c ruleeter transformed to a fixed value type if c is a string.", function () {
+    it("should return c rule transformed to a fixed value type if c is a string.", function () {
       var errors = [];
       var c = "#aaaaaa";
 
@@ -457,7 +457,7 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return c ruleeter with min and mx transformed to int.", function () {
+    it("should return c rule with min and mx transformed to int.", function () {
       var errors = [];
       var c = { min: "77", max: "fd" };
 
@@ -469,7 +469,7 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return c ruleeter with steps set rgbType to 'random' if steps or stepFunction are not set.", function () {
+    it("should return c rule with steps set rgbType to 'random' if steps or stepFunction are not set.", function () {
       var errors = [];
       var c = { min: "77", max: "fd" };
 
@@ -481,7 +481,7 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return c ruleeter with rgbType set to 'sequential' if there is an stepfunction.", function () {
+    it("should return c rule with rgbType set to 'sequential' if there is an stepfunction.", function () {
       var errors = [];
       var c = { min: "77", max: "fd", steps: true };
 
@@ -493,7 +493,7 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should return c ruleeter with rgbTtype set to 'function' if stepfunction is defined.", function () {
+    it("should return c rule with rgbTtype set to 'function' if stepfunction is defined.", function () {
       var errors = [];
       var c = { min: "77", max: "fd", stepFunction: function(){} };
 
@@ -1184,7 +1184,7 @@ describe("GenerativeText", function() {
     });
 
 
-    it("should set totalSteps based on the length ruleeter", function () {
+    it("should set totalSteps based on the length rule", function () {
       var gt = new generativeText();
       gt.opts = {};
       var text = "0123456789";
