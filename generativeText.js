@@ -235,8 +235,8 @@ generativeText.prototype = {
 					break;
 				case "FilterDropShadow":
 				case "TextShadow":
-					var rule = this.compoundRuleTypeInferenceAndValidation(this.rules[r], r, true, errors);
-					switch (rule.type) {
+					this.rules[r] = this.compoundRuleTypeInferenceAndValidation(this.rules[r], r, true, errors);
+					switch (this.rules[r].type) {
 						case "compound":
 							this.rules[r].hShadow = this.ruleTypeInferenceAndValidation(this.rules[r].hShadow, r + ".hShadow", "Numeric", errors);
 							this.rules[r].vShadow = this.ruleTypeInferenceAndValidation(this.rules[r].vShadow, r + ".vShadow", "Numeric", errors);
@@ -244,11 +244,11 @@ generativeText.prototype = {
 							this.rules[r].color = this.ruleTypeInferenceAndValidation(this.rules[r].color, r + ".color", "Color", errors);
 							break;
 						case "array":
-							for (var j = 0; j < this.rules[r].length; j++) {
-								this.rules[r][j].hShadow = this.ruleTypeInferenceAndValidation(this.rules[r][j].hShadow, r + ".hShadow", "Numeric", errors);
-								this.rules[r][j].vShadow = this.ruleTypeInferenceAndValidation(this.rules[r][j].vShadow, r + ".vShadow", "Numeric", errors);
-								this.rules[r][j].blurRadius = this.ruleTypeInferenceAndValidation(this.rules[r][j].blurRadius, r + ".blurRadius", "Numeric", errors);
-								this.rules[r][j].color = this.ruleTypeInferenceAndValidation(this.rules[r][j].color, r + ".color", "Color", errors);
+							for (var j = 0; j < this.rules[r].array.length; j++) {
+								this.rules[r].array[j].hShadow = this.ruleTypeInferenceAndValidation(this.rules[r].array[j].hShadow, r + ".hShadow", "Numeric", errors);
+								this.rules[r].array[j].vShadow = this.ruleTypeInferenceAndValidation(this.rules[r].array[j].vShadow, r + ".vShadow", "Numeric", errors);
+								this.rules[r].array[j].blurRadius = this.ruleTypeInferenceAndValidation(this.rules[r].array[j].blurRadius, r + ".blurRadius", "Numeric", errors);
+								this.rules[r].array[j].color = this.ruleTypeInferenceAndValidation(this.rules[r].array[j].color, r + ".color", "Color", errors);
 							}
 							break;
 						case "fixed":
@@ -258,8 +258,8 @@ generativeText.prototype = {
 					}
 					break;
 				case "BoxShadow":
-					var rule = this.compoundRuleTypeInferenceAndValidation(this.rules[r], r, true, errors);
-					switch (rule.type) {
+					this.rules[r] = this.compoundRuleTypeInferenceAndValidation(this.rules[r], r, true, errors);
+					switch (this.rules[r].type) {
 						case "compound":
 							this.rules[r].hShadow = this.ruleTypeInferenceAndValidation(this.rules[r].hShadow, r + ".hShadow", "Numeric", errors);
 							this.rules[r].vShadow = this.ruleTypeInferenceAndValidation(this.rules[r].vShadow, r + ".vShadow", "Numeric", errors);
@@ -268,12 +268,12 @@ generativeText.prototype = {
 							this.rules[r].color = this.ruleTypeInferenceAndValidation(this.rules[r].color, r + ".color", "Color", errors);
 							break;
 						case "array":
-							for(var j=0; j<this.rules[r].length; j++) {
-								this.rules[r][j].hShadow = this.ruleTypeInferenceAndValidation(this.rules[r][j].hShadow, r + ".hShadow", "Numeric", errors);
-								this.rules[r][j].vShadow = this.ruleTypeInferenceAndValidation(this.rules[r][j].vShadow, r + ".vShadow", "Numeric", errors);
-								this.rules[r][j].blur = this.ruleTypeInferenceAndValidation(this.rules[r][j].blur, r + ".blur", "Numeric", errors);
-								this.rules[r][j].spread = this.ruleTypeInferenceAndValidation(this.rules[r][j].spread, r + ".spread", "Numeric", errors);
-								this.rules[r][j].color = this.ruleTypeInferenceAndValidation(this.rules[r][j].color, r + ".color", "Color", errors);
+							for(var j=0; j<this.rules[r].array.length; j++) {
+								this.rules[r].array[j].hShadow = this.ruleTypeInferenceAndValidation(this.rules[r].array[j].hShadow, r + ".hShadow", "Numeric", errors);
+								this.rules[r].array[j].vShadow = this.ruleTypeInferenceAndValidation(this.rules[r].array[j].vShadow, r + ".vShadow", "Numeric", errors);
+								this.rules[r].array[j].blur = this.ruleTypeInferenceAndValidation(this.rules[r].array[j].blur, r + ".blur", "Numeric", errors);
+								this.rules[r].array[j].spread = this.ruleTypeInferenceAndValidation(this.rules[r].array[j].spread, r + ".spread", "Numeric", errors);
+								this.rules[r].array[j].color = this.ruleTypeInferenceAndValidation(this.rules[r].array[j].color, r + ".color", "Color", errors);
 							}
 							break;
 						case "fixed":
@@ -413,7 +413,8 @@ generativeText.prototype = {
 		} else {
 			if (rule instanceof Array) {
 				if(allowsArray) {
-					rule.type = "array";
+					var newRule = { type: "array", array: rule};
+					rule = newRule;
 					return rule;
 				} else {
 					errors.push(name + " : cannot be an array.");
@@ -1168,8 +1169,8 @@ generativeText.prototype = {
 				break;
 			case "array":
 				var strVal = "";
-				for(var i=0; i<rule.length; i++) {
-					strVal += (i==0? "":", ") + this.generateBoxShadowVariation(rule[i]);
+				for(var i=0; i<rule.array.length; i++) {
+					strVal += (i==0? "":", ") + this.generateBoxShadowVariation(rule.array[i]);
 				}
 				return strVal;
 				break;
@@ -1198,8 +1199,8 @@ generativeText.prototype = {
 				break;
 			case "array":
 				var strVal = "";
-				for(var i=0; i<rule.length; i++) {
-					strVal += (i==0? "":", ") + this.generateTextShadowVariation(rule[i]);
+				for(var i=0; i<rule.array.length; i++) {
+					strVal += (i==0? "":", ") + this.generateTextShadowVariation(rule.array[i]);
 				}
 				return strVal;
 				break;
