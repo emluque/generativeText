@@ -253,7 +253,6 @@ generativeText.prototype = {
 							break;
 						case "fixed":
 						case "list":
-							this.rules[r] = rule;
 							break;
 					}
 					break;
@@ -278,7 +277,6 @@ generativeText.prototype = {
 							break;
 						case "fixed":
 						case "list":
-							this.rules[r] = rule;
 							break;
 					}
 					break;
