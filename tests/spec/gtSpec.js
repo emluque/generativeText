@@ -565,8 +565,8 @@ describe("GenerativeText", function() {
       expect(gt.memory.length).toBe(0);
     });
 
-    it("should initialize opts.applyTo to 'text' as default", function () {
-      expect(gt.opts.applyTo).toBe("text");
+    it("should initialize opts.split to 'text' as default", function () {
+      expect(gt.opts.split).toBe("text");
     });
 
   });

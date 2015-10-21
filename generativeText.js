@@ -508,11 +508,11 @@ generativeText.prototype = {
 		this.currentStep = 0;
 		this.memory = [];
 
-		//Set opts.applyTo default
+		//Set opts.split default
 		if(!this.opts) this.opts = {};
-		if(!this.opts.applyTo) this.opts.applyTo = "text";
+		if(!this.opts.split) this.opts.split = "text";
 
-		switch(this.opts.applyTo) {
+		switch(this.opts.split) {
 			case "words":
 				this.applyToWords(elem);
 				break;
@@ -531,7 +531,7 @@ generativeText.prototype = {
 
 		this.currentStep = 0;
 		this.memory = [];
-		//Set opts.applyTo default
+
 		if(!this.opts) this.opts = {};
 
 		if(!elems.length) {
