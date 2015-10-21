@@ -677,6 +677,11 @@ generativeText.prototype = {
 						this.appendTextElement(elem, newElement);
 						this.currentStep--;
 						break;
+					case 'nostyleorwrap':
+						var textNode = document.createTextNode(" ");
+						elem.appendChild(textNode);
+						this.currentStep--;
+						break;
 					case 'remove':
 						this.currentStep--;
 						break;
@@ -760,6 +765,11 @@ generativeText.prototype = {
 						break;
 					case 'nostyleorcount':
 						this.appendTextElement(elem, newElement);
+						this.currentStep--;
+						break;
+					case 'nostyleorwrap':
+						var textNode = document.createTextNode(" ");
+						elem.appendChild(textNode);
 						this.currentStep--;
 						break;
 					case 'remove':
