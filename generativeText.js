@@ -670,13 +670,6 @@ generativeText.prototype = {
 						this.generateStyle( this.rules, newElement );
 						this.appendTextElement(elem, newElement);
 						break;
-					case 'nostyle':
-						this.appendTextElement(elem, newElement);
-						break;
-					case 'nostyleorcount':
-						this.appendTextElement(elem, newElement);
-						this.currentStep--;
-						break;
 					case 'nostyleorwrap':
 						var textNode = document.createTextNode(" ");
 						elem.appendChild(textNode);
@@ -722,7 +715,7 @@ generativeText.prototype = {
 
 		var wrapper = document.createElement('span');
 		wrapper.style.whiteSpace = "nowrap";
-		wrapper.setAttribute("class", "gt-nowrap");
+		wrapper.setAttribute("class", "gt-word");
 
 		if(this.opts.direction == "rtl") {
 			var i = length-1;
@@ -749,23 +742,17 @@ generativeText.prototype = {
 			if( /\s/.test(t) ) {
 
 				this.appendTextElement(elem, wrapper);
-				var wrapper = document.createElement('span');
-				wrapper.style.whiteSpace = "nowrap";
-				wrapper.setAttribute("class", "gt-nowrap");
 
 				newElement.innerHTML = '&nbsp;';
 
 				switch(this.opts.textSpaces) {
 					case 'style':
 						this.generateStyle( this.rules, newElement );
-						this.appendTextElement(elem, newElement);
-						break;
-					case 'nostyle':
-						this.appendTextElement(elem, newElement);
-						break;
-					case 'nostyleorcount':
-						this.appendTextElement(elem, newElement);
-						this.currentStep--;
+						var wrapper = document.createElement('span');
+						wrapper.style.whiteSpace = "nowrap";
+						wrapper.setAttribute("class", "gt-word");
+						this.appendTextElement(wrapper, newElement);
+						this.appendTextElement(elem, wrapper);
 						break;
 					case 'nostyleorwrap':
 						var textNode = document.createTextNode(" ");
@@ -776,6 +763,11 @@ generativeText.prototype = {
 						this.currentStep--;
 						break;
 				}
+
+				var wrapper = document.createElement('span');
+				wrapper.style.whiteSpace = "nowrap";
+				wrapper.setAttribute("class", "gt-word");
+
 			} else {
 				newElement.innerHTML = t;
 				this.generateStyle( this.rules, newElement );
