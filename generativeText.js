@@ -865,18 +865,6 @@ generativeText.prototype = {
 					break;
 				case 'nostyle':
 					newElement.innerHTML = words[i];
-					this.generateStyle( this.rules, newElement );
-					this.appendTextElement(elem, newElement);
-
-					if(i!=(length-1)) {
-						this.currentStep++;
-						var spaceElement = document.createElement('span');
-						spaceElement.innerHTML = '&nbsp;';
-						this.appendTextElement(elem, spaceElement);
-					}
-					break;
-				case 'nostyleorcount':
-					newElement.innerHTML = words[i];
 					this.appendTextElement(elem, newElement);
 					this.generateStyle( this.rules, newElement );
 
@@ -889,26 +877,6 @@ generativeText.prototype = {
 				case 'remove':
 					newElement.innerHTML = words[i];
 					this.generateStyle( this.rules, newElement );
-					this.appendTextElement(elem, newElement);
-					break;
-				case 'even':
-					if( (i % 2) != 0) {
-						newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
-						this.generateStyle( this.rules, newElement);
-					} else {
-						newElement.innerHTML = words[i];
-						this.generateStyle( this.rules, newElement);
-					}
-					this.appendTextElement(elem, newElement);
-					break;
-				case 'odd':
-					if( (i % 2) == 0) {
-						newElement.innerHTML = ((i!=0)?'&nbsp;':'') + words[i] + ((i<(length-1))?'&nbsp;':'');
-						this.generateStyle( this.rules, newElement);
-					} else {
-						newElement.innerHTML = words[i];
-						this.generateStyle( this.rules, newElement);
-					}
 					this.appendTextElement(elem, newElement);
 					break;
 				case 'all':
