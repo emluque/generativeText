@@ -616,7 +616,7 @@ generativeText.prototype = {
 		//Set total steps
 		this.totalSteps = length;
 
-		if(this.opts.textSpaces == 'remove') {
+		if(this.opts.textSpaces == 'remove' || this.opts.textSpaces == 'nostylenocount' || this.opts.textSpaces == 'nostyleorwrap') {
 			var countTextSpaces = text.split(" ").length - 1;
 			this.totalSteps = this.totalSteps - countTextSpaces;
 		}
@@ -673,9 +673,14 @@ generativeText.prototype = {
 					case 'nostyle':
 						this.appendTextElement(elem, newElement);
 						break;
+					case 'nostylenocount':
+						this.appendTextElement(elem, newElement);
+						this.currentStep--;
+						break;
 					case 'nostyleorwrap':
 						var textNode = document.createTextNode(" ");
-						this.appendTextElement(elem, textNode);
+						elem.appendChild(textNode);
+						this.currentStep--;
 						break;
 					case 'remove':
 						this.currentStep--;
@@ -763,9 +768,18 @@ generativeText.prototype = {
 						this.appendTextElement(wrapper, newElement);
 						elem.appendChild(wrapper);
 						break;
+					case 'nostylenocount':
+						var wrapper = document.createElement('span');
+						wrapper.style.whiteSpace = "nowrap";
+						wrapper.setAttribute("class", "gt-word");
+						this.appendTextElement(wrapper, newElement);
+						elem.appendChild(wrapper);
+						this.currentStep--;
+						break;
 					case 'nostyleorwrap':
 						var textNode = document.createTextNode(" ");
 						this.appendTextElement(elem, textNode);
+						this.currentStep--;
 						break;
 					case 'remove':
 						this.currentStep--;
