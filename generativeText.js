@@ -1160,7 +1160,7 @@ generativeText.prototype = {
 			case "array":
 				var strVal = "";
 				for(var i=0; i<rule.array.length; i++) {
-					strVal += (i==0? "":", ") + this.generateBoxShadowVariation(rule.array[i]);
+					strVal += (i==0? "":",") + this.generateBoxShadowVariation(rule.array[i]);
 				}
 				return strVal;
 				break;
