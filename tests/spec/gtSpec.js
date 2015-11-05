@@ -728,16 +728,16 @@ describe("GenerativeText", function() {
 
     });
 
-    it("should set totalSteps to not count spaces when using opts.textSpaces nostyleorcount or remove", function () {
+    it("should set totalSteps to not count spaces when using opts.textSpaces nostylenocount or remove", function () {
       var gt = new generativeText();
       var text = "012 345 67 89";
 
-      gt.opts = { textSpaces: 'nostyleorcount' };
+      gt.opts = { textSpaces: 'nostylenocount' };
       gt.initializeApplyToText(text);
       expect(gt.totalSteps).toBe(10);
 
       text = "012 345 67 89 12";
-      gt.opts = { textSpaces: 'nostyleorcount' };
+      gt.opts = { textSpaces: 'remove' };
       gt.initializeApplyToText(text);
       expect(gt.totalSteps).toBe(12);
 
@@ -868,9 +868,9 @@ describe("GenerativeText", function() {
       expect(spans[2].style.fontSize).toBe("3em");
     });
 
-    it("should not style spaces, skip count on applying of style when textSpaces is set to 'nostyleorcount'", function () {
+    it("should not style spaces, skip count on applying of style when textSpaces is set to 'nostylenocount'", function () {
       var gt = new generativeText();
-      gt.opts = { textSpaces: 'nostyleorcount'};
+      gt.opts = { textSpaces: 'nostylenocount'};
       gt.rules = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "1 3";
@@ -1060,8 +1060,8 @@ describe("GenerativeText", function() {
       elem.innerHTML = "1 312 31";
       gt.applyToWrapped(elem);
       var spans = elem.childNodes;
-      expect(spans[1].style.fontSize).toBe("2em");
-      expect(spans[3].style.fontSize).toBe("3em");
+      expect(spans[1].childNodes[0].style.fontSize).toBe("2em");
+      expect(spans[3].childNodes[0].style.fontSize).toBe("3em");
     });
 
     it("should not style spaces when textSpaces is set to 'nostyle'", function () {
@@ -1077,9 +1077,9 @@ describe("GenerativeText", function() {
       expect(spans[2].getElementsByTagName('span')[0].style.fontSize).toBe("3em");
     });
 
-    it("should not style spaces, skip count on applying of style when textSpaces is set to 'nostyleorcount'", function () {
+    it("should not style spaces, skip count on applying of style when textSpaces is set to 'nostylenocount'", function () {
       var gt = new generativeText();
-      gt.opts = { textSpaces: 'nostyleorcount'};
+      gt.opts = { textSpaces: 'nostylenocount'};
       gt.rules = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "1 3";
@@ -1298,33 +1298,9 @@ describe("GenerativeText", function() {
       expect(spans[7].innerHTML).toBe("&nbsp;");
     });
 
-    it("should transform to '&nbsp' entity but not style spaces when using textSpaces = 'nostyle'", function () {
+    it("should transform to '&nbsp' entity but not style spaces or count when using textSpaces = 'nostyle'", function () {
       var gt = new generativeText();
       gt.opts = { textSpaces: 'nostyle'};
-      gt.rules = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
-      var elem = document.createElement('div');
-      elem.innerHTML = "one two three four five";
-      gt.applyToWords(elem);
-      var spans = elem.getElementsByTagName('span');
-      expect(spans[0].style.fontSize).toBe("1em");
-      expect(spans[1].style.fontSize).toBe("");
-      expect(spans[2].style.fontSize).toBe("3em");
-      expect(spans[3].style.fontSize).toBe("");
-      expect(spans[4].style.fontSize).toBe("2em");
-      expect(spans[5].style.fontSize).toBe("");
-      expect(spans[6].style.fontSize).toBe("1em");
-      expect(spans[7].style.fontSize).toBe("");
-      expect(spans[8].style.fontSize).toBe("3em");
-
-      expect(spans[1].innerHTML).toBe("&nbsp;");
-      expect(spans[3].innerHTML).toBe("&nbsp;");
-      expect(spans[5].innerHTML).toBe("&nbsp;");
-      expect(spans[7].innerHTML).toBe("&nbsp;");
-    });
-
-    it("should transform to '&nbsp' entity but not style spaces or count when using textSpaces = 'nostyleorcount'", function () {
-      var gt = new generativeText();
-      gt.opts = { textSpaces: 'nostyleorcount'};
       gt.rules = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
       var elem = document.createElement('div');
       elem.innerHTML = "one two three four five";
@@ -1355,33 +1331,6 @@ describe("GenerativeText", function() {
       gt.applyToWords(elem);
       var spans = elem.getElementsByTagName('span');
       expect(spans.length).toBe(5);
-    });
-
-    it("should remove spaces and add '&nbsp' entities at the beginning and end of even elements, while not adding a '&nbsp' entitiy at the beggining or the end of the sequence, when using textSpaces = 'even'", function () {
-      var gt = new generativeText();
-      gt.opts = { textSpaces: 'even'};
-      gt.rules = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
-      var elem = document.createElement('div');
-      elem.innerHTML = "one two three four";
-      gt.applyToWords(elem);
-      var spans = elem.getElementsByTagName('span');
-      expect(spans[0].innerHTML).toBe("one");
-      expect(spans[1].innerHTML).toBe("&nbsp;two&nbsp;");
-      expect(spans[2].innerHTML).toBe("three");
-      expect(spans[3].innerHTML).toBe("&nbsp;four");
-    });
-
-    it("should remove spaces and add '&nbsp' entities at the beginning and end of odd elements, while not adding a '&nbsp' entitiy at the beggining or the end of the sequence, when using textSpaces = 'odd'", function () {
-      var gt = new generativeText();
-      gt.opts = { textSpaces: 'odd'};
-      gt.rules = { fontSize: { type: "list", values: ['1', '2', '3'], unit: "em", type: 'list', listType: 'sequential'}};
-      var elem = document.createElement('div');
-      elem.innerHTML = "one two three ";
-      gt.applyToWords(elem);
-      var spans = elem.getElementsByTagName('span');
-      expect(spans[0].innerHTML).toBe("one&nbsp;");
-      expect(spans[1].innerHTML).toBe("two");
-      expect(spans[2].innerHTML).toBe("&nbsp;three");
     });
 
     it("should remove spaces and add '&nbsp' entities at the beginning and end of all elements, while not adding a '&nbsp' entitiy at the beggining or the end of the sequence, when using textSpaces = 'all'", function () {
