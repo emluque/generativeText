@@ -56,7 +56,7 @@ generativeText.prototype = {
 		backgroundColor: { type: "Color" },
 		backgroundImage: { type: "List" },
 		backgroundPosition: { type: "TwoNumeric", unit: "px" },
-		backgroundRepeact: { type: "List" },
+		backgroundRepeat: { type: "List" },
 		backgroundSize: { type: "TwoNumeric", unit: "%" },
 
 		border: { type: "List" }, //USP
