@@ -309,14 +309,21 @@ generativeText.prototype = {
 							break;
 					}
 					break;
-					break;
 			}
 		}
 		if(errors.length > 0) {
-			for(var i=0; i < errors.length; i++) {
-				console.log(errors[i]);
+			if(!!this.opts.fromGui) {
+				var textError = "";
+				for(var i=0; i < errors.length; i++) {
+					textError += errors[i] + "\n";
+				}
+				throw textError;
+			} else {
+				for(var i=0; i < errors.length; i++) {
+					console.log(errors[i]);
+				}
+				throw "-- generativeText rules validation Error. For a description of the error look at the console log. --";
 			}
-			throw "-- generativeText rules validation Error. For a description of the error look at the console log. --";
 		}
 
 	},
