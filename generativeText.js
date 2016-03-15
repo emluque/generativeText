@@ -398,7 +398,7 @@ generativeText.prototype = {
 		} else if (typeof rule === "string") {
 			rule = {value: rule, type: "fixed"};
 			return rule;
-		} else if (!!rule.values) {
+		} else if (!!rule.values && !(typeof rule.values === "function")) { //The check for function is because iOS might add a values function to an array
 			if (!(rule.values instanceof Array)) {
 				errors.push(name + " : values not an Array.");
 			} else if (rule.values.length == 0) {
