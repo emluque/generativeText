@@ -1458,19 +1458,6 @@ describe("GenerativeText", function() {
       expect(exceptionThrown).toBe(true);
     });
 
-
-    it("should set this.current Ruleeter", function () {
-      var elem = document.createElement('span');
-      elem.textContent = "A"
-      var rules = {
-        fontFamily: {values: ['Helvetica']},
-      };
-      var gt = new generativeText();
-
-      gt.generateStyle(rules, elem);
-      expect(gt.currentRuleeter).toBe('fontFamily');
-    });
-
     /*
       It became necessary when refactoring for type inference to rewrite all this tests,
       to reflect the fact that rules get changed when type inference and validation is done.

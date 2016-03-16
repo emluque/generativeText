@@ -916,7 +916,6 @@ generativeText.prototype = {
 	},
 	generateStyle: function( rules, el) {
 		for(var r in rules) {
-			this.currentRuleeter = r;
 			//Check if definition exists
 			if(typeof this.defs[ r ] == 'undefined') {
 				throw ("generativeText Error - rule name is not supported: '" + r + "'");
@@ -1283,18 +1282,6 @@ generativeText.prototype = {
 	rgbCheck: function(s) {
 		if(s.length == 1) s = "0" + s;
 		return s;
-	},
-	styleToJSON: function( style ) {
-		var strJSON = "{";
-		var cssDirectives = style.split(";");
-		var length = cssDirectives.length-1;
-		for(var i=0; i < length; i++) {
-			var cssDirective = cssDirectives[i].split(":");
-			strJSON += '"' + cssDirective[0] + '":"' + cssDirective[1] + '"';
-			strJSON += (i == length-1)?"":",";
-		}
-		strJSON += "}";
-		return strJSON;
 	},
 
 };
